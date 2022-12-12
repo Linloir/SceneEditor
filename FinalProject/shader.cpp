@@ -1,6 +1,9 @@
 #pragma once
 
 #include <GLM/gtc/type_ptr.hpp>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 #include "shader.h"
 #include "logger.h"
@@ -11,8 +14,21 @@ VertexShader::VertexShader(const std::string& source){
 }
 
 void VertexShader::compile(const std::string& source) {
-    const char* sourcePtr = source.c_str();
-    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
+    std::string codeStr;
+    std::ifstream file;
+    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        file.open(source);
+        std::stringstream stream;
+        stream << file.rdbuf();
+        file.close();
+        codeStr = stream.str();
+    }
+    catch (std::ifstream::failure e) {
+        Logger::error("Failed to read vertex shader file");
+    }
+    const char* code = codeStr.c_str();
+    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &code, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
     int success;
     char infoLog[512];
@@ -29,8 +45,21 @@ FragmentShader::FragmentShader(const std::string& source){
 }
 
 void FragmentShader::compile(const std::string& source) {
-    const char* sourcePtr = source.c_str();
-    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
+    std::string codeStr;
+    std::ifstream file;
+    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        file.open(source);
+        std::stringstream stream;
+        stream << file.rdbuf();
+        file.close();
+        codeStr = stream.str();
+    }
+    catch (std::ifstream::failure e) {
+        Logger::error("Failed to read vertex shader file");
+    }
+    const char* code = codeStr.c_str();
+    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &code, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
     int success;
     char infoLog[512];
@@ -47,8 +76,21 @@ GeometryShader::GeometryShader(const std::string& source) {
 }
 
 void GeometryShader::compile(const std::string& source) {
-    const char* sourcePtr = source.c_str();
-    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
+    std::string codeStr;
+    std::ifstream file;
+    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        file.open(source);
+        std::stringstream stream;
+        stream << file.rdbuf();
+        file.close();
+        codeStr = stream.str();
+    }
+    catch (std::ifstream::failure e) {
+        Logger::error("Failed to read vertex shader file");
+    }
+    const char* code = codeStr.c_str();
+    OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &code, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
     int success;
     char infoLog[512];
