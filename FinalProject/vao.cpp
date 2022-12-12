@@ -2,7 +2,9 @@
 
 #include "vao.h"
 
-VertexArrayObject::VertexArrayObject() {}
+VertexArrayObject::VertexArrayObject() {
+    OPENGL_EXTRA_FUNCTIONS->glGenVertexArrays(1, &_id);
+}
 
 VertexArrayObject::VertexArrayObject(const VertexBufferObject& vbo) :
     _vbo(vbo) {
