@@ -22,8 +22,8 @@ public:
 
     inline unsigned int id() const { return _id; }
 
-    inline void setActive() const;
-    inline void setInactive() const;
+    inline void bind() const;
+    inline void unbind() const;
 
     inline void bindVertexBufferObject(const VertexBufferObject& vbo);
     inline void bindVertexBufferObject(VertexBufferObject&& vbo);
@@ -35,7 +35,7 @@ public:
     inline void disableVertexAttribute(unsigned int index) const;
 };
 
-inline void VertexArrayObject::setActive() const {
+inline void VertexArrayObject::bind() const {
     // Check is id is valid
     if (_id == -1) {
         Logger::error("Binding an invalid VertexArrayObject");
@@ -44,7 +44,7 @@ inline void VertexArrayObject::setActive() const {
     OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(_id);
 }
 
-inline void VertexArrayObject::setInactive() const {
+inline void VertexArrayObject::unbind() const {
     OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(0);
 }
 
