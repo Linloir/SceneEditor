@@ -30,6 +30,12 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{ce0949e4-674d-4e45-8a8f-bbcefeedce3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OpenGL Abstractions">
+      <UniqueIdentifier>{540b050a-a5e3-42e4-92fa-71352a067f4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets">
+      <UniqueIdentifier>{1d6b02e9-c670-43ed-a367-a56924bb1a90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="mainwindow.qrc">
@@ -38,16 +44,55 @@
     <QtUic Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="ebo.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="renderable.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="vao.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="vbo.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files\Qt Widgets</Filter>
+    </ClCompile>
     <ClCompile Include="sceneviewer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Qt Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="modelselector.cpp">
+      <Filter>Source Files\Qt Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="modelselectable.cpp">
+      <Filter>Source Files\Qt Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="modelsetter.cpp">
+      <Filter>Source Files\Qt Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
