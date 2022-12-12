@@ -156,4 +156,12 @@
       <Filter>Header Files\Qt Widgets</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="vertexshader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragmentshader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
