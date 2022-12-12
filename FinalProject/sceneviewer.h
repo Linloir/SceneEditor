@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "renderable.h"
+#include "vao.h"
 #include "utils.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
