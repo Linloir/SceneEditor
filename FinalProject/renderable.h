@@ -15,7 +15,6 @@ private:
 public:
     Renderable(Model* model);
     Renderable(Model* model, glm::vec3 position);
-    ~Renderable();
 
 public:
     void move(glm::vec3 deltaVec);

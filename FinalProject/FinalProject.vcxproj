@@ -62,12 +62,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(ProjectDir)Libs\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y "$(SolutionDir)Libs\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(ProjectDir)Libs\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y "$(SolutionDir)Libs\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -117,7 +117,7 @@
     <ClInclude Include="ebo.h" />
     <ClInclude Include="vertex.h" />
     <ClInclude Include="vao.h" />
-    <QtMoc Include="modelselectable.h" />
+    <ClInclude Include="modelselectable.h" />
     <ClInclude Include="modelselector.h" />
     <ClInclude Include="modelsetter.h" />
     <ClInclude Include="renderable.h" />

@@ -5,6 +5,7 @@
 #include "vertex.h"
 #include "texture.h"
 #include "vao.h"
+#include "shader.h"
 
 class Mesh {
 private:

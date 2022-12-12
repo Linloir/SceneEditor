@@ -90,12 +90,12 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="modelselectable.h">
+      <Filter>Header Files\Qt Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="sceneviewer.h">
-      <Filter>Header Files\Qt Widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="modelselectable.h">
       <Filter>Header Files\Qt Widgets</Filter>
     </QtMoc>
     <QtMoc Include="mainwindow.h">

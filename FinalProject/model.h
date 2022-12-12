@@ -7,6 +7,7 @@
 #include <Assimp/postprocess.h>
 
 #include "mesh.h"
+#include "shader.h"
 
 class Model {
 private:
