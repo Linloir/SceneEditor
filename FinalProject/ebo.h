@@ -5,13 +5,16 @@
 class ElementBufferObject
 {
 private:
-    unsigned int _id;
+    unsigned int _id = 0;
+    std::vector<unsigned int> _indices;
     
 public:
-    ElementBufferObject(std::vector<unsigned int> indices);
+    ElementBufferObject();
+    ElementBufferObject(const std::vector<unsigned int>& indices);
+    ElementBufferObject(std::vector<unsigned int>&& indices);
 
     inline unsigned int id() const { return _id; }
-
-    inline void bind() const;
-    inline void unbind() const;
+    inline std::vector<unsigned int> indices() const { return _indices; }
+    
+    inline void dispose() const;
 };

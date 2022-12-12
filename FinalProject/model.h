@@ -11,7 +11,7 @@
 
 class Model {
 public:
-    enum MODELSTATUS { LOADING, LOADED, ERROR};
+    enum MODELSTATUS { LOADING, LOADED, ERR };
 
 private:
     std::vector<Mesh> _meshes;
@@ -24,7 +24,7 @@ public:
     ~Model();
 
 public:
-    inline MODELSTATUS isReady() const { return _status; }
+    inline MODELSTATUS status() const { return _status; }
 
 private:
     void loadModel(std::string path);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <qopenglcontext.h>
 
 enum TextureType { DIFFUSE, SPECULAR };
 
