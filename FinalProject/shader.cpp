@@ -14,6 +14,13 @@ void VertexShader::compile(const std::string& source) {
     const char* sourcePtr = source.c_str();
     OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
+    int success;
+    char infoLog[512];
+    OPENGL_EXTRA_FUNCTIONS->glGetShaderiv(_shaderId, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        OPENGL_EXTRA_FUNCTIONS->glGetShaderInfoLog(_shaderId, 512, nullptr, infoLog);
+        Logger::error("Vertex shader compilation failed: " + std::string(infoLog));
+    }
 }
 
 FragmentShader::FragmentShader(const std::string& source){
@@ -25,6 +32,13 @@ void FragmentShader::compile(const std::string& source) {
     const char* sourcePtr = source.c_str();
     OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
+    int success;
+    char infoLog[512];
+    OPENGL_EXTRA_FUNCTIONS->glGetShaderiv(_shaderId, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        OPENGL_EXTRA_FUNCTIONS->glGetShaderInfoLog(_shaderId, 512, nullptr, infoLog);
+        Logger::error("Vertex shader compilation failed: " + std::string(infoLog));
+    }
 }
 
 GeometryShader::GeometryShader(const std::string& source) {
@@ -36,6 +50,13 @@ void GeometryShader::compile(const std::string& source) {
     const char* sourcePtr = source.c_str();
     OPENGL_EXTRA_FUNCTIONS->glShaderSource(_shaderId, 1, &sourcePtr, nullptr);
     OPENGL_EXTRA_FUNCTIONS->glCompileShader(_shaderId);
+    int success;
+    char infoLog[512];
+    OPENGL_EXTRA_FUNCTIONS->glGetShaderiv(_shaderId, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        OPENGL_EXTRA_FUNCTIONS->glGetShaderInfoLog(_shaderId, 512, nullptr, infoLog);
+        Logger::error("Vertex shader compilation failed: " + std::string(infoLog));
+    }
 }
 
 ShaderProgram::ShaderProgram() {
