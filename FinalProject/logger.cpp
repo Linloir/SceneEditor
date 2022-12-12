@@ -1,5 +1,7 @@
 #pragma once
 
+#include "qdebug.h"
+
 #include "logger.h"
 
 Logger::LogLevel Logger::_level = Logger::LogLevel::LOCALLOGLEVEL;
@@ -13,16 +15,16 @@ void Logger::log(LogLevel level, std::string message) {
 
     switch (level) {
         case DEBUG:
-            std::cout << "[DEBUG] " << message << std::endl;
+            qDebug() << "DEBUG: " << message.c_str();
             break;
         case INFO:
-            std::cout << "[INFO] " << message << std::endl;
+            qDebug() << "INFO: " << message.c_str();
             break;
         case WARNING:
-            std::cout << "[WARNING] " << message << std::endl;
+            qDebug() << "WARNING: " << message.c_str();
             break;
         case ERR:
-            std::cout << "[ERROR] " << message << std::endl;
+            qDebug() << "ERROR: " << message.c_str();
             break;
     }
 }
