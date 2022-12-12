@@ -64,11 +64,17 @@
     <PostBuildEvent>
       <Command>xcopy /y "$(SolutionDir)Libs\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>$(SolutionDir)Libs\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PostBuildEvent>
       <Command>xcopy /y "$(SolutionDir)Libs\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>$(SolutionDir)Libs\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>

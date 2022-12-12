@@ -1,4 +1,5 @@
 #pragma once
+#define STB_IMAGE_IMPLEMENTATION
 
 #include <STBImage/stb_image.h>
 #include <qopengl.h>
@@ -6,7 +7,6 @@
 
 #include "texture.h"
 #include "logger.h"
-#include "utils.h"
 
 QOpenGLContext* sharedContext;
 
@@ -17,7 +17,7 @@ Texture::Texture(TextureType type, std::string path) {
 
     OPENGL_FUNCTIONS->glGenTextures(1, &_id);
     OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, _id);
-
+    
     // Set the texture wrapping parameters
     OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
     OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -38,6 +38,10 @@ Texture::Texture(TextureType type, std::string path) {
         }
         else if (nrChannels == 4) {
             format = GL_RGBA;
+        }
+        else {
+            Logger::error("Unexpected channel count");
+            return;
         }
 
         OPENGL_FUNCTIONS->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

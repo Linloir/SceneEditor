@@ -1,7 +1,6 @@
 #pragma once
 
 #include "vbo.h"
-#include "utils.h"
 
 VertexBufferObject::VertexBufferObject() {
     OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &_id);
@@ -31,8 +30,4 @@ VertexBufferObject::VertexBufferObject(std::vector<Vertex>&& vertices) :
         GL_STATIC_DRAW
     );
     OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-inline void VertexBufferObject::dispose() const {
-    OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
 }

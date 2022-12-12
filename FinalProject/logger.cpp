@@ -21,7 +21,7 @@ void Logger::log(LogLevel level, std::string message) {
         case WARNING:
             std::cout << "[WARNING] " << message << std::endl;
             break;
-        case ERROR:
+        case ERR:
             std::cout << "[ERROR] " << message << std::endl;
             break;
     }
@@ -40,5 +40,5 @@ void Logger::warning(std::string message) {
 }
 
 void Logger::error(std::string message) {
-    log(ERROR, message);
+    log(ERR, message);
 }

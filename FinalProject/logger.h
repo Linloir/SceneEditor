@@ -6,7 +6,7 @@
 
 class Logger {
 public:
-    enum LogLevel { DEBUG, INFO, WARNING, ERROR };
+    enum LogLevel { DEBUG, INFO, WARNING, ERR };
     
 private:
     static LogLevel _level;

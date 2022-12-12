@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GLM/glm.hpp>
+#include <GLM/ext/matrix_transform.hpp>
 
 #include "model.h"
 #include "shader.h"
@@ -29,3 +30,11 @@ public:
 public:
     void render(ShaderProgram shader);
 };
+
+inline glm::mat4 Renderable::modelMatrix() const {
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, _position);
+    model = model * _rotation;
+    model = glm::scale(model, _scale);
+    return model;
+}

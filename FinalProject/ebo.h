@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "utils.h"
+
 class ElementBufferObject
 {
 private:
@@ -18,3 +20,7 @@ public:
     
     inline void dispose() const;
 };
+
+inline void ElementBufferObject::dispose() const {
+    OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
+}

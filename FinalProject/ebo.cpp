@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ebo.h"
-#include "utils.h"
 
 ElementBufferObject::ElementBufferObject() {
     OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &_id);
@@ -31,8 +30,4 @@ ElementBufferObject::ElementBufferObject(std::vector<unsigned int>&& indices) :
         GL_STATIC_DRAW
     );
     OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-inline void ElementBufferObject::dispose() const {
-    OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GLM/ext/matrix_transform.hpp>
-
 #include "renderable.h"
 
 Renderable::Renderable(Model* model) : _model(model) {}
@@ -30,14 +28,6 @@ void Renderable::scale(float deltaScale) {
 
 void Renderable::setScale(float scale) {
     _scale = glm::vec3(scale);
-}
-
-inline glm::mat4 Renderable::modelMatrix() const {
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, _position);
-    model = model * _rotation;
-    model = glm::scale(model, _scale);
-    return model;
 }
 
 void Renderable::render(ShaderProgram shader) {

@@ -4,6 +4,8 @@
 #include <vector>
 #include <GLM/glm.hpp>
 
+#include "utils.h"
+
 class Shader {
 protected:
     unsigned int _shaderId = -1;
@@ -17,6 +19,11 @@ public:
 protected:
     virtual void compile(const std::string& sourceFilePath) = 0;
 };
+
+inline void Shader::dispose() {
+    OPENGL_EXTRA_FUNCTIONS->glDeleteShader(_shaderId);
+    _shaderId = 0;
+}
 
 class VertexShader : public Shader {
 public:
@@ -67,3 +74,16 @@ public:
 
     inline void dispose();
 };
+
+inline void ShaderProgram::setActive() {
+    OPENGL_EXTRA_FUNCTIONS->glUseProgram(_programId);
+}
+
+inline void ShaderProgram::setInactive() {
+    OPENGL_EXTRA_FUNCTIONS->glUseProgram(0);
+}
+
+inline void ShaderProgram::dispose() {
+    OPENGL_EXTRA_FUNCTIONS->glDeleteProgram(_programId);
+    _programId = 0;
+}

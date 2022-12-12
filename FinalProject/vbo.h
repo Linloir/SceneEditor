@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "vertex.h"
+#include "utils.h"
 
 class VertexBufferObject {
 private:
@@ -19,3 +20,7 @@ public:
     
     inline void dispose() const;
 };
+
+inline void VertexBufferObject::dispose() const {
+    OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
+}

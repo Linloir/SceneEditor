@@ -3,6 +3,8 @@
 #include <string>
 #include <qopenglcontext.h>
 
+#include "utils.h"
+
 enum TextureType { DIFFUSE, SPECULAR };
 
 class Texture {
@@ -19,6 +21,14 @@ public:
     inline TextureType type() const { return _type; }
     inline std::string path() const { return _path; }
 
-    inline void bind() const;
-    inline void unbind() const;
+    void bind() const;
+    void unbind() const;
 };
+
+inline void Texture::bind() const {
+    OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, _id);
+}
+
+inline void Texture::unbind() const {
+    OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, 0);
+}

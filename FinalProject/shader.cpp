@@ -3,13 +3,7 @@
 #include <GLM/gtc/type_ptr.hpp>
 
 #include "shader.h"
-#include "utils.h"
 #include "logger.h"
-
-inline void Shader::dispose() {
-    OPENGL_EXTRA_FUNCTIONS->glDeleteShader(_shaderId);
-    _shaderId = 0;
-}
 
 VertexShader::VertexShader(const std::string& source){
     _shaderId = OPENGL_EXTRA_FUNCTIONS->glCreateShader(GL_VERTEX_SHADER);
@@ -105,17 +99,4 @@ ShaderProgram::ShaderProgram(VertexShader vertexShader, FragmentShader fragmentS
     vertexShader.dispose();
     fragmentShader.dispose();
     geometryShader.dispose();
-}
-
-inline void ShaderProgram::setActive() {
-    OPENGL_EXTRA_FUNCTIONS->glUseProgram(_programId);
-}
-
-inline void ShaderProgram::setInactive() {
-    OPENGL_EXTRA_FUNCTIONS->glUseProgram(0);
-}
-
-inline void ShaderProgram::dispose() {
-    OPENGL_EXTRA_FUNCTIONS->glDeleteProgram(_programId);
-    _programId = 0;
 }

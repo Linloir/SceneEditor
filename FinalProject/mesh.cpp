@@ -38,7 +38,7 @@ void Mesh::render(const ShaderProgram& shader) const {
     OPENGL_EXTRA_FUNCTIONS->glActiveTexture(GL_TEXTURE0);
 
     _vao.setActive();
-    glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+    OPENGL_EXTRA_FUNCTIONS->glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
     _vao.setInactive();
 }
 
