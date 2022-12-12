@@ -160,7 +160,7 @@
     <None Include="vertexshader.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fragmentshader.vs">
+    <None Include="fragmentshader.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
