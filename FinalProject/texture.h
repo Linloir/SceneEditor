@@ -1,15 +1,22 @@
 #pragma once
 
+#include <string>
+
 enum TextureType { DIFFUSE, SPECULAR };
 
 class Texture {
 private:
     unsigned int _id;
     TextureType _type;
+    std::string _path;
 
 public:
-    unsigned int id() const;
-    TextureType type() const;
+    Texture(TextureType type, std::string path);
+
+public:
+    inline unsigned int id() const { return _id; }
+    inline TextureType type() const { return _type; }
+    inline std::string path() const { return _path; }
 
     inline void bind() const;
     inline void unbind() const;

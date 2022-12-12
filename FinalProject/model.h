@@ -10,23 +10,28 @@
 #include "shader.h"
 
 class Model {
+public:
+    enum MODELSTATUS { LOADING, LOADED, ERROR};
+
 private:
-    std::vector<Mesh*> _meshes;
+    std::vector<Mesh> _meshes;
+    std::vector<Texture> _texturesLoaded;
     std::string _directory;
-    bool _ready = false;
+    MODELSTATUS _status = LOADING;
 
 public:
     Model(std::string path);
+    ~Model();
 
 public:
-    inline bool isReady() const { return _ready; }
+    inline MODELSTATUS isReady() const { return _status; }
 
 private:
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
-    Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType);
 
 public:
-    void render(ShaderProgram shader);
+    void render(const ShaderProgram& shader) const;
 };

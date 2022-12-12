@@ -27,5 +27,5 @@ public:
     inline VertexArrayObject vao() const { return _vao; }
 
 public:
-    void render(ShaderProgram shader);
+    void render(const ShaderProgram& shader) const ;
 };
