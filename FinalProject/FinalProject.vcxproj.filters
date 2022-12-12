@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Qt Widgets">
       <UniqueIdentifier>{1d6b02e9-c670-43ed-a367-a56924bb1a90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{602fc1ed-84a6-4d4a-ad71-5e7415d8d429}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="mainwindow.qrc">
@@ -94,6 +97,9 @@
     <ClCompile Include="modelsetter.cpp">
       <Filter>Source Files\Qt Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="modelselectable.h">
       <Filter>Header Files\Qt Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

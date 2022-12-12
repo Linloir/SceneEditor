@@ -13,9 +13,13 @@ class Model {
 private:
     std::vector<Mesh*> _meshes;
     std::string _directory;
+    bool _ready = false;
 
 public:
     Model(std::string path);
+
+public:
+    inline bool isReady() const { return _ready; }
 
 private:
     void loadModel(std::string path);
