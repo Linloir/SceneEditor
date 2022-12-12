@@ -16,8 +16,8 @@ private:
     VertexArrayObject _vao;
 
 public:
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-    Mesh(std::vector<Vertex> vertices, std::vector<Texture> textures);
+    Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
+    Mesh(const std::vector<Vertex>& vertices, const std::vector<Texture>& textures);
 
 public:
     inline std::vector<Vertex> vertices() const { return _vertices; }
@@ -28,4 +28,7 @@ public:
 
 public:
     void render(const ShaderProgram& shader) const ;
+
+private:
+    void setupMesh();
 };
