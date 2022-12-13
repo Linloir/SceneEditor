@@ -60,6 +60,9 @@ inline void VertexArrayObject::dispose() {
 inline void VertexArrayObject::ensureInitialized() {
     if (_id == 0) {
         OPENGL_EXTRA_FUNCTIONS->glGenVertexArrays(1, &_id);
+        if (_id == 0) {
+            Logger::error("Failed to create VertexArrayObject");
+        }
     }
 }
 

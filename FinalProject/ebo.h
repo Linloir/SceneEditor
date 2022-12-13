@@ -51,5 +51,8 @@ inline void ElementBufferObject::dispose() {
 inline void ElementBufferObject::ensureInitialized() {
     if (_id == 0) {
         OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &_id);
+        if (_id == 0) {
+            Logger::error("Failed to create ElementBufferObject");
+        }
     }
 }
