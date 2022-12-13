@@ -13,7 +13,7 @@ QOpenGLContext* sharedContext;
 // Must set context before calling this function
 Texture::Texture(TextureType type, std::string path) {
     _type = type;
-    _path = path;
+    _path = path.substr(path.find_last_of('/') + 1);
 
     OPENGL_FUNCTIONS->glGenTextures(1, &_id);
     OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, _id);
