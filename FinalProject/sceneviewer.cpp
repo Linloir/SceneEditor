@@ -81,14 +81,17 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    Model* backpackModel = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
+    Model* backpackModel = new Model("D:/code/ComputerGraphic/SceneEditor/obj/nanosuit/nanosuit.obj");
     Logger::info("Model loaded");
     Renderable renderable(backpackModel);
     _objects.push_back(backpackModel);
     
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+    _camera.setPosition(glm::vec3(0.0f, 15.0f, 8.0f));
     _camera.setYaw(-90.0f);
-    _camera.setPitch(0.0f);
+    _camera.setPitch(-30.0f);
+
+
+
 }
 
 void SceneViewer::resizeGL(int w, int h) {

@@ -19,6 +19,8 @@ private:
     std::string _directory;
     MODELSTATUS _status = LOADING;
 
+
+
 public:
     Model(std::string path);
     ~Model();
