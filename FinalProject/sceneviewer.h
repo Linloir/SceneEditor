@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "shader.h"
 #include "renderable.h"
 #include "vao.h"
 #include "utils.h"
@@ -16,6 +17,8 @@ class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 
 private:
     std::vector<Renderable> _objects;
+    ShaderProgram _shaderProgram = ShaderProgram::empty();
+    VertexArrayObject _vao = VertexArrayObject::empty();
 	
 public:
 	SceneViewer(QWidget* parent = 0);

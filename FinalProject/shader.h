@@ -8,7 +8,7 @@
 
 class Shader {
 protected:
-    unsigned int _shaderId = -1;
+    unsigned int _shaderId = 0;
     
 public:
     Shader() {}
@@ -27,7 +27,6 @@ inline void Shader::dispose() {
 
 class VertexShader : public Shader {
 public:
-    VertexShader() {}
     VertexShader(const std::string& sourceFilePath);
     
 protected:
@@ -36,7 +35,6 @@ protected:
 
 class FragmentShader : public Shader {
 public:
-    FragmentShader() {}
     FragmentShader(const std::string& sourceFilePath);
 
 protected:
@@ -45,7 +43,6 @@ protected:
 
 class GeometryShader : public Shader {
 public:
-    GeometryShader() {}
     GeometryShader(const std::string& sourceFilePath);
 
 protected:
@@ -53,11 +50,18 @@ protected:
 };
 
 class ShaderProgram {
+public:
+    static ShaderProgram empty() {
+        return ShaderProgram();
+    }
+    
 private:
     unsigned int _programId = 0;
 
-public:
+private:
     ShaderProgram();
+
+public:
     ShaderProgram(VertexShader vertexShader);
     ShaderProgram(FragmentShader fragmentShader);
     ShaderProgram(GeometryShader geometryShader);
@@ -67,23 +71,43 @@ public:
     ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader, GeometryShader geometryShader);
     
 public:
-    inline void setActive();
-    inline void setInactive();
-
     inline unsigned int programId() const { return _programId; }
 
+    inline void attachShader(const Shader& shader) const;
+    
+    inline void bind() const;
+    inline void unbind() const;
     inline void dispose();
+    inline void ensureInitialized();
 };
 
-inline void ShaderProgram::setActive() {
+inline void ShaderProgram::attachShader(const Shader& shader) const {
+    if (_programId == 0) {
+        Logger::error("Attaching a shader to an invalid ShaderProgram");
+        return;
+    }
+    OPENGL_EXTRA_FUNCTIONS->glAttachShader(_programId, shader.shaderId());
+}
+
+inline void ShaderProgram::bind() const {
+    if (_programId == 0) {
+        Logger::error("Binding an invalid ShaderProgram");
+        return;
+    }
     OPENGL_EXTRA_FUNCTIONS->glUseProgram(_programId);
 }
 
-inline void ShaderProgram::setInactive() {
+inline void ShaderProgram::unbind() const {
     OPENGL_EXTRA_FUNCTIONS->glUseProgram(0);
 }
 
 inline void ShaderProgram::dispose() {
     OPENGL_EXTRA_FUNCTIONS->glDeleteProgram(_programId);
     _programId = 0;
+}
+
+inline void ShaderProgram::ensureInitialized() {
+    if (_programId == 0) {
+        _programId = OPENGL_EXTRA_FUNCTIONS->glCreateProgram();
+    }
 }

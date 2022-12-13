@@ -1,6 +1,6 @@
 #pragma once
 
-#include "qdebug.h"
+#include <qdebug.h>
 
 #include "logger.h"
 

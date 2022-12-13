@@ -157,10 +157,10 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexshader.vs">
+    <None Include="fragmentshader.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fragmentshader.fs">
+    <None Include="vertexshader.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
