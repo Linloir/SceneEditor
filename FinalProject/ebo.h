@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "utils.h"
+#include "logger.h"
 
 class ElementBufferObject
 {

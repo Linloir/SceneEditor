@@ -20,7 +20,7 @@ VertexBufferObject::VertexBufferObject(const std::vector<Vertex>& vertices) {
 }
 
 void VertexBufferObject::setBuffer(const std::vector<Vertex>& vertices) {
-    if (id == 0) {
+    if (_id == 0) {
         Logger::error("Try to bind buffer to an uninitialized vertex buffer object");
         return;
     }

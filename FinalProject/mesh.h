@@ -13,7 +13,7 @@ private:
     std::vector<unsigned int> _indices;
     std::vector<Texture> _textures;
 
-    VertexArrayObject _vao;
+    VertexArrayObject _vao = VertexArrayObject::empty();
 
 public:
     Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);

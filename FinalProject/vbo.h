@@ -4,6 +4,7 @@
 
 #include "vertex.h"
 #include "utils.h"
+#include "logger.h"
 
 class VertexBufferObject {
 public:

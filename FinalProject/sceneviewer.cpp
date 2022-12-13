@@ -46,6 +46,19 @@ void SceneViewer::initializeGL() {
 
     _vao.ensureInitialized();
     Logger::info("Vertex Array Object initialized");
+    
+    vector<Vertex> vertices = {
+        { { -0.5f, -0.5f, 0.0f } },
+        { { 0.5f, -0.5f, 0.0f } },
+        { { 0.0f, 0.5f, 0.0f } }
+    };
+    VertexBufferObject vbo(vertices);
+    Logger::info("Vertex Buffer Object initialized");
+    
+    _vao.bindVertexBufferObject(vbo);
+    _vao.setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+    _vao.enableVertexAttribute(0);
+    Logger::info("Vertex Buffer Object bound to Vertex Array Object");
 
     _shaderProgram.ensureInitialized();
     Logger::info("Shader Program initialized");
@@ -53,7 +66,9 @@ void SceneViewer::initializeGL() {
     VertexShader vertexShader("./temp/shaders/vertexshader.vs");
     FragmentShader fragmentShader("./temp/shaders/fragmentshader.fs");
     _shaderProgram.attachShader(vertexShader);
-
+    _shaderProgram.attachShader(fragmentShader);
+    vertexShader.dispose();
+    fragmentShader.dispose();
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -63,20 +78,7 @@ void SceneViewer::resizeGL(int w, int h) {
 void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    vector<Vertex> vertices = {
-        { { -0.5f, -0.5f, 0.0f } },
-        { { 0.5f, -0.5f, 0.0f } },
-        { { 0.0f, 0.5f, 0.0f } }
-    };
-    VertexBufferObject vbo(vertices);
-    VertexArrayObject vao(vbo);
-    vao.setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-    vao.enableVertexAttribute(0);
-    
-    VertexShader vertexShader("./temp/shaders/vertexshader.vs");
-    FragmentShader fragmentShader("./temp/shaders/fragmentshader.fs");
-    ShaderProgram shaderProgram(vertexShader, fragmentShader);
-    shaderProgram.bind();
-    vao.bind();
+    _vao.bind();
+    _shaderProgram.bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }

@@ -5,6 +5,7 @@
 #include <GLM/glm.hpp>
 
 #include "utils.h"
+#include "logger.h"
 
 class Shader {
 protected:
