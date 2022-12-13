@@ -20,7 +20,7 @@ private:
     MODELSTATUS _status = LOADING;
 
     // smallest point
-    glm::vec3 _left_down_back = glm::vec3(3e37f, 3e37f, 3e37f);
+    glm::vec3 _left_down_back = glm::vec3(3e36f, 3e36f, 3e36f);
     // largest point
     glm::vec3 _right_up_front = -_left_down_back;
 
@@ -31,6 +31,8 @@ public:
 public:
     inline MODELSTATUS status() const { return _status; }
 
+
+    // maybe we can check if boundary has not been set yet
     inline glm::vec3 get_upper_bound() {
         return _right_up_front;
     }
@@ -46,4 +48,5 @@ private:
 
 public:
     void render(const ShaderProgram& shader) const;
+    void check_boundary();
 };
