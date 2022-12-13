@@ -30,6 +30,9 @@ public:
 
     inline glm::mat4 modelMatrix() const;
 
+    inline glm::vec3 get_upper_boundary()const;
+    inline glm::vec3 get_lower_boundary()const;
+
 public:
     void render(ShaderProgram shader);
     // check here to get global boundary
@@ -39,7 +42,18 @@ public:
 inline glm::mat4 Renderable::modelMatrix() const {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, _position);
+    // 左乘与右乘应该是不一样的，但是这里的表现相同
     model = model * _rotation;
+    //model = _rotation * model;
     model = glm::scale(model, _scale);
     return model;
+
+
+}
+
+inline glm::vec3 Renderable::get_lower_boundary()const {
+    return _lower_bound;
+}
+inline glm::vec3 Renderable::get_upper_boundary()const {
+    return _upper_bound;
 }
