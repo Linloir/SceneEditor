@@ -34,6 +34,8 @@ void Model::loadModel(std::string path) {
     processNode(scene->mRootNode, scene);
     _status = LOADED;
     Logger::info("Model loaded");
+    // 仅检查一次即可
+    check_boundary();
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {

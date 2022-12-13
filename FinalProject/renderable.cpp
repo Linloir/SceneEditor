@@ -2,9 +2,17 @@
 
 #include "renderable.h"
 
-Renderable::Renderable(Model* model) : _model(model) {}
+// 极值点一定在model包围盒的顶点出取到
 
-Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {}
+Renderable::Renderable(Model* model) : _model(model) {
+    _upper_bound = model->get_upper_bound();
+    _lower_bound = model->get_lower_bound();
+}
+
+Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {
+    _upper_bound = model->get_upper_bound();
+    _lower_bound = model->get_lower_bound();
+}
 
 void Renderable::move(glm::vec3 deltaVec) {
     _position += deltaVec;
@@ -35,4 +43,9 @@ void Renderable::render(ShaderProgram shader) {
     shader.setUniform("model", modelMatrix());
     // Render
     _model->render(shader);
+}
+
+// check here to get global boundary
+void Renderable::check_boundary() {
+
 }

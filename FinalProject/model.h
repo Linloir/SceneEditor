@@ -48,10 +48,13 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType);
+    // Since these are loacl position, this function should be called just once.
+    void check_boundary();
 
 public:
     void render(const ShaderProgram& shader) const;
-    void check_boundary();
+
+    
 
     // maybe we can encapsure a function to get both upper and lower bound?
 
