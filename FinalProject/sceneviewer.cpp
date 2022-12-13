@@ -70,6 +70,11 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
+
+    Model* backpackModel = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
+    Logger::info("Model loaded");
+    Renderable renderable(backpackModel);
+    _objects.push_back(backpackModel);
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -79,7 +84,9 @@ void SceneViewer::resizeGL(int w, int h) {
 void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    _vao.bind();
     _shaderProgram.bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    
+    for (auto object : _objects) {
+        object.render(_shaderProgram);
+    }
 }

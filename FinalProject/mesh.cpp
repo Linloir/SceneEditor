@@ -22,7 +22,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Texture>& text
 void Mesh::render(const ShaderProgram& shader) const {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
-    for (unsigned int i = 0; i < _textures.size(); i++) {
+    for (int i = 0; i < _textures.size(); i++) {
         OPENGL_EXTRA_FUNCTIONS->glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
@@ -32,7 +32,7 @@ void Mesh::render(const ShaderProgram& shader) const {
         else if (_textures[i].type() == TextureType::SPECULAR)
             number = std::to_string(specularNr++);
 
-        OPENGL_EXTRA_FUNCTIONS->glUniform1i(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(shader.programId(), (name + number).c_str()), i);
+        shader.setUniform(name + number, i);
         _textures[i].bind();
     }
     OPENGL_EXTRA_FUNCTIONS->glActiveTexture(GL_TEXTURE0);
@@ -44,4 +44,9 @@ void Mesh::render(const ShaderProgram& shader) const {
 
 void Mesh::setupMesh() {
     _vao = VertexArrayObject(_vertices, _indices);
+    _vao.setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    _vao.setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, _normal));
+    _vao.setVertexAttributePointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, _texCoords));
+    //_vao.setVertexAttributePointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, _tangent));
+    //_vao.setVertexAttributePointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, _bitangent));
 }

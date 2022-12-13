@@ -15,19 +15,25 @@ Model::~Model() {
 
 // file path is ...\\...\\.obj, and processnode & processmesh have been called here
 void Model::loadModel(std::string path) {
+    Logger::info("Loading model from path: " + path);
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(
         path, aiProcess_Triangulate | aiProcess_FlipUVs);
-    
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         Logger::error("Failed to load model: " + std::string(importer.GetErrorString()));
         _status = ERR;
         return;
     }
+
+    // Convert all '\' to '/'
+    std::replace(path.begin(), path.end(), '\\', '/');
     _directory = path.substr(0, path.find_last_of('/'));
     
+    Logger::info("Model read successfully");
+    Logger::info("Processing model nodes");
     processNode(scene->mRootNode, scene);
     _status = LOADED;
+    Logger::info("Model loaded");
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -48,12 +54,15 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
+    Logger::debug("Processing mesh with " + std::to_string(mesh->mNumVertices) + " vertices");
     // Process vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         // Create placeholder vectors
         glm::vec3 vertexPosition = glm::vec3(0.0f);
         glm::vec3 vertexNormal = glm::vec3(0.0f);
         glm::vec2 vertexTextureCoordinate = glm::vec2(0.0f);
+        glm::vec3 vertexTangent = glm::vec3(0.0f);
+        glm::vec3 vertexBitangent = glm::vec3(0.0f);
         
         // Process vertex positions
         vertexPosition.x = mesh->mVertices[i].x;
@@ -69,8 +78,23 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
         // Process vertex texture coordinates
         if (mesh->mTextureCoords[0]) {
+            // Process texture coordinates
             vertexTextureCoordinate.x = mesh->mTextureCoords[0][i].x;
             vertexTextureCoordinate.y = mesh->mTextureCoords[0][i].y;
+            
+            //// Process vertex tangents
+            //if (mesh->mTangents) {
+            //    vertexTangent.x = mesh->mTangents[i].x;
+            //    vertexTangent.y = mesh->mTangents[i].y;
+            //    vertexTangent.z = mesh->mTangents[i].z;
+            //}
+            //
+            //// Process vertex bitangents
+            //if (mesh->mBitangents) {
+            //    vertexBitangent.x = mesh->mBitangents[i].x;
+            //    vertexBitangent.y = mesh->mBitangents[i].y;
+            //    vertexBitangent.z = mesh->mBitangents[i].z;
+            //}
         }
         else {
             vertexTextureCoordinate = glm::vec2(0.0f, 0.0f);
@@ -80,13 +104,17 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         Vertex newVertex = {
             vertexPosition,
             vertexNormal,
-            vertexTextureCoordinate
+            vertexTextureCoordinate,
+            //vertexTangent,
+            //vertexBitangent
         };
 
         // Add vertex to vertices
         vertices.push_back(newVertex);
     }
+    Logger::debug("Vertices vector memory usage: " + std::to_string(vertices.size() * sizeof(Vertex) / 1024) + " KB");
 
+    Logger::debug("Processing mesh with " + std::to_string(mesh->mNumFaces) + " faces");
     // Process indices
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
@@ -94,7 +122,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             indices.push_back(face.mIndices[j]);
         }
     }
+    Logger::debug("Indices vector memory usage: " + std::to_string(indices.size() * sizeof(unsigned int) / 1024) + " KB");
 
+    Logger::debug("Processing mesh materials");
     // Process material
     if (mesh->mMaterialIndex >= 0) {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -107,8 +137,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
+    Logger::debug("Textures vector memory usage: " + std::to_string(textures.size() * sizeof(Texture) / 1024) + " KB");
 
-    return Mesh(vertices, indices, textures);
+    Logger::debug("Mesh processed");
+    return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType) {
@@ -121,6 +153,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
             if (std::strcmp(_texturesLoaded[j].path().data(), str.C_Str()) == 0) {
                 textures.push_back(_texturesLoaded[j]);
                 skip = true;
+                Logger::debug("Texture already loaded, skipped");
                 break;
             }
         }
