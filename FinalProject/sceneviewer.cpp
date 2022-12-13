@@ -10,6 +10,7 @@
 #include "vao.h"
 #include "shader.h"
 #include "logger.h"
+#include "model.h"
 
 using std::vector;
 
