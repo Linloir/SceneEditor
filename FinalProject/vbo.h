@@ -6,21 +6,49 @@
 #include "utils.h"
 
 class VertexBufferObject {
+public:
+    static VertexBufferObject empty() {
+        return VertexBufferObject();
+    }
+    
 private:
     unsigned int _id = 0;
-    std::vector<Vertex> _vertices;
 
-public:
+private:
     VertexBufferObject();
+    
+public:
     VertexBufferObject(const std::vector<Vertex>& vertices);
-    VertexBufferObject(std::vector<Vertex>&& vertices);
 
     inline unsigned int id() const { return _id; }
-    inline std::vector<Vertex> vertices() const { return _vertices; }
     
-    inline void dispose() const;
+    inline void bind() const;
+    inline void unbind() const;
+    inline void dispose();
+    inline void ensureInitialized();
+    
+    void setBuffer(const std::vector<Vertex>& vertices);
 };
 
-inline void VertexBufferObject::dispose() const {
+inline void VertexBufferObject::bind() const {
+    if (_id == 0) {
+        Logger::error("Binding an invalid VertexBufferObject");
+        return;
+    }
+    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, _id);
+}
+
+inline void VertexBufferObject::unbind() const {
+    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+inline void VertexBufferObject::dispose() {
     OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
+    _id = 0;
+}
+
+inline void VertexBufferObject::ensureInitialized() {
+    if (_id == 0) {
+        OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &_id);
+    }
 }

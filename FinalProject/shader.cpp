@@ -102,7 +102,7 @@ void GeometryShader::compile(const std::string& source) {
 }
 
 ShaderProgram::ShaderProgram() {
-    _programId = OPENGL_EXTRA_FUNCTIONS->glCreateProgram();
+    _programId = 0;
 }
 
 ShaderProgram::ShaderProgram(VertexShader vertexShader) {
