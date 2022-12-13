@@ -142,6 +142,5 @@ inline void Camera::push(float distance) {
 }
 
 inline glm::mat4 Camera::viewMatrix() {
-    float temp = glm::sqrt(_position.x * _position.x + _position.y * _position.y + _position.z * _position.z);
-    return glm::lookAt(-_front*temp, glm::vec3(0.0f), _up);
+    return glm::lookAt(_position, _position + _front, _up);
 }

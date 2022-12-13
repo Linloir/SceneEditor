@@ -65,7 +65,7 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    Model* backpackModel = new Model("D:\\ProgrammingFile\\SceneEditor\\Models\\backpack\\backpack.obj");
+    Model* backpackModel = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
     Logger::info("Model loaded");
     Renderable backpack(backpackModel);
     _objects.push_back(backpack);
