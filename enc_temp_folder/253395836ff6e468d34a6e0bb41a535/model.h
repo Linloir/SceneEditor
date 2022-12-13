@@ -20,9 +20,9 @@ private:
     MODELSTATUS _status = LOADING;
 
     // smallest point
-    glm::vec3 _left_down_back = glm::vec3(3e37f, 3e37f, 3e37f);
+    glm::vec3 left_down_back = glm::vec3(3e37f, 3e37f, 3e37f);
     // largest point
-    glm::vec3 _right_up_front = -_left_down_back;
+    glm::vec3  right_up_front = -left_down_back;
 
 public:
     Model(std::string path);
@@ -30,13 +30,6 @@ public:
 
 public:
     inline MODELSTATUS status() const { return _status; }
-
-    inline glm::vec3 get_upper_bound() {
-        return _right_up_front;
-    }
-    inline glm::vec3 get_lower_bound() {
-        return _left_down_back;
-    }
 
 private:
     void loadModel(std::string path);

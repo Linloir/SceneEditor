@@ -68,8 +68,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         // 使用循环避免代码重复，如果可行的话，可以在此循环中确定法向量等信息
         for (int j = 0; j < 3; j++) {
             vertexPosition[j] = mesh->mVertices[i][j];
-            left_down_back[j] = left_down_back[j] < vertexPosition[j] ? left_down_back[j] : vertexPosition[j];
-            right_up_front[j] = right_up_front[j] > vertexPosition[j] ? right_up_front[j] : vertexPosition[j];
+            _left_down_back[j] = _left_down_back[j] < vertexPosition[j] ? _left_down_back[j] : vertexPosition[j];
+            _right_up_front[j] = _right_up_front[j] > vertexPosition[j] ? _right_up_front[j] : vertexPosition[j];
         }
 
         //vertexPosition.x = mesh->mVertices[i].x;
