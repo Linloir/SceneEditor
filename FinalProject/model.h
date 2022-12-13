@@ -19,11 +19,10 @@ private:
     std::string _directory;
     MODELSTATUS _status = LOADING;
 
-    // largest point
-    glm::vec3 right_up_front = glm::vec3(3e37f, 3e37f, 3e37f);
     // smallest point
-    glm::vec3 left_down_back = -right_up_front;
-
+    glm::vec3 left_down_back = glm::vec3(3e37f, 3e37f, 3e37f);
+    // largest point
+    glm::vec3  right_up_front = -left_down_back;
 
 public:
     Model(std::string path);

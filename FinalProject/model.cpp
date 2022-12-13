@@ -65,9 +65,16 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         glm::vec3 vertexBitangent = glm::vec3(0.0f);
         
         // Process vertex positions
-        vertexPosition.x = mesh->mVertices[i].x;
-        vertexPosition.y = mesh->mVertices[i].y;
-        vertexPosition.z = mesh->mVertices[i].z;
+        // 使用循环避免代码重复，如果可行的话，可以在此循环中确定法向量等信息
+        for (int j = 0; j < 3; j++) {
+            vertexPosition[j] = mesh->mVertices[i][j];
+            left_down_back[j] = left_down_back[j] < vertexPosition[j] ? left_down_back[j] : vertexPosition[j];
+            right_up_front[j] = right_up_front[j] > vertexPosition[j] ? right_up_front[j] : vertexPosition[j];
+        }
+
+        //vertexPosition.x = mesh->mVertices[i].x;
+        //vertexPosition.y = mesh->mVertices[i].y;
+        //vertexPosition.z = mesh->mVertices[i].z;
 
         // Process vertex normals
         if (mesh->mNormals) {
