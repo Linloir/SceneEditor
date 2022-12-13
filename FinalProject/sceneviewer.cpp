@@ -7,6 +7,7 @@
 #include "vao.h"
 #include "shader.h"
 #include "logger.h"
+#include "model.h"
 
 using std::vector;
 
@@ -39,6 +40,7 @@ void SceneViewer::resizeGL(int w, int h) {
 void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    /*
     vector<Vertex> vertices = {
         { { -0.5f, -0.5f, 0.0f } },
         { { 0.5f, -0.5f, 0.0f } },
@@ -47,11 +49,19 @@ void SceneViewer::paintGL() {
     VertexBufferObject vbo(vertices);
     VertexArrayObject vao(vbo);
     vao.setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+
     vao.enableVertexAttribute(0);
-    VertexShader vertexShader("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\FinalProject\\vertexshader.vs");
-    FragmentShader fragmentShader("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\FinalProject\\fragmentshader.fs");
+*/
+
+
+    VertexShader vertexShader("D:\\code\\ComputerGraphic\\SceneEditor\\FinalProject\\vertexshader.vs");
+    FragmentShader fragmentShader("D:\\code\\ComputerGraphic\\SceneEditor\\FinalProject\\fragmentshader.fs");
     ShaderProgram shaderProgram(vertexShader, fragmentShader);
     shaderProgram.setActive();
-    vao.bind();
+
+    Model test_model("D:\\code\\ComputerGraphic\\SceneEditor\\obj\\nanosuit/nanosuit.obj");
+    test_model.render(shaderProgram);
+    
+    //vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }

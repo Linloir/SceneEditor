@@ -1,0 +1,3 @@
+D: & cd D:\code\ComputerGraphic\SceneEditor &  git clone https://github.com/Linloir/SceneEditor.git
+
+D: & cd D:\code\ComputerGraphic\SceneEditor &  git clone https://github.com/Linloir/SceneEditor.git

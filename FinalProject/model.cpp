@@ -13,6 +13,7 @@ Model::~Model() {
     // TODO: Maybe delete all meshes?
 }
 
+// file path is ...\\...\\.obj, and processnode & processmesh have been called here
 void Model::loadModel(std::string path) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(
@@ -26,6 +27,7 @@ void Model::loadModel(std::string path) {
     _directory = path.substr(0, path.find_last_of('/'));
     
     processNode(scene->mRootNode, scene);
+    _status = LOADED;
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
