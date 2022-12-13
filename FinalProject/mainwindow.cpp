@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QHBoxLayout* horizontalLayout = new QHBoxLayout();
 	ui.centralWidget->setLayout(horizontalLayout);
 	// Create a placeholder widget on the left
-	QWidget* leftWidget = new QWidget(ui.centralWidget);
-	horizontalLayout->addWidget(leftWidget);
+	//QWidget* leftWidget = new QWidget(ui.centralWidget);
+	//horizontalLayout->addWidget(leftWidget);
 	// Add sceneviewer widget to the main window
 	SceneViewer* sceneViewer = new SceneViewer(ui.centralWidget);
 	horizontalLayout->addWidget(sceneViewer);
