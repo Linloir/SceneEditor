@@ -88,6 +88,7 @@ inline void ShaderProgram::attachShader(const Shader& shader) const {
         return;
     }
     OPENGL_EXTRA_FUNCTIONS->glAttachShader(_programId, shader.shaderId());
+    OPENGL_EXTRA_FUNCTIONS->glLinkProgram(_programId);
 }
 
 inline void ShaderProgram::bind() const {
