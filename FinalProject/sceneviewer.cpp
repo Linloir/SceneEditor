@@ -72,7 +72,7 @@ void SceneViewer::initializeGL() {
 }
 
 void SceneViewer::resizeGL(int w, int h) {
-    
+    glViewport(0, 0, w, h);
 }
 
 void SceneViewer::paintGL() {

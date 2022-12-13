@@ -52,6 +52,7 @@ inline void VertexArrayObject::unbind() const {
 }
 
 inline void VertexArrayObject::dispose() {
+    if (_id == 0) return;
     OPENGL_EXTRA_FUNCTIONS->glDeleteVertexArrays(1, &_id);
     _id = 0;
 }

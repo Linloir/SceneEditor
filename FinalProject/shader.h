@@ -103,6 +103,7 @@ inline void ShaderProgram::unbind() const {
 }
 
 inline void ShaderProgram::dispose() {
+    if (_programId == 0) return;
     OPENGL_EXTRA_FUNCTIONS->glDeleteProgram(_programId);
     _programId = 0;
 }
@@ -110,5 +111,8 @@ inline void ShaderProgram::dispose() {
 inline void ShaderProgram::ensureInitialized() {
     if (_programId == 0) {
         _programId = OPENGL_EXTRA_FUNCTIONS->glCreateProgram();
+        if (_programId == 0) {
+            Logger::error("Failed to create a ShaderProgram");
+        }
     }
 }
