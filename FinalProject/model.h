@@ -8,7 +8,7 @@
 
 #include "mesh.h"
 #include "shader.h"
-
+#include <limits>
 class Model {
 public:
     enum MODELSTATUS { LOADING, LOADED, ERR };
@@ -18,6 +18,12 @@ private:
     std::vector<Texture> _texturesLoaded;
     std::string _directory;
     MODELSTATUS _status = LOADING;
+
+    // largest point
+    glm::vec3 right_up_front = glm::vec3(3e37f, 3e37f, 3e37f);
+    // smallest point
+    glm::vec3 left_down_back = -right_up_front;
+
 
 public:
     Model(std::string path);
