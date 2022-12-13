@@ -29,8 +29,16 @@ SceneViewer::SceneViewer(QWidget* parent)
     }
     
     // Copy the shaders to the folder
+    if (QFile::exists("./temp/shaders/vertexshader.vs")) {
+        QFile::remove("./temp/shaders/vertexshader.vs");
+    }
     QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
+    QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
+        QFile::remove("./temp/shaders/fragmentshader.fs");
+    }
     QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
+    QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
 }
 
 SceneViewer::~SceneViewer() {
@@ -85,7 +93,7 @@ void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     _shaderProgram.bind();
-    
+
     for (auto object : _objects) {
         object.render(_shaderProgram);
     }
