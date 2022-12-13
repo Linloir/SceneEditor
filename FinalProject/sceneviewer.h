@@ -28,6 +28,8 @@ private:
     float _cameraMovementSpeed = 0.02f;
     float _cameraRotationSpeed = 0.3f;
     float _cameraPushSpeed = 0.02f;
+    // Rotate center
+    glm::vec3 _rotateCenter = glm::vec3(0.0f, 0.0f, 0.0f);
 
     // User Interaction flags section---------------------
     QPoint _lastMousePosition;

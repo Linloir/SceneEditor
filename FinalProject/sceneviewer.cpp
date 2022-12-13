@@ -70,9 +70,7 @@ void SceneViewer::initializeGL() {
     Renderable backpack(backpackModel);
     _objects.push_back(backpack);
     
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
-    _camera.setYaw(-90.0f);
-    _camera.setPitch(0.0f);
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -93,6 +91,8 @@ void SceneViewer::paintGL() {
     for (auto object : _objects) {
         object.render(_shaderProgram);
     }
+
+    _shaderProgram.unbind();
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {
@@ -122,8 +122,12 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
             float yoffset = _lastMousePosition.y() - event->y();    // reversed since y-coordinates go from bottom to top
             float xmovement = xoffset * _cameraMovementSpeed;
             float ymovement = yoffset * _cameraMovementSpeed;
-            Logger::debug("Camera movement: " + std::to_string(xmovement) + ", " + std::to_string(ymovement));
+            glm::vec3 cameraPrevPos = _camera.position();
             _camera.move({ -xmovement, -ymovement });
+            glm::vec3 cameraNewPos = _camera.position();
+            _rotateCenter += cameraNewPos - cameraPrevPos;
+            Logger::debug("Camera moved to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
+            Logger::debug("New center: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
             break;
         }
         case Qt::MiddleButton: {
@@ -134,8 +138,9 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
             float pitch = yoffset * _cameraRotationSpeed;
             // Calculate yaw angle
             float yaw = xoffset * _cameraRotationSpeed;
-            Logger::debug("Camera rotation: " + std::to_string(pitch) + ", " + std::to_string(yaw));
-            _camera.rotate(pitch, yaw);
+            _camera.rotate(_rotateCenter, pitch, -yaw);
+            Logger::debug("Camera rotated to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
+            Logger::debug("Center at: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
             break;
         }
         default: {
@@ -155,6 +160,10 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     float wheelOffset = event->angleDelta().y();
     Logger::debug("Wheel offset: " + std::to_string(wheelOffset));
     _camera.push(wheelOffset * _cameraPushSpeed);
+    glm::vec3 cameraFront = _camera.front();
+    _rotateCenter += wheelOffset * _cameraPushSpeed * cameraFront;
+    Logger::debug("New camera position: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
+    Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
     update();
 }
