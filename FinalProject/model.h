@@ -33,9 +33,12 @@ public:
 
 
     // maybe we can check if boundary has not been set yet
+    // Do remember to ensure you have called check_boundary
     inline glm::vec3 get_upper_bound() {
         return _right_up_front;
     }
+
+    // Do remember to ensure you have called check_boundary
     inline glm::vec3 get_lower_bound() {
         return _left_down_back;
     }
@@ -49,4 +52,7 @@ private:
 public:
     void render(const ShaderProgram& shader) const;
     void check_boundary();
+
+    // maybe we can encapsure a function to get both upper and lower bound?
+
 };
