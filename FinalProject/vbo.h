@@ -44,6 +44,7 @@ inline void VertexBufferObject::unbind() const {
 }
 
 inline void VertexBufferObject::dispose() {
+    if (_id == 0) return;
     OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
     _id = 0;
 }

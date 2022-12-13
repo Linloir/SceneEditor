@@ -44,6 +44,7 @@ inline void ElementBufferObject::unbind() const {
 }
 
 inline void ElementBufferObject::dispose() {
+    if (_id == 0) return;
     OPENGL_EXTRA_FUNCTIONS->glDeleteBuffers(1, &_id);
     _id = 0;
 }
