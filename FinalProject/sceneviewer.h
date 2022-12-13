@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "camera.h"
 #include "shader.h"
 #include "renderable.h"
 #include "vao.h"
@@ -19,6 +20,7 @@ private:
     std::vector<Renderable> _objects;
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     VertexArrayObject _vao = VertexArrayObject::empty();
+    Camera _camera;
 	
 public:
 	SceneViewer(QWidget* parent = 0);

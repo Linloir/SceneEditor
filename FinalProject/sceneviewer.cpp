@@ -51,6 +51,8 @@ void SceneViewer::initializeGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glEnable(GL_DEPTH_TEST);
+
     Logger::info("Currently running on OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
 
     _vao.ensureInitialized();
@@ -83,6 +85,10 @@ void SceneViewer::initializeGL() {
     Logger::info("Model loaded");
     Renderable renderable(backpackModel);
     _objects.push_back(backpackModel);
+    
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+    _camera.setYaw(-90.0f);
+    _camera.setPitch(0.0f);
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -93,6 +99,12 @@ void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     _shaderProgram.bind();
+
+    // Set view and projection matrices
+    glm::mat4 view = _camera.viewMatrix();
+    glm::mat4 projection = glm::perspective(glm::radians(_camera.zoom()), (float)width() / (float)height(), 0.1f, 100.0f);
+    _shaderProgram.setUniform("view", view);
+    _shaderProgram.setUniform("projection", projection);
 
     for (auto object : _objects) {
         object.render(_shaderProgram);
