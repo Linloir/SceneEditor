@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <GLM/glm.hpp>
+#include <GLM/gtc/type_ptr.hpp>
 
 #include "utils.h"
 #include "logger.h"
@@ -16,63 +17,6 @@ public:
 
     inline unsigned int shaderId() const { return _shaderId; }
     inline void dispose();
-
-    void setBool(const std::string& name, bool value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform1i(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), (int)value);
-    }
-    // ------------------------------------------------------------------------
-    void setInt(const std::string& name, int value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform1i(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), value);
-    }
-    // ------------------------------------------------------------------------
-    void setFloat(const std::string& name, float value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform1f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), value);
-    }
-    // ------------------------------------------------------------------------
-    void setVec2(const std::string& name, const glm::vec2& value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform2fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
-    }
-    void setVec2(const std::string& name, float x, float y) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform2f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y);
-    }
-    // ------------------------------------------------------------------------
-    void setVec3(const std::string& name, const glm::vec3& value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform3fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
-    }
-    void setVec3(const std::string& name, float x, float y, float z) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform3f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y, z);
-    }
-    // ------------------------------------------------------------------------
-    void setVec4(const std::string& name, const glm::vec4& value) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform4fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
-    }
-    void setVec4(const std::string& name, float x, float y, float z, float w)
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniform4f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y, z, w);
-    }
-    // ------------------------------------------------------------------------
-    void setMat2(const std::string& name, const glm::mat2& mat) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix2fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-    // ------------------------------------------------------------------------
-    void setMat3(const std::string& name, const glm::mat3& mat) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix3fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-    // ------------------------------------------------------------------------
-    void setMat4(const std::string& name, const glm::mat4& mat) const
-    {
-        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix4fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
 
 protected:
     virtual void compile(const std::string& sourceFilePath) = 0;
@@ -137,6 +81,19 @@ public:
     inline void unbind() const;
     inline void dispose();
     inline void ensureInitialized();
+
+    inline void setUniform(const std::string& name, bool value) const;
+    inline void setUniform(const std::string& name, int value) const;
+    inline void setUniform(const std::string& name, float value) const;
+    inline void setUniform(const std::string& name, const glm::vec2& value) const;
+    inline void setUniform(const std::string& name, float x, float y) const;
+    inline void setUniform(const std::string& name, const glm::vec3& value) const;
+    inline void setUniform(const std::string& name, float x, float y, float z) const;
+    inline void setUniform(const std::string& name, const glm::vec4& value) const;
+    inline void setUniform(const std::string& name, float x, float y, float z, float w) const;
+    inline void setUniform(const std::string& name, const glm::mat2& mat) const;
+    inline void setUniform(const std::string& name, const glm::mat3& mat) const;
+    inline void setUniform(const std::string& name, const glm::mat4& mat) const;
 };
 
 inline void ShaderProgram::attachShader(const Shader& shader) const {
@@ -173,4 +130,136 @@ inline void ShaderProgram::ensureInitialized() {
             Logger::error("Failed to create a ShaderProgram");
         }
     }
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, bool value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform1i(location, value);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, int value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform1i(location, value);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, float value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform1f(location, value);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::vec2& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform2f(location, value.x, value.y);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, float x, float y) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform2f(location, x, y);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::vec3& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform3f(location, value.x, value.y, value.z);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, float x, float y, float z) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform3f(location, x, y, z);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::vec4& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, float x, float y, float z, float w) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniform4f(location, x, y, z, w);
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::mat2& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::mat3& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+inline void ShaderProgram::setUniform(const std::string& name, const glm::mat4& value) const {
+    // Check if the uniform exist
+    int location = OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_programId, name.c_str());
+    if (location == -1) {
+        Logger::error("Uniform " + name + " does not exist");
+        return;
+    }
+    // Set the uniform
+    OPENGL_EXTRA_FUNCTIONS->glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
