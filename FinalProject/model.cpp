@@ -140,7 +140,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     Logger::debug("Textures vector memory usage: " + std::to_string(textures.size() * sizeof(Texture) / 1024) + " KB");
 
     Logger::debug("Mesh processed");
-    return Mesh(std::move(vertices), std::move(indices), std::move(textures));
+    return Mesh(vertices, indices, textures);
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType) {
