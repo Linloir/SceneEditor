@@ -86,11 +86,11 @@ void SceneViewer::initializeGL() {
     Renderable renderable(backpackModel);
     _objects.push_back(backpackModel);
     
-    //renderable.scale(1);
-    //renderable.rotate(glm::vec3(1, 0, 0), 2);
-    //renderable.check_boundary();
-    //auto t1 = renderable.get_lower_boundary();
-    //auto t2 = renderable.get_upper_boundary();
+    renderable.move(glm::vec3(100.0f, 0.0f, 0.0f));
+    renderable.rotate(glm::vec3(0, 1, 0), 3.1415926f/2);
+    renderable.check_boundary();
+    auto t1 = renderable.get_lower_boundary();
+    auto t2 = renderable.get_upper_boundary();
 
     _camera.setPosition(glm::vec3(0.0f, 15.0f, 8.0f));
     _camera.setYaw(-90.0f);
