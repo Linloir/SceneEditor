@@ -8,7 +8,7 @@
 
 class Camera {
 public:
-    inline glm::vec3 defaultOrigin() { return glm::vec3(1.0f, 1.0f, 1.0f); }
+    inline glm::vec3 defaultOrigin() { return glm::vec3(0.0f, 0.0f, 1.0f); }
     inline glm::vec3 defaultTarget() { return glm::vec3(0.0f, 0.0f, 0.0f); }
     
 private:
@@ -32,8 +32,11 @@ public:
     Camera(glm::vec3 position, float yaw, float pitch);
 
 public:
+    inline glm::vec3 front() const { return _front; }
     inline float zoomVal() const { return _zoom; }
     inline glm::mat4 viewMatrix();
+
+    inline glm::vec3 position() const { return _position; }
     
 public:
     inline void move(glm::vec2 offset);
@@ -44,6 +47,8 @@ public:
     inline void setYaw(float angle);
     inline void rotate(float deltaPitchAngle, float deltaYawAngle);
     inline void setRotation(float pitchAngle, float yawAngle);
+    void rotate(glm::vec3 center, float deltaPitchAngle, float deltaYawAngle);
+    void setRotation(glm::vec3 center, float pitchAngle, float yawAngle);
     inline void zoom(float deltaZoom);
     inline void setZoom(float zoom);
     inline void push(float distance);
@@ -87,7 +92,19 @@ inline void Camera::setYaw(float angle) {
 
 inline void Camera::rotate(float deltaPitchAngle, float deltaYawAngle) {
     _pitch += deltaPitchAngle;
+    if (_pitch > 89.0f) {
+        _pitch = 89.0f;
+    }
+    if (_pitch < -89.0f) {
+        _pitch = -89.0f;
+    }
     _yaw += deltaYawAngle;
+    if (_yaw > 360.0f) {
+        _yaw -= 360.0f;
+    }
+    if (_yaw < 0.0f) {
+        _yaw += 360.0f;
+    }
     updateCameraState();
 }
 
