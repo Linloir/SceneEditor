@@ -17,6 +17,63 @@ public:
     inline unsigned int shaderId() const { return _shaderId; }
     inline void dispose();
 
+    void setBool(const std::string& name, bool value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform1i(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), (int)value);
+    }
+    // ------------------------------------------------------------------------
+    void setInt(const std::string& name, int value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform1i(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), value);
+    }
+    // ------------------------------------------------------------------------
+    void setFloat(const std::string& name, float value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform1f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), value);
+    }
+    // ------------------------------------------------------------------------
+    void setVec2(const std::string& name, const glm::vec2& value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform2fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
+    }
+    void setVec2(const std::string& name, float x, float y) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform2f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y);
+    }
+    // ------------------------------------------------------------------------
+    void setVec3(const std::string& name, const glm::vec3& value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform3fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
+    }
+    void setVec3(const std::string& name, float x, float y, float z) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform3f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y, z);
+    }
+    // ------------------------------------------------------------------------
+    void setVec4(const std::string& name, const glm::vec4& value) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform4fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, &value[0]);
+    }
+    void setVec4(const std::string& name, float x, float y, float z, float w)
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniform4f(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), x, y, z, w);
+    }
+    // ------------------------------------------------------------------------
+    void setMat2(const std::string& name, const glm::mat2& mat) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix2fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat3(const std::string& name, const glm::mat3& mat) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix3fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat4(const std::string& name, const glm::mat4& mat) const
+    {
+        OPENGL_EXTRA_FUNCTIONS->glUniformMatrix4fv(OPENGL_EXTRA_FUNCTIONS->glGetUniformLocation(_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+
 protected:
     virtual void compile(const std::string& sourceFilePath) = 0;
 };
