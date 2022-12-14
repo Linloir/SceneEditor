@@ -25,6 +25,9 @@ Texture::Texture(TextureType type, std::string path) {
     OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    // Set stbi to reverse the y-axis
+    stbi_set_flip_vertically_on_load(true);
+
     // Load image, create texture and generate mipmaps
     int width, height, nrChannels;
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
