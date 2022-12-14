@@ -147,6 +147,9 @@
     <ClInclude Include="logger.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="skybox.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="sceneviewer.h">
