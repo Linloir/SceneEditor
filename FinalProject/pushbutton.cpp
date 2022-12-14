@@ -68,13 +68,13 @@ void PushButton::initializeUI() {
 
 void PushButton::generateColor(QColor colorScheme) {
     _backgroundColor = colorScheme.lighter(120);
-    _backgroundColor.setAlpha(10);
+    _backgroundColor.setAlpha(5);
     _hoverColor = colorScheme.lighter(120);
-    _hoverColor.setAlpha(30);
+    _hoverColor.setAlpha(40);
     _pressedColor = colorScheme.lighter(120);
-    _pressedColor.setAlpha(35);
+    _pressedColor.setAlpha(50);
     _selectedColor = colorScheme.lighter(120);
-    _selectedColor.setAlpha(20);
+    _selectedColor.setAlpha(35);
     _indicatorColor = colorScheme;
 }
 
@@ -420,7 +420,7 @@ void PushButton::select() {
     // First shrink then length the indicator, also fade in
     QSequentialAnimationGroup* indicatorSelectAnimation = new QSequentialAnimationGroup(this);
     QParallelAnimationGroup* indicatorShrinkAnimation = new QParallelAnimationGroup(this);
-    QPropertyAnimation* indicatorFadeIn = new QPropertyAnimation(_indicator, "opacity", this);
+    QPropertyAnimation* indicatorFadeIn = new QPropertyAnimation(_indicatorEffect, "opacity", this);
     QPropertyAnimation* indicatorShrinkLength = new QPropertyAnimation(_indicator, "geometry", this);
     QPropertyAnimation* indicatorGrowLength = new QPropertyAnimation(_indicator, "geometry", this);
     indicatorFadeIn->setDuration(100);
@@ -540,7 +540,7 @@ void PushButton::deselect() {
 
         // Cursor is currently not in the button, shrink and fade out the indicator
         QParallelAnimationGroup* indicatorDeselectAnimation = new QParallelAnimationGroup(this);
-        QPropertyAnimation* indicatorFadeOut = new QPropertyAnimation(_indicator, "opacity", this);
+        QPropertyAnimation* indicatorFadeOut = new QPropertyAnimation(_indicatorEffect, "opacity", this);
         QPropertyAnimation* indicatorShrinkLength = new QPropertyAnimation(_indicator, "geometry", this);
         indicatorFadeOut->setDuration(100);
         indicatorFadeOut->setEasingCurve(QEasingCurve::OutQuad);
