@@ -12,6 +12,7 @@
 #include "renderable.h"
 #include "vao.h"
 #include "utils.h"
+#include "lightCaster.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -21,6 +22,8 @@ private:
     // OpenGL section-------------------------------------
     // List of objects currently in the scene
     std::vector<Renderable> _objects;
+    // List of light casters in the scene
+    std::vector<LightCaster> _casters;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     // Main camera

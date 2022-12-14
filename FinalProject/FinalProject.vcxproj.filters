@@ -100,6 +100,9 @@
     <ClCompile Include="logger.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="lightCaster.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -148,6 +151,9 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="lightCaster.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>
