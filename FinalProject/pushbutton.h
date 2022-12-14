@@ -26,14 +26,14 @@ private:
     // Button Layout
     QWidget* _childWidget;
     QHBoxLayout* _stretchLayout;
-    QMargins _contentMargin = QMargins(10, 10, 10, 10);
+    QMargins _contentMargin = QMargins(12, 12, 12, 12);
 
     // Button ui
-    int _radius = 5;
+    int _radius = 8;
     
     QWidget* _backgroundWidget;
-    const QColor _defaultColorScheme = QColor(255, 255, 255);
-    QColor _backgroundColor = QColor(255, 255, 255, 0);
+    const QColor _defaultColorScheme = QColor(58, 143, 183);
+    QColor _backgroundColor;
     QColor _hoverColor;
     QColor _pressedColor;
     QColor _selectedColor;
@@ -45,7 +45,7 @@ private:
     const float _activatedLengthRatio = 0.4;
     const float _hoveredLengthRatio = 0.5;
     const float _pressedLengthRatio = 0.2;
-    QColor _indicatorColor = QColor(0, 0, 0, 0);
+    QColor _indicatorColor;
     QGraphicsOpacityEffect* _indicatorEffect;
 
     // Button state
@@ -81,6 +81,8 @@ public:
     void setIndicatorColor(QColor color);
     void setColorScheme(QColor primaryColor);
     
+    QHBoxLayout* mainLayout() const;
+    void setAlignment(Qt::Alignment alignment);
     void setMargin(QMargins margin);
     void setMargin(int left, int top, int right, int bottom);
 
@@ -89,6 +91,10 @@ public:
     QWidget* childWidget();
     void setChildWidget(QWidget* widget);
 
+    bool isSelected() const;
+
 signals:
     void onClick();
+    void onHover();
+    void onPressed();
 };

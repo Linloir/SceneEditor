@@ -16,18 +16,22 @@ PushButton::~PushButton()
 }
 
 void PushButton::initializeUI() {
+    generateColor(_defaultColorScheme);
+    
     // Add margin for the child widget
     _stretchLayout = new QHBoxLayout(this);
     _stretchLayout->setContentsMargins(_contentMargin);
     _stretchLayout->setSpacing(0);
+    _stretchLayout->setAlignment(Qt::AlignCenter);
     _stretchLayout->addWidget(_childWidget);
     setLayout(_stretchLayout);
+    _childWidget->show();
     
     // Initialize background widget
     _backgroundWidget = new QWidget(this);
     _backgroundWidget->resize(size());
     _backgroundWidget->setObjectName("backgroundWidget");
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     _backgroundWidget->lower();
     _backgroundWidget->show();
 
@@ -52,7 +56,7 @@ void PushButton::initializeUI() {
             break;
     }
     _indicator->setObjectName("indicator");
-    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name() + ";"
+    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name(QColor::HexArgb) + ";"
         "border-radius:" + QString::number((float)_indicatorWidth / 2) + "px;}");
     _indicatorEffect = new QGraphicsOpacityEffect(_indicator);
     _indicatorEffect->setOpacity(0);
@@ -63,17 +67,21 @@ void PushButton::initializeUI() {
 }
 
 void PushButton::generateColor(QColor colorScheme) {
+    _backgroundColor = colorScheme.lighter(120);
+    _backgroundColor.setAlpha(10);
     _hoverColor = colorScheme.lighter(120);
-    _hoverColor.setAlpha(50);
-    _pressedColor = colorScheme;
-    _pressedColor.setAlpha(100);
+    _hoverColor.setAlpha(30);
+    _pressedColor = colorScheme.lighter(120);
+    _pressedColor.setAlpha(35);
     _selectedColor = colorScheme.lighter(120);
     _selectedColor.setAlpha(20);
     _indicatorColor = colorScheme;
 }
 
 void PushButton::enterEvent(QEnterEvent* event) {
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    setCursor(Qt::PointingHandCursor);
+
+    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     
     QParallelAnimationGroup* indicatorEnterAnimation = new QParallelAnimationGroup(this);
     QPropertyAnimation* indicatorGrowLength = new QPropertyAnimation(_indicator, "geometry", this);
@@ -124,11 +132,19 @@ void PushButton::enterEvent(QEnterEvent* event) {
     indicatorEnterAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
     _hovered = true;
+    emit onHover();
 }
 
 void PushButton::leaveEvent(QEvent* event) {
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    setCursor(Qt::ArrowCursor);
 
+    if (_selected) {
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+    }
+    else {
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+    }
+    
     QParallelAnimationGroup* indicatorLeaveAnimation = new QParallelAnimationGroup(this);
     QPropertyAnimation* indicatorShrinkLength = new QPropertyAnimation(_indicator, "geometry", this);
     QPropertyAnimation* indicatorFadeOut = new QPropertyAnimation(_indicatorEffect, "opacity", this);
@@ -182,7 +198,7 @@ void PushButton::leaveEvent(QEvent* event) {
 }
 
 void PushButton::mousePressEvent(QMouseEvent* event) {
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     
     QPropertyAnimation* indicatorShrinkLength = new QPropertyAnimation(_indicator, "geometry", this);
     indicatorShrinkLength->setDuration(100);
@@ -225,6 +241,7 @@ void PushButton::mousePressEvent(QMouseEvent* event) {
     indicatorShrinkLength->start(QAbstractAnimation::DeleteWhenStopped);
 
     _pressed = true;
+    emit onPressed();
 }
 
 void PushButton::mouseReleaseEvent(QMouseEvent* event) {
@@ -232,7 +249,7 @@ void PushButton::mouseReleaseEvent(QMouseEvent* event) {
         return;
     }
     
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
 
     QPropertyAnimation* indicatorGrowLength = new QPropertyAnimation(_indicator, "geometry", this);
     indicatorGrowLength->setDuration(100);
@@ -390,7 +407,15 @@ void PushButton::resizeEvent(QResizeEvent* event) {
 }
 
 void PushButton::select() {
-    _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+    if (_pressed) {
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+    }
+    else if (_hovered) {
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+    }
+    else {
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+    }
     
     // First shrink then length the indicator, also fade in
     QSequentialAnimationGroup* indicatorSelectAnimation = new QSequentialAnimationGroup(this);
@@ -505,13 +530,13 @@ void PushButton::deselect() {
     }
     
     if (_pressed) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
     else if (_hovered) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
     else {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
 
         // Cursor is currently not in the button, shrink and fade out the indicator
         QParallelAnimationGroup* indicatorDeselectAnimation = new QParallelAnimationGroup(this);
@@ -581,53 +606,61 @@ void PushButton::setRadius(int radius) {
 void PushButton::setBackgroundColor(QColor color) {
     _backgroundColor = color;
     if (!_selected && !_hovered && !_pressed) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
 }
 
 void PushButton::setHoverColor(QColor color) {
     _hoverColor = color;
     if (_hovered && !_pressed) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
 }
 
 void PushButton::setPressedColor(QColor color) {
     _pressedColor = color;
     if (_pressed) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
 }
 
 void PushButton::setSelectedColor(QColor color) {
     _selectedColor = color;
     if (_selected && !_pressed && !_hovered) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
 }
 
 void PushButton::setIndicatorColor(QColor color) {
     _indicatorColor = color;
-    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name() + ";"
+    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name(QColor::HexArgb) + ";"
         "border-radius:" + QString::number((float)_indicatorWidth / 2) + "px;}");
 }
 
 void PushButton::setColorScheme(QColor color) {
     generateColor(color);
     if (_pressed) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
     else if (_hovered) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
     else if (_selected) {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
     else {
-        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_radius) + "px;}");
+        _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     }
-    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name() + ";"
+    _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name(QColor::HexArgb) + ";"
         "border-radius:" + QString::number((float)_indicatorWidth / 2) + "px;}");
+}
+
+QHBoxLayout* PushButton::mainLayout() const {
+    return _stretchLayout;
+}
+
+void PushButton::setAlignment(Qt::Alignment alignment) {
+    _stretchLayout->setAlignment(alignment);
 }
 
 void PushButton::setMargin(QMargins margin) {
@@ -758,4 +791,9 @@ void PushButton::setChildWidget(QWidget* widget) {
         _stretchLayout->removeItem(_stretchLayout->itemAt(i));
     }
     _stretchLayout->addWidget(_childWidget);
+    _childWidget->show();
+}
+
+bool PushButton::isSelected() const {
+    return _selected;
 }
