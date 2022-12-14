@@ -12,6 +12,9 @@ private:
     glm::vec3 _position = glm::vec3(0.0f);
     glm::mat4 _rotation = glm::mat4(1.0f);
     glm::vec3 _scale = glm::vec3(1.0f);
+    // 下面是与坐标轴平行的顶点
+    glm::vec3 _lower_bound;
+    glm::vec3 _upper_bound;
 
 public:
     Renderable(Model* model);
@@ -27,14 +30,28 @@ public:
 
     inline glm::mat4 modelMatrix() const;
 
+    inline glm::vec3 get_upper_boundary()const;
+    inline glm::vec3 get_lower_boundary()const;
+
 public:
     void render(ShaderProgram shader);
+    // check here to get global boundary
+    void check_boundary();
 };
 
 inline glm::mat4 Renderable::modelMatrix() const {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, _position);
-    model = model * _rotation;
+    // 左乘与右乘应该是不一样的，但是这里的表现相同
+    //model = model * _rotation;
+    model = _rotation * model;
     model = glm::scale(model, _scale);
     return model;
+}
+
+inline glm::vec3 Renderable::get_lower_boundary()const {
+    return _lower_bound;
+}
+inline glm::vec3 Renderable::get_upper_boundary()const {
+    return _upper_bound;
 }
