@@ -114,6 +114,7 @@
     <ClCompile Include="renderable.cpp" />
     <ClCompile Include="sceneviewer.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />

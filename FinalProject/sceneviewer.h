@@ -12,6 +12,7 @@
 #include "renderable.h"
 #include "vao.h"
 #include "utils.h"
+#include "skybox.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -23,6 +24,8 @@ private:
     std::vector<Renderable> _objects;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
+    ShaderProgram skyShader = ShaderProgram::empty();
+    skybox* sky;
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;

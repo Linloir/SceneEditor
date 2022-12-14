@@ -11,6 +11,7 @@
 #include "shader.h"
 #include "logger.h"
 #include "model.h"
+#include "skybox.h"
 
 using std::vector;
 
@@ -65,10 +66,22 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
+    skyShader.ensureInitialized();
+
+    VertexShader vertexShader_sky("./temp/shaders/skyboxShader.vs");
+    FragmentShader fragmentShader_sky("./temp/shaders/skyboxShader.fs");
+    skyShader.attachShader(vertexShader_sky);
+    skyShader.attachShader(fragmentShader_sky);
+    vertexShader_sky.dispose();
+    fragmentShader_sky.dispose();
+
+
     Model* backpackModel = new Model("D:\\ProgrammingFile\\SceneEditor\\Models\\backpack\\backpack.obj");
     Logger::info("Model loaded");
     Renderable backpack(backpackModel);
     _objects.push_back(backpack);
+
+    sky = new skybox("D:/ProgrammingFile/SceneEditor/skybox");
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
@@ -93,6 +106,13 @@ void SceneViewer::paintGL() {
     }
 
     _shaderProgram.unbind();
+
+    skyShader.bind();
+    view = glm::mat4(glm::mat3(view));
+    skyShader.setUniform("view", view);
+    skyShader.setUniform("projection", projection);
+    sky->render();
+    skyShader.unbind();
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {
