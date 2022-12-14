@@ -11,8 +11,8 @@ skybox::skybox(std::string path){
     faces.clear();
     faces.push_back(path + "/right.jpg");
     faces.push_back(path + "/left.jpg");
-    faces.push_back(path + "/top.jpg");
     faces.push_back(path + "/bottom.jpg");
+    faces.push_back(path + "/top.jpg");
     faces.push_back(path + "/front.jpg");
     faces.push_back(path + "/back.jpg");
 
@@ -43,6 +43,7 @@ unsigned int skybox::loadCubemap(std::vector<std::string> faces)
     unsigned int textureID;
     OPENGL_FUNCTIONS->glGenTextures(1, &textureID);
     OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    stbi_set_flip_vertically_on_load(true);
 
     int width, height, nrChannels;
     for (unsigned int i = 0; i < faces.size(); i++)
