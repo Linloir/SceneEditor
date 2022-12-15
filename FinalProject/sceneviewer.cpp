@@ -75,6 +75,13 @@ void SceneViewer::initializeGL() {
     vertexShader_sky.dispose();
     fragmentShader_sky.dispose();
 
+    VertexShader vertexShader_ter("./temp/shaders/terrainShader.vs");
+    FragmentShader fragmentShader_ter("./temp/shaders/terrainShader.fs");
+    terrainShader.attachShader(vertexShader_ter);
+    terrainShader.attachShader(fragmentShader_ter);
+    vertexShader_ter.dispose();
+    fragmentShader_ter.dispose();
+
 
     Model* backpackModel = new Model("D:\\ProgrammingFile\\SceneEditor\\Models\\backpack\\backpack.obj");
     Logger::info("Model loaded");
@@ -82,6 +89,8 @@ void SceneViewer::initializeGL() {
     _objects.push_back(backpack);
 
     sky = new skybox("D:/ProgrammingFile/SceneEditor/skybox");
+
+    ter = new Terrain();
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
@@ -98,21 +107,36 @@ void SceneViewer::paintGL() {
     // Set view and projection matrices
     glm::mat4 view = _camera.viewMatrix();
     glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
-    _shaderProgram.setUniform("view", view);
+    /*_shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
 
     for (auto object : _objects) {
         object.render(_shaderProgram);
-    }
+    }*/
 
     _shaderProgram.unbind();
 
-    skyShader.bind();
+    terrainShader.bind();
+    glm::mat4 Model = glm::mat4(1.0f);
+    Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, -2.0f));
+    terrainShader.setUniform("view", view);
+    terrainShader.setUniform("projection", projection);
+    terrainShader.setUniform("model", Model);
+    terrainShader.setUniform("dep", 0);
+    terrainShader.setUniform("tex1", 1);
+    terrainShader.setUniform("tex2", 2);
+    ter->render();
+    terrainShader.unbind();
+
+
+    /*skyShader.bind();
     view = glm::mat4(glm::mat3(view));
     skyShader.setUniform("view", view);
     skyShader.setUniform("projection", projection);
     sky->render();
-    skyShader.unbind();
+    skyShader.unbind();*/
+
+
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {

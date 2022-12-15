@@ -13,6 +13,7 @@
 #include "vao.h"
 #include "utils.h"
 #include "skybox.h"
+#include "terrain.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -25,7 +26,10 @@ private:
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     ShaderProgram skyShader = ShaderProgram::empty();
+    ShaderProgram terrainShader = ShaderProgram::empty();
     skybox* sky;
+    Terrain* ter;
+
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;

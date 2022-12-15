@@ -115,6 +115,7 @@
     <ClCompile Include="sceneviewer.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="terrain.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="skybox.h" />
+    <ClInclude Include="terrain.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vbo.h" />
