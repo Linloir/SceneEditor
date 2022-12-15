@@ -23,7 +23,7 @@ private:
     // List of objects currently in the scene
     std::vector<Renderable> _objects;
     // List of light casters in the scene
-    std::vector<LightCaster> _casters;
+    std::vector<Illuminant> _illuminants;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     // Main camera

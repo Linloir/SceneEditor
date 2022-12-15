@@ -14,6 +14,14 @@
 
 using std::vector;
 
+void copyFile(std::string name) {
+    if (QFile::exists(("./temp/shaders/" + name).c_str())) {
+        QFile::remove(("./temp/shaders/" + name).c_str());
+    }
+    QFile::copy((":/shaders/" + name).c_str(), ("./temp/shaders/" + name).c_str());
+    QFile::setPermissions(("./temp/shaders/" + name).c_str(), QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+}
+
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
@@ -29,16 +37,24 @@ SceneViewer::SceneViewer(QWidget* parent)
     }
     
     // Copy the shaders to the folder
-    if (QFile::exists("./temp/shaders/vertexshader.vs")) {
-        QFile::remove("./temp/shaders/vertexshader.vs");
-    }
-    QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
-    QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
-        QFile::remove("./temp/shaders/fragmentshader.fs");
-    }
-    QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
-    QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
+    //if (QFile::exists("./temp/shaders/vertexshader.vs")) {
+    //    QFile::remove("./temp/shaders/vertexshader.vs");
+    //}
+    //QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
+    //QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    //
+    //if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
+    //    QFile::remove("./temp/shaders/fragmentshader.fs");
+    //}
+    //QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
+    //QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
+
+    copyFile("vertexshader.vs");
+    copyFile("fragmentshader.fs");
+    //copyFile("illuminant.vs");
+    //copyFile("illuminant.fs");
+
+
 }
 
 SceneViewer::~SceneViewer() {
@@ -52,7 +68,7 @@ void SceneViewer::initializeGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
-
+    glEnable(GL_FRAMEBUFFER_SRGB);
     Logger::info("Currently running on OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
 
     _shaderProgram.ensureInitialized();
@@ -65,7 +81,7 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    Model* backpackModel = new Model("D:\\code\\ComputerGraphic\\nanosuit\\nanosuit.obj");
+    Model* backpackModel = new Model("D:\\code\\ComputerGraphic\\backpack\\backpack.obj");
     Logger::info("Model loaded");
     Renderable backpack(backpackModel);
     _objects.push_back(backpack);
@@ -175,9 +191,35 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     update();
 }
 
+double rr = 1.0;
 void SceneViewer::update_light() {
-    auto r = time(NULL);
-    Logger::debug("1\n");
+    // 对于发光体，
+    //model is in Illuminate
+    // view is from camera
+    // projection is from caller
+    
+    rr += time(NULL) / 1000000000.0;
+    rr = (long long)rr % 10000;
+    double r = rr / 100;
+
     _shaderProgram.setUniform("lightPos", (float)sin(r), (float)sin(r/4), (float)sin(r/2.1));
-    _shaderProgram.setUniform("lightColor", 1.0f, 1.0f, 1.0f);
+    _shaderProgram.setUniform("lightColor", 0.8+0.2*(float)sin(r), 0.8 + 0.2 * (float)sin(r / 3), 0.8 + 0.2 * (float)sin(r / 2.1));
+
+    _shaderProgram.setUniform("viewPos", _camera.position());
+    // 要给着色器传递viewPos
+    
+    
+    //// 下面换成渲染发光体的shaderprogram
+    //ShaderProgram illuminantShader = ShaderProgram::empty();
+
+
+    //illuminantShader.ensureInitialized();
+    //Logger::info("Shader Program initialized");
+
+    //VertexShader vertexShader("./temp/shaders/illuminant.vs");
+    //FragmentShader fragmentShader("./temp/shaders/illuminant.fs");
+    //_shaderProgram.attachShader(vertexShader);
+    //_shaderProgram.attachShader(fragmentShader);
+    //vertexShader.dispose();
+    //fragmentShader.dispose();
 }
