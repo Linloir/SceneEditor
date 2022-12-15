@@ -87,6 +87,13 @@ void SceneViewer::paintGL() {
     glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
+    
+
+    ///////////////////////////////////////最终不应该放在这里
+    _shaderProgram.setUniform("lightColor", 0.0f, 1.0f, 0.0f);
+    //////////////////////////////////////
+
+
 
     for (auto object : _objects) {
         object.render(_shaderProgram);
