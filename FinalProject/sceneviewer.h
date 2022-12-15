@@ -41,6 +41,7 @@ private:
 public:
 	SceneViewer(QWidget* parent = 0);
 	~SceneViewer();
+    void update_light();
 
 protected:
     // OpenGL functions

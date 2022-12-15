@@ -5,7 +5,7 @@
 #include <qresource.h>
 #include <qurl.h>
 #include <qdir.h>
-
+#include<time.h>
 #include "vbo.h"
 #include "vao.h"
 #include "shader.h"
@@ -89,8 +89,8 @@ void SceneViewer::paintGL() {
     _shaderProgram.setUniform("projection", projection);
     
 
-    ///////////////////////////////////////最终不应该放在这里
-    _shaderProgram.setUniform("lightColor", 0.0f, 1.0f, 0.0f);
+    ///////////////////////////////////////进行光照处理
+    update_light();
     //////////////////////////////////////
 
 
@@ -173,4 +173,11 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
     update();
+}
+
+void SceneViewer::update_light() {
+    auto r = time(NULL);
+    Logger::debug("1\n");
+    _shaderProgram.setUniform("lightPos", (float)sin(r), (float)sin(r/4), (float)sin(r/2.1));
+    _shaderProgram.setUniform("lightColor", 1.0f, 1.0f, 1.0f);
 }
