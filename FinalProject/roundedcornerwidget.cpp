@@ -22,6 +22,10 @@ void RoundedCornerWidget::showEvent(QShowEvent* event) {
     // Call parent show event
     QWidget::showEvent(event);
 
+    if (_initialized) {
+        return;
+    }
+
     // Initialize widget UI
     initializeWidgetUI();
 
