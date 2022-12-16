@@ -65,6 +65,7 @@ void PushButton::initializeUI() {
     _indicatorEffect = new QGraphicsOpacityEffect(_indicator);
     _indicatorEffect->setOpacity(0);
     _indicator->setGraphicsEffect(_indicatorEffect);
+    _indicator->show();
 
     // Enable mouse tracking
     setMouseTracking(true);
@@ -72,7 +73,7 @@ void PushButton::initializeUI() {
 
 void PushButton::generateColor(QColor colorScheme) {
     _backgroundColor = colorScheme.lighter(120);
-    _backgroundColor.setAlpha(5);
+    _backgroundColor.setAlpha(0);
     _hoverColor = colorScheme.lighter(120);
     _hoverColor.setAlpha(40);
     _pressedColor = colorScheme.lighter(120);
