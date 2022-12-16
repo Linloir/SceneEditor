@@ -4,7 +4,6 @@
 #include <qevent.h>
 #include <qopenglfunctions.h>
 #include <QtOpenGLWidgets/qopenglwidget.h>
-
 #include <vector>
 
 #include "camera.h"
@@ -13,6 +12,10 @@
 #include "vao.h"
 #include "utils.h"
 #include "lightCaster.h"
+#include "vbo.h"
+#include "logger.h"
+#include "model.h"
+
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {

@@ -13,6 +13,9 @@ private:
     std::vector<unsigned int> _indices;
     std::vector<Texture> _textures;
 
+    // we can control shininess in mesh
+    float _shininess = 64.0f;
+
     VertexArrayObject _vao = VertexArrayObject::empty();
 
 public:
@@ -23,6 +26,8 @@ public:
     inline std::vector<Vertex> vertices() const { return _vertices; }
     inline std::vector<unsigned int> indices() const { return _indices; }
     inline std::vector<Texture> textures() const { return _textures; }
+    inline float shininess() { return _shininess; }
+    inline void setShininess(float shininess) { _shininess = shininess; }
 
     inline VertexArrayObject vao() const { return _vao; }
 

@@ -6,12 +6,8 @@
 #include <qurl.h>
 #include <qdir.h>
 #include<time.h>
-#include "vbo.h"
-#include "vao.h"
-#include "shader.h"
-#include "logger.h"
-#include "model.h"
 
+#include "lightCaster.h"
 using std::vector;
 
 void copyFile(std::string name) {
@@ -25,6 +21,7 @@ void copyFile(std::string name) {
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
+    _illuminants.push_back(Illuminant());
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setVersion(4, 3);
@@ -191,35 +188,18 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     update();
 }
 
-double rr = 1.0;
+
 void SceneViewer::update_light() {
     // 对于发光体，
     //model is in Illuminate
     // view is from camera
     // projection is from caller
     
-    rr += time(NULL) / 1000000000.0;
-    rr = (long long)rr % 10000;
-    double r = rr / 100;
 
-    _shaderProgram.setUniform("lightPos", (float)sin(r), (float)sin(r/4), (float)sin(r/2.1));
-    _shaderProgram.setUniform("lightColor", 0.8+0.2*(float)sin(r), 0.8 + 0.2 * (float)sin(r / 3), 0.8 + 0.2 * (float)sin(r / 2.1));
+    _shaderProgram.setUniform("lightPos",_illuminants[0].position());
+    _shaderProgram.setUniform("lightColor", _illuminants[0].color());
 
     _shaderProgram.setUniform("viewPos", _camera.position());
     // 要给着色器传递viewPos
-    
-    
-    //// 下面换成渲染发光体的shaderprogram
-    //ShaderProgram illuminantShader = ShaderProgram::empty();
 
-
-    //illuminantShader.ensureInitialized();
-    //Logger::info("Shader Program initialized");
-
-    //VertexShader vertexShader("./temp/shaders/illuminant.vs");
-    //FragmentShader fragmentShader("./temp/shaders/illuminant.fs");
-    //_shaderProgram.attachShader(vertexShader);
-    //_shaderProgram.attachShader(fragmentShader);
-    //vertexShader.dispose();
-    //fragmentShader.dispose();
 }
