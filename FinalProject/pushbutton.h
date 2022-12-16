@@ -19,12 +19,14 @@ public:
     };
         
 public:
-    PushButton(QWidget* child, QWidget* parent = 0);
+    PushButton(QWidget* child, QWidget* parent);
     ~PushButton();
 
 private:
     // Button Layout
     QWidget* _childWidget;
+    QRect _childWidgetOriginalGeometry;
+    const float _childWidgetShrinkRatio = 0.9;
     QHBoxLayout* _stretchLayout;
     QMargins _contentMargin = QMargins(12, 12, 12, 12);
 

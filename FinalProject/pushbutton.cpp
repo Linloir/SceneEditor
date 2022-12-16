@@ -23,9 +23,13 @@ void PushButton::initializeUI() {
     _stretchLayout->setContentsMargins(_contentMargin);
     _stretchLayout->setSpacing(0);
     _stretchLayout->setAlignment(Qt::AlignCenter);
-    _stretchLayout->addWidget(_childWidget);
     setLayout(_stretchLayout);
-    _childWidget->show();
+    if (_childWidget) {
+        // prevent adding a null widget
+        _stretchLayout->addWidget(_childWidget);
+        _childWidget->show();
+        _childWidgetOriginalGeometry = _childWidget->geometry();
+    }
     
     // Initialize background widget
     _backgroundWidget = new QWidget(this);
@@ -241,6 +245,7 @@ void PushButton::mousePressEvent(QMouseEvent* event) {
     indicatorShrinkLength->start(QAbstractAnimation::DeleteWhenStopped);
 
     _pressed = true;
+    
     emit onPressed();
 }
 
@@ -291,9 +296,12 @@ void PushButton::mouseReleaseEvent(QMouseEvent* event) {
     }
     indicatorGrowLength->start(QAbstractAnimation::DeleteWhenStopped);
 
-    _pressed = false;
+    if (_pressed) {
+        // prevent double trigger if mouse is first left and then released
+        emit onClick();
+    }
 
-    emit onClick();
+    _pressed = false;
 }
 
 void PushButton::resizeEvent(QResizeEvent* event) {
@@ -790,8 +798,11 @@ void PushButton::setChildWidget(QWidget* widget) {
     for (int i = 0; i < _stretchLayout->count(); i++) {
         _stretchLayout->removeItem(_stretchLayout->itemAt(i));
     }
-    _stretchLayout->addWidget(_childWidget);
-    _childWidget->show();
+    if (_childWidget != nullptr) {
+        _stretchLayout->addWidget(_childWidget);
+        _childWidget->show();
+        _childWidgetOriginalGeometry = _childWidget->geometry();
+    }
 }
 
 bool PushButton::isSelected() const {
