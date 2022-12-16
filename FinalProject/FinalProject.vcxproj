@@ -108,6 +108,7 @@
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="editorpage.cpp" />
     <ClCompile Include="framelesswindow.cpp" />
+    <ClCompile Include="lineeditwidget.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
@@ -135,10 +136,11 @@
     <QtMoc Include="sceneviewer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="aboutpage.h" />
+    <QtMoc Include="aboutpage.h" />
     <ClInclude Include="camera.h" />
     <QtMoc Include="editorpage.h" />
     <QtMoc Include="framelesswindow.h" />
+    <QtMoc Include="lineeditwidget.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />

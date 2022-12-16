@@ -29,11 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
         if (previousPage != nullptr) {
             previousPage->offStage();
-            return;
         }
         if (currentPage != nullptr) {
             currentPage->onStage();
-            return;
         }
     });
     _sideBar->setMouseTracking(true);
@@ -45,8 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
     // Create editor page and connect to side bar
     _editorPage = new EditorPage(_placeHolderWidget);
     _editorPage->setMouseTracking(true);
-    _editorPage->show();
     _sideBar->addPage(_editorPage);
+
+    // Create about page and connect to side bar
+    _aboutPage = new AboutPage(_placeHolderWidget);
+    _aboutPage->setMouseTracking(true);
+    _sideBar->addPage(_aboutPage);
 }
 
 MainWindow::~MainWindow() {
@@ -63,6 +65,7 @@ void MainWindow::resizePages(QResizeEvent* event) {
 
     // Resize the editor page
     _editorPage->resize(size);
+    _aboutPage->resize(size);
 }
 
 void MainWindow::showEvent(QShowEvent* event) {
@@ -71,6 +74,7 @@ void MainWindow::showEvent(QShowEvent* event) {
 
     // Resize all the pages based on the placeholder widget
     _editorPage->resize(_placeHolderWidget->size());
+    _aboutPage->resize(_placeHolderWidget->size());
 }
 
 bool MainWindow::eventFilter(QObject* object, QEvent* event) {

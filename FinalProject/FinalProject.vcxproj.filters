@@ -141,6 +141,9 @@
     <ClCompile Include="aboutpage.cpp">
       <Filter>Source Files\Qt Widgets\Pages\About Page</Filter>
     </ClCompile>
+    <ClCompile Include="lineeditwidget.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -191,9 +194,6 @@
     <ClInclude Include="scrolllist.h">
       <Filter>Header Files\Qt Widgets\GUI Components</Filter>
     </ClInclude>
-    <ClInclude Include="aboutpage.h">
-      <Filter>Header Files\Qt Widgets\Pages\About Page</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -218,6 +218,12 @@
       <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
     </QtMoc>
     <QtMoc Include="roundedcornerwidget.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </QtMoc>
+    <QtMoc Include="aboutpage.h">
+      <Filter>Header Files\Qt Widgets\Pages\About Page</Filter>
+    </QtMoc>
+    <QtMoc Include="lineeditwidget.h">
       <Filter>Header Files\Qt Widgets\GUI Components</Filter>
     </QtMoc>
   </ItemGroup>

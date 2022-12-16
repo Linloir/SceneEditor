@@ -5,6 +5,7 @@
 #include "framelesswindow.h"
 #include "sidebar.h"
 #include "editorpage.h"
+#include "aboutpage.h"
 
 class MainWindow : public FramelessWindow
 {
@@ -21,6 +22,7 @@ private:
     // Side bar and corresponding pages
     SideBar* _sideBar = nullptr;
     EditorPage* _editorPage = nullptr;
+    AboutPage* _aboutPage = nullptr;
 
     // Place holder widget for resizing pages
     QWidget* _placeHolderWidget = nullptr;

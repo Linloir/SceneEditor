@@ -82,7 +82,7 @@ PushButton* EditorPage::getPageTextButton(QWidget* context) {
     _textButtonWidget = new QWidget(_textButton);
     _textButtonLayout = new QHBoxLayout(_textButtonWidget);
     _textButtonLayout->setContentsMargins(0, 0, 0, 0);
-    _textButtonLayout->setSpacing(8);
+    _textButtonLayout->setSpacing(12);
     _textButtonWidget->setLayout(_textButtonLayout);
 
     // Generate text button contents
