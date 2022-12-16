@@ -45,6 +45,9 @@ public:
 	SceneViewer(QWidget* parent = 0);
 	~SceneViewer();
     void update_light();
+    void addDirLight(glm::vec3 direction, glm::vec3 color);
+    void addPointLight(glm::vec3 position, glm::vec3 color);
+    void addSpotLight(glm::vec3 direction,glm::vec3 position, glm::vec3 color);
 
 protected:
     // OpenGL functions

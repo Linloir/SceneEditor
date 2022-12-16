@@ -14,7 +14,7 @@ private:
     std::vector<Texture> _textures;
 
     // we can control shininess in mesh
-    float _shininess = 64.0f;
+    float _shininess = 32.0f;
 
     VertexArrayObject _vao = VertexArrayObject::empty();
 

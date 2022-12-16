@@ -22,6 +22,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Texture>& text
 void Mesh::render(const ShaderProgram& shader) const {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
+    shader.setUniform("material.shininess",_shininess);
     for (int i = 0; i < _textures.size(); i++) {
         OPENGL_EXTRA_FUNCTIONS->glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)

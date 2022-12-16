@@ -60,7 +60,7 @@ SceneViewer::~SceneViewer() {
 
 void SceneViewer::initializeGL() {
     initializeOpenGLFunctions();
-
+    
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -77,6 +77,12 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
+
+    // 进行光照初始化
+    setAllLigntUniform(_shaderProgram);
+    init_queue();
+    // 设置光照
+    
 
     Model* backpackModel = new Model("D:\\code\\ComputerGraphic\\backpack\\backpack.obj");
     Logger::info("Model loaded");
@@ -190,16 +196,20 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
 
 
 void SceneViewer::update_light() {
-    // 对于发光体，
-    //model is in Illuminate
-    // view is from camera
-    // projection is from caller
+
+    setAllLigntUniform(_shaderProgram);
+    for (int i = 0; i < _illuminants.size(); i++) {
+        _illuminants[i].updateLight(_shaderProgram);
+    }
     
+}
 
-    _shaderProgram.setUniform("lightPos",_illuminants[0].position());
-    _shaderProgram.setUniform("lightColor", _illuminants[0].color());
-
-    _shaderProgram.setUniform("viewPos", _camera.position());
-    // 要给着色器传递viewPos
-
+void SceneViewer::addDirLight(glm::vec3 direction, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(Illuminant::LightType::dir, direction,color));
+}
+void SceneViewer::addPointLight(glm::vec3 position, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(position, color, Illuminant::LightType::point));
+}
+void SceneViewer::addSpotLight(glm::vec3 direction, glm::vec3 position, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(position,direction, color, Illuminant::LightType::spot));
 }
