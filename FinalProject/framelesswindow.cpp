@@ -8,13 +8,12 @@
 
 #define MAX_MOUSE_MOVEMENT 300
 
-FramelessWidget::FramelessWidget(int cornerRadius, unsigned int attributes, QWidget* parent)
+FramelessWindow::FramelessWindow(int cornerRadius, unsigned int attributes, QWidget* parent)
     : _cornerRadius(cornerRadius), _attributes((LUI_WINDOW_ATTRIBUTES)attributes), QWidget(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
     setFocus();
     
     // Create and properly set real displayed window widget
@@ -79,33 +78,33 @@ FramelessWidget::FramelessWidget(int cornerRadius, unsigned int attributes, QWid
 
     // Connect window control buttons
     connect(_minimizeBtn, &QPushButton::clicked, this, &QWidget::showMinimized);
-    connect(_maximizeBtn, &QPushButton::clicked, this, &FramelessWidget::controlWindowScale);
+    connect(_maximizeBtn, &QPushButton::clicked, this, &FramelessWindow::controlWindowScale);
     connect(_closeBtn, &QPushButton::clicked, this, &QWidget::close);
 }
 
-FramelessWidget::FramelessWidget(QWidget* parent)
-    : FramelessWidget(0, LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_NO_ATTRIBUTES, parent)
+FramelessWindow::FramelessWindow(QWidget* parent)
+    : FramelessWindow(0, LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_NO_ATTRIBUTES, parent)
 {
 }
 
-FramelessWidget::FramelessWidget(int cornerRadius, QWidget* parent)
-    : FramelessWidget(cornerRadius, LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_NO_ATTRIBUTES, parent)
+FramelessWindow::FramelessWindow(int cornerRadius, QWidget* parent)
+    : FramelessWindow(cornerRadius, LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_NO_ATTRIBUTES, parent)
 {
 }
 
-FramelessWidget::FramelessWidget(unsigned int attributes, QWidget* parent)
-    : FramelessWidget(0, attributes, parent)
+FramelessWindow::FramelessWindow(unsigned int attributes, QWidget* parent)
+    : FramelessWindow(0, attributes, parent)
 {
 }
 
-FramelessWidget::~FramelessWidget() {}
+FramelessWindow::~FramelessWindow() {}
 
-void FramelessWidget::showEvent(QShowEvent* event) {
+void FramelessWindow::showEvent(QShowEvent* event) {
     // Initialize window UI after window is shown
     initializeWindowUI();
 }
 
-void FramelessWidget::initializeWindowUI() {
+void FramelessWindow::initializeWindowUI() {
     if (_initialized) {
         return;
     }
@@ -130,12 +129,13 @@ void FramelessWidget::initializeWindowUI() {
     // Move button widget to the top right of the window widget
     _windowBtnWidget->move(_windowWidget->width() - _windowBtnWidget->width() - 18, 18);
     _windowBtnWidget->show();
+    _windowBtnWidget->raise();
 
     // Set initialized state
     _initialized = true;
 }
 
-void FramelessWidget::resizeEvent(QResizeEvent* event) {
+void FramelessWindow::resizeEvent(QResizeEvent* event) {
     // Resize window border
     if (_windowBorder != nullptr) {
         _windowBorder->move(_windowWidget->pos() - QPoint(1, 1));
@@ -152,7 +152,7 @@ void FramelessWidget::resizeEvent(QResizeEvent* event) {
     _windowBtnWidget->move(_windowWidget->width() - _windowBtnWidget->width() - 18, 18);
 }
 
-void FramelessWidget::controlWindowScale() {
+void FramelessWindow::controlWindowScale() {
     if ((_attributes & LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_DISABLE_MAXIMIZE) != 0) {
         return;
     }
@@ -213,7 +213,7 @@ void FramelessWidget::controlWindowScale() {
     }
 }
 
-void FramelessWidget::updateMouseState(QMouseEvent* event) {
+void FramelessWindow::updateMouseState(QMouseEvent* event) {
     _mouseState = MOUSE_STATE_NONE;
     if ((_attributes & LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_DISABLE_RESIZE) != 0) {
         return;
@@ -259,14 +259,14 @@ void FramelessWidget::updateMouseState(QMouseEvent* event) {
     }
 }
 
-void FramelessWidget::mousePressEvent(QMouseEvent* event) {
+void FramelessWindow::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         _mousePressed = true;
         _lastMousePosition = event->globalPos().toPointF();
     }
 }
 
-void FramelessWidget::mouseReleaseEvent(QMouseEvent* event) {
+void FramelessWindow::mouseReleaseEvent(QMouseEvent* event) {
     _mousePressed = false;
     QScreen* screen = QGuiApplication::screenAt(event->globalPos());
     Logger::debug("Current screen geometry:");
@@ -278,7 +278,7 @@ void FramelessWidget::mouseReleaseEvent(QMouseEvent* event) {
     updateMouseState(event);
 }
 
-void FramelessWidget::mouseMoveEvent(QMouseEvent* event) {
+void FramelessWindow::mouseMoveEvent(QMouseEvent* event) {
     Logger::debug("Detected mouse move");
     Logger::debug("[+] mouse global position : " + std::to_string(event->globalPos().x()) + ", " + std::to_string(event->globalPos().y()));
     Logger::debug("[+] window geometry: " + std::to_string(frameGeometry().x()) + ", " + std::to_string(frameGeometry().y()) + ", " + std::to_string(frameGeometry().width()) + ", " + std::to_string(frameGeometry().height()));
@@ -345,11 +345,11 @@ void FramelessWidget::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-FramelessWidget::LUI_WINDOW_ATTRIBUTES FramelessWidget::getWindowAttributes() {
+FramelessWindow::LUI_WINDOW_ATTRIBUTES FramelessWindow::getWindowAttributes() {
     return _attributes;
 }
 
-void FramelessWidget::setWindowAttributes(unsigned int attributes) {
+void FramelessWindow::setWindowAttributes(unsigned int attributes) {
     _attributes = (LUI_WINDOW_ATTRIBUTES)attributes;
     if ((_attributes & LUI_WINDOW_ATTRIBUTES::LUI_WINDOW_DISABLE_MINIMIZE) == 0) {
         _minimizeBtn->show();

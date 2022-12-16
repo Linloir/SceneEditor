@@ -6,7 +6,7 @@
 #include <qgraphicseffect.h>
 #include <qpushbutton.h>
 
-class FramelessWidget : public QWidget {
+class FramelessWindow : public QWidget {
     
     Q_OBJECT
     
@@ -21,13 +21,13 @@ public:
     };
 
 public:
-    FramelessWidget(QWidget* parent = 0);
-    FramelessWidget(int cornerRadius, QWidget* parent = 0);
-    FramelessWidget(unsigned int attributes, QWidget* parent = 0);
-    FramelessWidget(int cornerRadius, unsigned int attributes, QWidget* parent = 0);
-    ~FramelessWidget();
+    FramelessWindow(QWidget* parent = 0);
+    FramelessWindow(int cornerRadius, QWidget* parent = 0);
+    FramelessWindow(unsigned int attributes, QWidget* parent = 0);
+    FramelessWindow(int cornerRadius, unsigned int attributes, QWidget* parent = 0);
+    ~FramelessWindow();
 
-private:
+protected:
     // UI control variables
     const int _cornerRadius = 0;
     const QColor _backgroundColor = QColor(251, 251, 251);
