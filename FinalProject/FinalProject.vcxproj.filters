@@ -13,10 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Translation Files">
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
@@ -39,14 +35,35 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{602fc1ed-84a6-4d4a-ad71-5e7415d8d429}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Qt Widgets\Pages">
+      <UniqueIdentifier>{dd0c6d73-36ab-44ac-9780-4c378faa5774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qt Widgets\Pages\Scene Editor">
+      <UniqueIdentifier>{d0eeae28-809f-4e8e-b1e0-d5d7c5cca3e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets\Pages">
+      <UniqueIdentifier>{0ee9dd70-07d0-44ec-9cb5-37478f6d9ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets\Pages\Scene Editor">
+      <UniqueIdentifier>{c6368565-9e0a-487b-953c-6c4bc9e3f655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qt Widgets\Pages\About Page">
+      <UniqueIdentifier>{2ce6e2ec-f0bf-4d49-8b11-cdf0f31693c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets\Pages\About Page">
+      <UniqueIdentifier>{f8b17ddd-9689-45cc-84a1-5c321b0290b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qt Widgets\GUI Components">
+      <UniqueIdentifier>{469e46b8-328a-474b-bf82-19c86b980e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets\GUI Components">
+      <UniqueIdentifier>{1351d841-7665-48d3-9850-da0738823396}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="mainwindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="mainwindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,20 +102,44 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files\Qt Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="sceneviewer.cpp">
-      <Filter>Source Files\Qt Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="modelselector.cpp">
-      <Filter>Source Files\Qt Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="modelselectable.cpp">
-      <Filter>Source Files\Qt Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="modelsetter.cpp">
-      <Filter>Source Files\Qt Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="editorpage.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="modelselectable.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="modelselector.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="modelsetter.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneviewer.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="framelesswindow.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="pushbutton.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="scrolllist.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="sidebar.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="pagewidget.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="roundedcornerwidget.cpp">
+      <Filter>Source Files\Qt Widgets\GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="aboutpage.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\About Page</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,12 +157,6 @@
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
-    </ClInclude>
-    <ClInclude Include="modelselector.h">
-      <Filter>Header Files\Qt Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="modelsetter.h">
-      <Filter>Header Files\Qt Widgets</Filter>
     </ClInclude>
     <ClInclude Include="vertex.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
@@ -141,19 +176,49 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="modelselectable.h">
-      <Filter>Header Files\Qt Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="logger.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="modelselectable.h">
+      <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="modelsetter.h">
+      <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="modelselector.h">
+      <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="scrolllist.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </ClInclude>
+    <ClInclude Include="aboutpage.h">
+      <Filter>Header Files\Qt Widgets\Pages\About Page</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="sceneviewer.h">
-      <Filter>Header Files\Qt Widgets</Filter>
-    </QtMoc>
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files\Qt Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="sceneviewer.h">
+      <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </QtMoc>
+    <QtMoc Include="framelesswindow.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </QtMoc>
+    <QtMoc Include="pushbutton.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </QtMoc>
+    <QtMoc Include="pagewidget.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </QtMoc>
+    <QtMoc Include="sidebar.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
+    </QtMoc>
+    <QtMoc Include="editorpage.h">
+      <Filter>Header Files\Qt Widgets\Pages\Scene Editor</Filter>
+    </QtMoc>
+    <QtMoc Include="roundedcornerwidget.h">
+      <Filter>Header Files\Qt Widgets\GUI Components</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

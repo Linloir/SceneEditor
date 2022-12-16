@@ -3,4 +3,8 @@
         <file>fragmentshader.fs</file>
         <file>vertexshader.vs</file>
     </qresource>
+    <qresource prefix="/fonts">
+        <file>font_awesome_6_regular_free.otf</file>
+        <file>font_awesome_6_solid_free.otf</file>
+    </qresource>
 </RCC>

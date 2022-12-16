@@ -103,23 +103,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aboutpage.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ebo.cpp" />
+    <ClCompile Include="editorpage.cpp" />
+    <ClCompile Include="framelesswindow.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelselectable.cpp" />
     <ClCompile Include="modelselector.cpp" />
     <ClCompile Include="modelsetter.cpp" />
+    <ClCompile Include="pagewidget.cpp" />
+    <ClCompile Include="pushbutton.cpp" />
     <ClCompile Include="renderable.cpp" />
+    <ClCompile Include="roundedcornerwidget.cpp" />
     <ClCompile Include="sceneviewer.cpp" />
+    <ClCompile Include="scrolllist.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="sidebar.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
     <ClCompile Include="vertex.cpp" />
     <QtRcc Include="mainwindow.qrc" />
-    <QtUic Include="mainwindow.ui" />
     <QtMoc Include="mainwindow.h" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="main.cpp" />
@@ -128,10 +135,18 @@
     <QtMoc Include="sceneviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aboutpage.h" />
     <ClInclude Include="camera.h" />
+    <QtMoc Include="editorpage.h" />
+    <QtMoc Include="framelesswindow.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
+    <QtMoc Include="sidebar.h" />
+    <QtMoc Include="pagewidget.h" />
+    <QtMoc Include="pushbutton.h" />
+    <QtMoc Include="roundedcornerwidget.h" />
+    <ClInclude Include="scrolllist.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vbo.h" />
