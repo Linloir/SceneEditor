@@ -16,7 +16,7 @@ public:
 private:
     LightType _lightType = dir;
 
-    glm::vec3 _direction = glm::vec3(0,2,-1);
+    glm::vec3 _direction = glm::vec3(0,0,-1);
     glm::vec3 _position = glm::vec3(0.0f);
     glm::vec3 _ambient = glm::vec3(0.05f, 0.05f, 0.05f);
     glm::vec3 _diffuse = glm::vec3(0.8f, 0.8f, 0.8f);

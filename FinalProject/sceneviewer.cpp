@@ -21,7 +21,6 @@ void copyFile(std::string name) {
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
-    _illuminants.push_back(Illuminant());
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setVersion(4, 3);
@@ -82,7 +81,12 @@ void SceneViewer::initializeGL() {
     setAllLigntUniform(_shaderProgram);
     init_queue();
     // …Ë÷√π‚’’
-    
+    addDirLight(glm::vec3(0.3, 0.5, -1), glm::vec3(0.2, 0.1, 0.2));
+    addSpotLight(glm::vec3(0.3, 0.5, -1), glm::vec3(-0.3, -0.5, 3), glm::vec3(0.2, 1, 0.1));
+    addPointLight(glm::vec3(0.5, 0.9, 0.4), glm::vec3(1, 0.2, 0.4));
+    addPointLight(glm::vec3(-0.3, -0.9, 0.4), glm::vec3(0, 0.2, 0.9));
+    //deleteLight(1);
+
 
     Model* backpackModel = new Model("D:\\code\\ComputerGraphic\\backpack\\backpack.obj");
     Logger::info("Model loaded");
@@ -212,4 +216,7 @@ void SceneViewer::addPointLight(glm::vec3 position, glm::vec3 color) {
 }
 void SceneViewer::addSpotLight(glm::vec3 direction, glm::vec3 position, glm::vec3 color) {
     _illuminants.push_back(Illuminant(position,direction, color, Illuminant::LightType::spot));
+}
+void SceneViewer::deleteLight(int index) {
+    _illuminants.erase(_illuminants.begin() + index);
 }

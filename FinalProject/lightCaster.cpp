@@ -11,6 +11,7 @@ Illuminant::Illuminant(){
 Illuminant::Illuminant(glm::vec3 position, LightType lightType){
     _position = position;
     setType(lightType);
+    Logger::info("55555555555");
 }
 // set up with one color
 Illuminant::Illuminant(glm::vec3 position, glm::vec3 color, LightType lightType){
@@ -19,6 +20,7 @@ Illuminant::Illuminant(glm::vec3 position, glm::vec3 color, LightType lightType)
     _diffuse = color * 0.8f;
     _specular = color;
     setType(lightType);
+    Logger::info("4444444444444444444");
 }
 //set up by assign all colors
 Illuminant::Illuminant(glm::vec3 position, glm::vec3 ambient, 
@@ -28,7 +30,9 @@ Illuminant::Illuminant(glm::vec3 position, glm::vec3 ambient,
     _diffuse = diffuse;
     _specular = specular;  
     setType(lightType);
+    Logger::info("333333333333333");
 }
+
 // set up with one color，建议平行光源使用这个
 Illuminant::Illuminant(LightType lightType, glm::vec3 direction, glm::vec3 color) {
     _direction = direction;
@@ -36,6 +40,7 @@ Illuminant::Illuminant(LightType lightType, glm::vec3 direction, glm::vec3 color
     _diffuse = color * 0.8f;
     _specular = color;
     setType(lightType);
+    Logger::info("22222222222222222");
 }
 
 // set up with one color，建议聚光灯光源使用这个
@@ -46,6 +51,7 @@ Illuminant::Illuminant(glm::vec3 position, glm::vec3 direction, glm::vec3 color,
     _diffuse = color * 0.8f;
     _specular = color;
     setType(lightType);
+    Logger::info("1111111111111111111");
 }
 
 Illuminant::~Illuminant() {
@@ -119,6 +125,7 @@ void Illuminant::setType(LightType type){
 }
 
 void Illuminant::updateLight(ShaderProgram& shader) {
+    lastShader = &shader;
     if (_lightType == dir) {
         // directional light
         shader.setUniform("dirLight.direction", _direction);
@@ -170,17 +177,14 @@ void init_queue() {
         Logger::info("23533423q543");
     }
 }
-double r = 1;
 
-// 初始设置所有变量
+// 如果uniform变量没有被设置，可能会出现不可预知的后果！
 void setAllLigntUniform(ShaderProgram& shader) {
-    r = r + 1;
-    double rr = sin(r / 20)*8;
 
-    shader.setUniform("dirLight.direction",0,1,0);
-    shader.setUniform("dirLight.ambient", 0.0f, 0.0f, 0.0f);
-    shader.setUniform("dirLight.diffuse", 0.0f, 100.0f, 220.0f);
-    shader.setUniform("dirLight.specular", 00.0f, 0.0f, 0.0f);
+    shader.setUniform("dirLight.direction",0,0,-1);
+    shader.setUniform("dirLight.ambient", 0.1f, 0.1f, 0.1f);
+    shader.setUniform("dirLight.diffuse", 0.0f, 0.0f, 0.0f);
+    shader.setUniform("dirLight.specular", 0.0f, 0.0f, 0.0f);
     // point light 1
     
     shader.setUniform("pointLights[0].position", 0, 0, 0);

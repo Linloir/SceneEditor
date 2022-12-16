@@ -48,6 +48,8 @@ public:
     void addDirLight(glm::vec3 direction, glm::vec3 color);
     void addPointLight(glm::vec3 position, glm::vec3 color);
     void addSpotLight(glm::vec3 direction,glm::vec3 position, glm::vec3 color);
+    // 删除给定的数组下标
+    void deleteLight(int index);
 
 protected:
     // OpenGL functions
