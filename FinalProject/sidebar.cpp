@@ -86,8 +86,8 @@ SideBar::~SideBar() {}
 void SideBar::expand() {
     // Add animation to expand the side bar
     QPropertyAnimation* expandAnimation = new QPropertyAnimation(this, "maximumWidth");
-    expandAnimation->setDuration(200);
-    expandAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    expandAnimation->setDuration(650);
+    expandAnimation->setEasingCurve(QEasingCurve::OutExpo);
     expandAnimation->setStartValue(width());
     expandAnimation->setEndValue(_expandedWidth);
     expandAnimation->start(QAbstractAnimation::DeleteWhenStopped);
@@ -103,8 +103,8 @@ void SideBar::expand() {
 void SideBar::collapse() {
     // Add animation to collapse the side bar
     QPropertyAnimation* collapseAnimation = new QPropertyAnimation(this, "maximumWidth");
-    collapseAnimation->setDuration(200);
-    collapseAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    collapseAnimation->setDuration(650);
+    collapseAnimation->setEasingCurve(QEasingCurve::OutExpo);
     collapseAnimation->setStartValue(width());
     collapseAnimation->setEndValue(_collapsedWidth);
     collapseAnimation->start(QAbstractAnimation::DeleteWhenStopped);

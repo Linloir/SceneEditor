@@ -24,7 +24,7 @@ private:
 
     // UI control variables
     QColor _backgroundColor = QColor(230, 230, 230);
-    int _collapsedWidth = 90;
+    int _collapsedWidth = 86;
     int _expandedWidth = 200;
 
     // UI widgets
