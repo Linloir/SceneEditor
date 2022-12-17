@@ -4,12 +4,12 @@
 #include <STBImage/stb_image.h>
 #include <vector>
 
-Terrain::Terrain(int rows, int cols):row_num(rows),col_num(cols) {
+Terrain::Terrain(std::string path){
     Vertex.clear();
     Indicess.clear(); 
     int imgW, imgH, imgChannel;
 
-    unsigned char* data = stbi_load("D:/ProgrammingFile/SceneEditor/terrain/heightmap.jpg", &imgW, &imgH, &imgChannel, 1);
+    unsigned char* data = stbi_load((path + "/heightmap.jpg").c_str(), &imgW, &imgH, &imgChannel, 1);
 
 
     int index1 = 0, index = 0;
@@ -83,7 +83,7 @@ Terrain::Terrain(int rows, int cols):row_num(rows),col_num(cols) {
     OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(0);
 
     //textureID = loadTexture2(texName, GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    tex = loadTexture("D:/ProgrammingFile/SceneEditor/terrain/rock.jpg");
+    tex = loadTexture(path + "/texture.jpg");
 
 }
 

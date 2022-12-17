@@ -85,14 +85,14 @@ void SceneViewer::initializeGL() {
     fragmentShader_ter.dispose();
 
 
-    Model* backpackModel = new Model("D:\\ProgrammingFile\\SceneEditor\\Models\\backpack\\backpack.obj");
+    Model* backpackModel = new Model("../Models/backpack/backpack.obj");
     Logger::info("Model loaded");
     Renderable backpack(backpackModel);
     _objects.push_back(backpack);
 
-    sky = new skybox("D:/ProgrammingFile/SceneEditor/skybox");
+    sky = new skybox("../skybox");
 
-    ter = new Terrain();
+    ter = new Terrain("../terrain");
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
