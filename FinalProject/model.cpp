@@ -76,8 +76,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         //使用循环避免代码重复，如果可行的话，可以在此循环中确定法向量等信息
         for (int j = 0; j < 3; j++) {
             vertexPosition[j] = mesh->mVertices[i][j];
-            _left_down_back[j] = _left_down_back[j] < vertexPosition[j] ? _left_down_back[j] : vertexPosition[j];
-            _right_up_front[j] = _right_up_front[j] > vertexPosition[j] ? _right_up_front[j] : vertexPosition[j];
+            _leftBackBottomVex[j] = _leftBackBottomVex[j] < vertexPosition[j] ? _leftBackBottomVex[j] : vertexPosition[j];
+            _rightFrontTopVex[j] = _rightFrontTopVex[j] > vertexPosition[j] ? _rightFrontTopVex[j] : vertexPosition[j];
         }
 
         //vertexPosition.x = mesh->mVertices[i].x;
@@ -198,11 +198,11 @@ void Model::checkBoundary() {
         for (int j = 0; j < _meshes[i].vertices().size();j++) {
             // 0,1,2 for x,y,z
             for (int k = 0; k < 3; k++) {
-                _left_down_back[k] = _left_down_back[k] < _meshes[i].vertices()[j]._position[k] ?
-                    _left_down_back[k] : _meshes[i].vertices()[j]._position[k];
+                _leftBackBottomVex[k] = _leftBackBottomVex[k] < _meshes[i].vertices()[j]._position[k] ?
+                    _leftBackBottomVex[k] : _meshes[i].vertices()[j]._position[k];
 
-                _right_up_front[k] = _right_up_front[k] > _meshes[i].vertices()[j]._position[k] ?
-                    _right_up_front[k] : _meshes[i].vertices()[j]._position[k];
+                _rightFrontTopVex[k] = _rightFrontTopVex[k] > _meshes[i].vertices()[j]._position[k] ?
+                    _rightFrontTopVex[k] : _meshes[i].vertices()[j]._position[k];
             }
         }
     }

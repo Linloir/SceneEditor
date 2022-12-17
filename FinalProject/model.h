@@ -20,9 +20,9 @@ private:
     MODELSTATUS _status = LOADING;
 
     // smallest point
-    glm::vec3 _left_down_back = glm::vec3(3e36f, 3e36f, 3e36f);
+    glm::vec3 _leftBackBottomVex = glm::vec3(3e36f, 3e36f, 3e36f);
     // largest point
-    glm::vec3 _right_up_front = -_left_down_back;
+    glm::vec3 _rightFrontTopVex = -_leftBackBottomVex;
 
 public:
     Model(std::string path);
@@ -42,13 +42,13 @@ public:
 
     // maybe we can check if boundary has not been set yet
     // Do remember to ensure you have called checkBoundary
-    inline glm::vec3 get_upper_bound() {
-        return _right_up_front;
+    inline glm::vec3 upperBoundVex() {
+        return _rightFrontTopVex;
     }
 
     // Do remember to ensure you have called checkBoundary
-    inline glm::vec3 get_lower_bound() {
-        return _left_down_back;
+    inline glm::vec3 lowerBoundVex() {
+        return _leftBackBottomVex;
     }
 
 private:
@@ -56,14 +56,8 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType);
-    // Since these are loacl position, this function should be called just once.
     void checkBoundary();
 
 public:
     void render(const ShaderProgram& shader) const;
-
-    
-
-    // maybe we can encapsure a function to get both upper and lower bound?
-
 };

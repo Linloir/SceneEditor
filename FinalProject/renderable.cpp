@@ -49,10 +49,10 @@ void Renderable::render(ShaderProgram shader) {
 // check here to get global boundary
 // must check before get boundary
 void Renderable::checkBoundary() {
-    std::vector<glm::vec3> temp = {_model->get_upper_bound(),_model->get_lower_bound()};
+    std::vector<glm::vec3> temp = {_model->upperBoundVex(),_model->lowerBoundVex()};
     
-    _lower_bound = glm::vec3(3e36, 3e36, 3e36);
-    _upper_bound = -_lower_bound;
+    _lowerBoundVex = glm::vec3(3e36, 3e36, 3e36);
+    _upperBoundVex = -_lowerBoundVex;
     
     auto model = this->modelMatrix();   // transform matrix
 
@@ -61,8 +61,8 @@ void Renderable::checkBoundary() {
         glm::vec4 vx = glm::vec4(temp[(i & 4) >> 2][0], temp[(i & 2)>>1][1], temp[i & 1][2], 1.0f);
         auto vex = model * vx; // Transformed vertex position
         for (int j = 0; j < 3; j++) {
-            _lower_bound[j] = _lower_bound[j] < vex[j] ? _lower_bound[j] : vex[j];
-            _upper_bound[j] = _upper_bound[j] > vex[j] ? _upper_bound[j] : vex[j];
+            _lowerBoundVex[j] = _lowerBoundVex[j] < vex[j] ? _lowerBoundVex[j] : vex[j];
+            _upperBoundVex[j] = _upperBoundVex[j] > vex[j] ? _upperBoundVex[j] : vex[j];
         }
     }
 }

@@ -20,8 +20,8 @@ private:
     glm::vec3 _position = glm::vec3(0.0f);
     glm::mat4 _rotation = glm::mat4(1.0f);
     glm::vec3 _scale = glm::vec3(1.0f);
-    glm::vec3 _lower_bound;
-    glm::vec3 _upper_bound;
+    glm::vec3 _lowerBoundVex;
+    glm::vec3 _upperBoundVex;
 
 public:
     Renderable(Model* model);
@@ -38,8 +38,8 @@ public:
 
     inline glm::mat4 modelMatrix() const;
 
-    inline glm::vec3 get_upper_boundary()const;
-    inline glm::vec3 get_lower_boundary()const;
+    inline glm::vec3 upperBoundVex()const;
+    inline glm::vec3 lowerBoundVex()const;
 
 public:
     void render(ShaderProgram shader);
@@ -55,9 +55,9 @@ inline glm::mat4 Renderable::modelMatrix() const {
     return model;
 }
 
-inline glm::vec3 Renderable::get_lower_boundary()const {
-    return _lower_bound;
+inline glm::vec3 Renderable::lowerBoundVex() const {
+    return _lowerBoundVex;
 }
-inline glm::vec3 Renderable::get_upper_boundary()const {
-    return _upper_bound;
+inline glm::vec3 Renderable::upperBoundVex() const {
+    return _upperBoundVex;
 }
