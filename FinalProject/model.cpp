@@ -13,7 +13,13 @@ Model::~Model() {
     // TODO: Maybe delete all meshes?
 }
 
-// file path is ...\\...\\.obj, and processnode & processmesh have been called here
+Model::Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::string directory) {
+    _meshes = std::move(meshes);
+    _texturesLoaded = std::move(textures);
+    _directory = directory;
+    _status = LOADED;
+}
+
 void Model::loadModel(std::string path) {
     Logger::info("Loading model from path: " + path);
     Assimp::Importer importer;
@@ -34,7 +40,7 @@ void Model::loadModel(std::string path) {
     processNode(scene->mRootNode, scene);
     _status = LOADED;
     Logger::info("Model loaded");
-    // ½ö¼ì²éÒ»´Î¼´¿É
+    // ä»…æ£€æŸ¥ä¸€æ¬¡å³å¯
     //check_boundary();
 }
 
@@ -67,7 +73,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         glm::vec3 vertexBitangent = glm::vec3(0.0f);
         
         // Process vertex positions
-        //Ê¹ÓÃÑ­»·±ÜÃâ´úÂëÖØ¸´£¬Èç¹û¿ÉĞĞµÄ»°£¬¿ÉÒÔÔÚ´ËÑ­»·ÖĞÈ·¶¨·¨ÏòÁ¿µÈĞÅÏ¢
+        //ä½¿ç”¨å¾ªç¯é¿å…ä»£ç é‡å¤ï¼Œå¦‚æœå¯è¡Œçš„è¯ï¼Œå¯ä»¥åœ¨æ­¤å¾ªç¯ä¸­ç¡®å®šæ³•å‘é‡ç­‰ä¿¡æ¯
         for (int j = 0; j < 3; j++) {
             vertexPosition[j] = mesh->mVertices[i][j];
             _left_down_back[j] = _left_down_back[j] < vertexPosition[j] ? _left_down_back[j] : vertexPosition[j];
@@ -200,5 +206,26 @@ void Model::check_boundary() {
             }
         }
     }
+}
 
+Model* Model::copyToCurrentContext() const {
+    // Reload all textures
+    std::vector<Texture> newTextures;
+    for (unsigned int i = 0; i < _texturesLoaded.size(); i++) {
+        // Load texture
+        Texture newTexture = Texture(_texturesLoaded[i].type(), _directory + '/' + _texturesLoaded[i].path());
+        newTextures.push_back(newTexture);
+    }
+    
+    // Copy all meshes
+    std::vector<Mesh> newMeshes;
+    for (unsigned int i = 0; i < _meshes.size(); i++) {
+        // Copy mesh
+        Mesh newMesh = Mesh(_meshes[i].vertices(), _meshes[i].indices(), newTextures);
+        newMeshes.push_back(newMesh);
+    }
+    
+    // Create new model
+    Model* newModel = new Model(std::move(newMeshes), std::move(newTextures), _directory);
+    return newModel;
 }

@@ -17,6 +17,7 @@ using std::vector;
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
+    // OpenGL initialize
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setVersion(4, 3);
@@ -64,15 +65,8 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
-
-    Model* backpackModel = new Model("D:/code/ComputerGraphic/SceneEditor/obj/nanosuit/nanosuit.obj");
-    Logger::info("Model loaded");
-    Renderable backpack(backpackModel);
-    _objects.push_back(backpack);
     
-
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
-
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -80,6 +74,8 @@ void SceneViewer::resizeGL(int w, int h) {
 }
 
 void SceneViewer::paintGL() {
+    Logger::debug("Repainting");
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     _shaderProgram.bind();
@@ -108,7 +104,9 @@ void SceneViewer::mousePressEvent(QMouseEvent* event) {
 }
 
 void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
-    Logger::debug("Mouse moved with offset: " + std::to_string(event->x() - _lastMousePosition.x()) + ", " + std::to_string(event->y() - _lastMousePosition.y()));
+    if (event->buttons() != Qt::NoButton) {
+        Logger::debug("Mouse moved with offset: " + std::to_string(event->x() - _lastMousePosition.x()) + ", " + std::to_string(event->y() - _lastMousePosition.y()));
+    }
     // Check the type of button pressed
     switch (event->buttons()) {
         case Qt::LeftButton: {
@@ -154,7 +152,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
     // Update the last mouse position
     _lastMousePosition = event->pos();
     // Update the view
-    update();
+    parentWidget()->update();
 }
 
 void SceneViewer::wheelEvent(QWheelEvent* event) {
@@ -167,5 +165,31 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     Logger::debug("New camera position: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
     Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
-    update();
+    parentWidget()->update();
+}
+
+void SceneViewer::showEvent(QShowEvent* event) {
+    // Call show event of super class
+    QOpenGLWidget::showEvent(event);
+
+    if (_initialized) {
+        return;
+    }
+
+    //// Create mask for rounded corner
+    //QPainterPath mask;
+    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
+    //setMask(mask.toFillPolygon().toPolygon());
+
+    _initialized = true;
+}
+
+void SceneViewer::resizeEvent(QResizeEvent* event) {
+    // Call resize event of super class
+    QOpenGLWidget::resizeEvent(event);
+
+    //// Create mask for rounded corner
+    //QPainterPath mask;
+    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
+    //setMask(mask.toFillPolygon().toPolygon());
 }
