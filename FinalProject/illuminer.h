@@ -5,7 +5,6 @@
 #include <queue>
 
 #include "shader.h"
-#include "logger.h"
 
 class Illuminer {
 protected:
@@ -15,7 +14,7 @@ public:
     Illuminer(glm::vec3 color);
     ~Illuminer();
     
-public:
+protected:
     virtual glm::vec3 ambientLightColor() const = 0;
     virtual glm::vec3 diffuseLightColor() const = 0;
     virtual glm::vec3 specularLightColor() const = 0;
@@ -36,11 +35,13 @@ public:
     DirLight(glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3 color = glm::vec3(1.0f));
     ~DirLight();
     
+protected:
+    virtual glm::vec3 ambientLightColor() const override { return _lightColor * 0.2f; }
+    virtual glm::vec3 diffuseLightColor() const override { return _lightColor * 0.5f; }
+    virtual glm::vec3 specularLightColor() const override { return _lightColor * 0.9f; }
+    
 public:
-    // Getter APIs
     glm::vec3 lightDirection() const { return _direction; }  // The same direction as the outgoing direction
-
-    // Setter
     void setLightDirection(glm::vec3 direction) { _direction = direction; }
     
     // Render util function
@@ -56,8 +57,7 @@ protected:
     // Light source status
     glm::vec3 _position;
     glm::vec3 _direction;
-    float _innerCutOffAngle = 162.5f;
-    float _outerCutOffAngle = 180.0f;
+    float _cutOffAngle = 180.0f;
     
     // Light property
     int _idealDistance = 32;     // ideally calculated distance 
@@ -67,8 +67,19 @@ protected:
     
 public:
     ScopedLight(glm::vec3 position, glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3 color = glm::vec3(1.0f));
-    ScopedLight(glm::vec3 distance, glm::vec3 position, glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3 color = glm::vec3(1.0f));
+    ScopedLight(int distance, glm::vec3 position, glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3 color = glm::vec3(1.0f));
     ~ScopedLight();
+
+private:
+    // Util function
+    inline void updateLinear();
+    inline void updateQuadratic();
+    inline float innerCutOffAngle() const;
+
+protected:
+    virtual glm::vec3 ambientLightColor() const override { return _lightColor * 0.2f; }
+    virtual glm::vec3 diffuseLightColor() const override { return _lightColor * 0.5f; }
+    virtual glm::vec3 specularLightColor() const override { return _lightColor * 0.9f; }
 
 public:
     // Property setters and getters
@@ -76,7 +87,7 @@ public:
     void setIdealDistance(int distance);
     glm::vec3 lightDirection() const { return _direction; }
     void setLightDirection(glm::vec3 direction) { _direction = direction; }
-    float cutOffAngle() const { return _outerCutOffAngle; }
+    float cutOffAngle() const { return _cutOffAngle; }
     void setCutOffAngle(float angle);
 
     // Render util function

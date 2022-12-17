@@ -108,6 +108,7 @@
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="editorpage.cpp" />
     <ClCompile Include="framelesswindow.cpp" />
+    <ClCompile Include="illuminer.cpp" />
     <ClCompile Include="lightCaster.cpp" />
     <ClCompile Include="lineeditwidget.cpp" />
     <ClCompile Include="logger.cpp" />

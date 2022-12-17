@@ -168,6 +168,9 @@
     <ClCompile Include="lightCaster.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>
+    <ClCompile Include="illuminer.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
