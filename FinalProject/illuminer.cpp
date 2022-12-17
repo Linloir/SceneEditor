@@ -13,7 +13,7 @@ DirLight::DirLight(glm::vec3 direction, glm::vec3 color) :
 
 DirLight::~DirLight() {}
 
-void DirLight::updateShader(ShaderProgram shader) const {
+void DirLight::updateShader(ShaderProgram shader, int index) const {
     // Recall DirLight structure in fragment shader
     // -------------
     // struct DirLight {
@@ -23,10 +23,10 @@ void DirLight::updateShader(ShaderProgram shader) const {
     //     vec3 specular;
     // };
 
-    shader.setUniform("DirLight.direction", -_direction);
-    shader.setUniform("DirLight.ambient", ambientLightColor());
-    shader.setUniform("DirLight.diffuse", diffuseLightColor());
-    shader.setUniform("DirLight.specular", specularLightColor());
+    shader.setUniform("dirlights[" + std::to_string(index) + "].direction", -_direction);
+    shader.setUniform("dirlights[" + std::to_string(index) + "].ambient", ambientLightColor());
+    shader.setUniform("dirlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
+    shader.setUniform("dirlights[" + std::to_string(index) + "].specular", specularLightColor());
 }
 
 ScopedLight::ScopedLight(glm::vec3 position, glm::vec3 direction, glm::vec3 color) :
@@ -83,7 +83,7 @@ inline float ScopedLight::innerCutOffAngle() const {
     return 0.0011 * glm::pow(_cutOffAngle, 2) + 0.6440 * _cutOffAngle;
 }
 
-void ScopedLight::updateShader(ShaderProgram shader) const {
+void ScopedLight::updateShader(ShaderProgram shader, int index) const {
     // Recall PointLight and SpotLight structure in fragment shader
     // -------------
     // struct PointLight {
@@ -112,25 +112,25 @@ void ScopedLight::updateShader(ShaderProgram shader) const {
     // Check the cutoff angle to determine the type of light
     if (abs(_cutOffAngle - 180.0f) < 1e-6) {
         // Point light
-        shader.setUniform("PointLight.position", _position);
-        shader.setUniform("PointLight.ambient", ambientLightColor());
-        shader.setUniform("PointLight.diffuse", diffuseLightColor());
-        shader.setUniform("PointLight.specular", specularLightColor());
-        shader.setUniform("PointLight.constant", _attConstant);
-        shader.setUniform("PointLight.linear", _attLinear);
-        shader.setUniform("PointLight.quadratic", _attQuadratic);
+        shader.setUniform("pointlights[" + std::to_string(index) + "].position", _position);
+        shader.setUniform("pointlights[" + std::to_string(index) + "].ambient", ambientLightColor());
+        shader.setUniform("pointlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
+        shader.setUniform("pointlights[" + std::to_string(index) + "].specular", specularLightColor());
+        shader.setUniform("pointlights[" + std::to_string(index) + "].constant", _attConstant);
+        shader.setUniform("pointlights[" + std::to_string(index) + "].linear", _attLinear);
+        shader.setUniform("pointlights[" + std::to_string(index) + "].quadratic", _attQuadratic);
     }
     else {
         // Spot light
-        shader.setUniform("SpotLight.position", _position);
-        shader.setUniform("SpotLight.direction", -_direction);
-        shader.setUniform("SpotLight.ambient", ambientLightColor());
-        shader.setUniform("SpotLight.diffuse", diffuseLightColor());
-        shader.setUniform("SpotLight.specular", specularLightColor());
-        shader.setUniform("SpotLight.constant", _attConstant);
-        shader.setUniform("SpotLight.linear", _attLinear);
-        shader.setUniform("SpotLight.quadratic", _attQuadratic);
-        shader.setUniform("SpotLight.innercutoff", glm::cos(glm::radians(innerCutOffAngle())));
-        shader.setUniform("SpotLight.outercutoff", glm::cos(glm::radians(_cutOffAngle)));
+        shader.setUniform("spotlights[" + std::to_string(index) + "].position", _position);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].direction", -_direction);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].ambient", ambientLightColor());
+        shader.setUniform("spotlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
+        shader.setUniform("spotlights[" + std::to_string(index) + "].specular", specularLightColor());
+        shader.setUniform("spotlights[" + std::to_string(index) + "].constant", _attConstant);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].linear", _attLinear);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].quadratic", _attQuadratic);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].innercutoff", glm::cos(glm::radians(innerCutOffAngle())));
+        shader.setUniform("spotlights[" + std::to_string(index) + "].outercutoff", glm::cos(glm::radians(_cutOffAngle)));
     }
 }

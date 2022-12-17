@@ -19,7 +19,7 @@ protected:
     virtual glm::vec3 diffuseLightColor() const = 0;
     virtual glm::vec3 specularLightColor() const = 0;
 
-    virtual void updateShader(ShaderProgram shader) const = 0;
+    virtual void updateShader(ShaderProgram shader, int index) const = 0;
     
 public:
     glm::vec3 lightColor() const { return _lightColor; }
@@ -45,7 +45,7 @@ public:
     void setLightDirection(glm::vec3 direction) { _direction = direction; }
     
     // Render util function
-    virtual void updateShader(ShaderProgram shader) const override;
+    virtual void updateShader(ShaderProgram shader, int index) const override;
 };
 
 // Scoped Light is a combination of point light and spot light
@@ -91,5 +91,5 @@ public:
     void setCutOffAngle(float angle);
 
     // Render util function
-    virtual void updateShader(ShaderProgram shader) const override;
+    virtual void updateShader(ShaderProgram shader, int index) const override;
 };
