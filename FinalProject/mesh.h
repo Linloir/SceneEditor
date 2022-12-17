@@ -26,7 +26,8 @@ public:
     inline std::vector<Vertex> vertices() const { return _vertices; }
     inline std::vector<unsigned int> indices() const { return _indices; }
     inline std::vector<Texture> textures() const { return _textures; }
-    inline float shininess() { return _shininess; }
+    
+    inline float shininess() const { return _shininess; }
     inline void setShininess(float shininess) { _shininess = shininess; }
 
     inline VertexArrayObject vao() const { return _vao; }
