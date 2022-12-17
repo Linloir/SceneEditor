@@ -6,6 +6,10 @@ Renderable::Renderable(Model* model) : _model(model) {}
 
 Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {}
 
+void Renderable::setModel(Model* model) {
+    _model = model;
+}
+
 void Renderable::move(glm::vec3 deltaVec) {
     _position += deltaVec;
 }
@@ -31,6 +35,11 @@ void Renderable::setScale(float scale) {
 }
 
 void Renderable::render(ShaderProgram shader) {
+    // Check if initialized
+    if (_model == nullptr) {
+        Logger::error("Tries to render an uninitialized renderable object");
+        return;
+    }
     // Set model matrix
     shader.setUniform("model", modelMatrix());
     // Render
