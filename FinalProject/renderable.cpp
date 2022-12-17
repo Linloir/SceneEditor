@@ -33,9 +33,6 @@ void Renderable::setScale(float scale) {
 void Renderable::render(ShaderProgram shader) {
     // Set model matrix
     shader.setUniform("model", modelMatrix());
-    // set diffuse
-    //shader.setUniform("")
-
 
     // Render
     _model->render(shader);
