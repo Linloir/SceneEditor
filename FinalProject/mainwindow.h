@@ -1,9 +1,13 @@
 #pragma once
 
-#include <QtWidgets/QMainWindow>
-#include "ui_mainwindow.h"
+#include <qevent.h>
 
-class MainWindow : public QMainWindow
+#include "framelesswindow.h"
+#include "sidebar.h"
+#include "editorpage.h"
+#include "aboutpage.h"
+
+class MainWindow : public FramelessWindow
 {
     Q_OBJECT
 
@@ -12,5 +16,21 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindowClass ui;
+    // Main ui layout
+    QHBoxLayout* _mainLayout = nullptr;
+    
+    // Side bar and corresponding pages
+    SideBar* _sideBar = nullptr;
+    EditorPage* _editorPage = nullptr;
+    AboutPage* _aboutPage = nullptr;
+
+    // Place holder widget for resizing pages
+    QWidget* _placeHolderWidget = nullptr;
+
+private:
+    void resizePages(QResizeEvent* event);
+
+private:
+    virtual void showEvent(QShowEvent* event) override;
+    virtual bool eventFilter(QObject* object, QEvent* event) override;
 };

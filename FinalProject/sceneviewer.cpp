@@ -21,6 +21,7 @@ void copyFile(std::string name) {
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
+    // OpenGL initialize
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setVersion(4, 3);
@@ -33,24 +34,29 @@ SceneViewer::SceneViewer(QWidget* parent)
     }
     
     // Copy the shaders to the folder
-    //if (QFile::exists("./temp/shaders/vertexshader.vs")) {
-    //    QFile::remove("./temp/shaders/vertexshader.vs");
-    //}
-    //QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
-    //QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    //
-    //if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
-    //    QFile::remove("./temp/shaders/fragmentshader.fs");
-    //}
-    //QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
-    //QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
-
-    copyFile("vertexshader.vs");
-    copyFile("fragmentshader.fs");
-    //copyFile("illuminant.vs");
-    //copyFile("illuminant.fs");
-
-
+    if (QFile::exists("./temp/shaders/vertexshader.vs")) {
+        QFile::remove("./temp/shaders/vertexshader.vs");
+    }
+    QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
+    QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    
+    if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
+        QFile::remove("./temp/shaders/fragmentshader.fs");
+    }
+    QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
+    QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
+    
+    if (QFile::exists("./temp/shaders/illuminant.vs")) {
+        QFile::remove("./temp/shaders/illuminant.vs");
+    }
+    QFile::copy(":/shaders/illuminant.vs", "./temp/shaders/illuminant.vs");
+    QFile::setPermissions("./temp/shaders/illuminant.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    
+    if (QFile::exists("./temp/shaders/illuminant.fs")) {
+        QFile::remove("./temp/shaders/illuminant.fs");
+    }
+    QFile::copy(":/shaders/illuminant.fs", "./temp/shaders/illuminant.fs");
+    QFile::setPermissions("./temp/shaders/illuminant.fs", QFile::ReadOwner | QFile::WriteOwner);
 }
 
 SceneViewer::~SceneViewer() {
@@ -65,6 +71,7 @@ void SceneViewer::initializeGL() {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_FRAMEBUFFER_SRGB);
+    
     Logger::info("Currently running on OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
 
     _shaderProgram.ensureInitialized();
@@ -77,23 +84,17 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    // 进行光照初始化
+    // Set lighting uniform
     setAllLigntUniform(_shaderProgram);
-    init_queue();
-    // 设置光照
+    init_queue(); // What is this for?
+    
+    // Add test lighting
     addDirLight(glm::vec3(0.3, 0.5, -1), glm::vec3(0.2, 0.1, 0.2));
     addSpotLight(glm::vec3(0.3, 0.5, -1), glm::vec3(-0.3, -0.5, 3), glm::vec3(0.2, 1, 0.1));
     addPointLight(glm::vec3(0.5, 0.9, 0.4), glm::vec3(1, 0.2, 0.4));
     addPointLight(glm::vec3(-0.3, -0.9, 0.4), glm::vec3(0, 0.2, 0.9));
-    //deleteLight(1);
-
-
-    Model* backpackModel = new Model("D:\\code\\ComputerGraphic\\backpack\\backpack.obj");
-    Logger::info("Model loaded");
-    Renderable backpack(backpackModel);
-    _objects.push_back(backpack);
     
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -101,6 +102,8 @@ void SceneViewer::resizeGL(int w, int h) {
 }
 
 void SceneViewer::paintGL() {
+    Logger::debug("Repainting");
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     _shaderProgram.bind();
@@ -111,12 +114,8 @@ void SceneViewer::paintGL() {
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
     
-
-    ///////////////////////////////////////进行光照处理
+    // Update lighting
     update_light();
-    //////////////////////////////////////
-
-
 
     for (auto object : _objects) {
         object.render(_shaderProgram);
@@ -136,7 +135,9 @@ void SceneViewer::mousePressEvent(QMouseEvent* event) {
 }
 
 void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
-    Logger::debug("Mouse moved with offset: " + std::to_string(event->x() - _lastMousePosition.x()) + ", " + std::to_string(event->y() - _lastMousePosition.y()));
+    if (event->buttons() != Qt::NoButton) {
+        Logger::debug("Mouse moved with offset: " + std::to_string(event->x() - _lastMousePosition.x()) + ", " + std::to_string(event->y() - _lastMousePosition.y()));
+    }
     // Check the type of button pressed
     switch (event->buttons()) {
         case Qt::LeftButton: {
@@ -182,7 +183,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
     // Update the last mouse position
     _lastMousePosition = event->pos();
     // Update the view
-    update();
+    parentWidget()->update();
 }
 
 void SceneViewer::wheelEvent(QWheelEvent* event) {
@@ -195,7 +196,33 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     Logger::debug("New camera position: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
     Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
-    update();
+    parentWidget()->update();
+}
+
+void SceneViewer::showEvent(QShowEvent* event) {
+    // Call show event of super class
+    QOpenGLWidget::showEvent(event);
+
+    if (_initialized) {
+        return;
+    }
+
+    //// Create mask for rounded corner
+    //QPainterPath mask;
+    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
+    //setMask(mask.toFillPolygon().toPolygon());
+
+    _initialized = true;
+}
+
+void SceneViewer::resizeEvent(QResizeEvent* event) {
+    // Call resize event of super class
+    QOpenGLWidget::resizeEvent(event);
+
+    //// Create mask for rounded corner
+    //QPainterPath mask;
+    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
+    //setMask(mask.toFillPolygon().toPolygon());
 }
 
 

@@ -40,6 +40,10 @@ private:
     // User Interaction flags section---------------------
     QPoint _lastMousePosition;
     Renderable* _selectedObject = nullptr;
+
+    // UI interface control
+    const int _cornerRadius = 10;
+    bool _initialized = false;
 	
 public:
 	SceneViewer(QWidget* parent = 0);
@@ -62,4 +66,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
     
+    // UI update events
+    virtual void showEvent(QShowEvent* event) override;
+    virtual void resizeEvent(QResizeEvent* event) override;
 };
