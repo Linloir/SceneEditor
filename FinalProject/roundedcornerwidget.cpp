@@ -38,7 +38,7 @@ void RoundedCornerWidget::initializeWidgetUI() {
     _borderWidget = new QWidget(this);
     _borderWidget->setObjectName("borderWidget");
     QString borderWidgetStyleSheet =
-        "QWidget#borderWidget{background-color:#00FFFFFF;border:2px solid " + _borderColor.name() + ";"
+        "QWidget#borderWidget{background-color:#00FFFFFF;border:2px solid " + _borderColor.name(QColor::HexArgb) + ";"
         "border-radius:" + QString::number(_cornerRadius) + "px;}";
     _borderWidget->setStyleSheet(borderWidgetStyleSheet);
     _borderWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -74,10 +74,12 @@ void RoundedCornerWidget::setCornerRadius(int radius) {
     _cornerRadius = radius;
 
     // Modify the corner radius in the current style sheet of the border widget
-    QString styleSheet = _borderWidget->styleSheet();
-    styleSheet.replace(QRegularExpression("border-radius:\\d+px;"),
-        QString("border-radius:%1px;").arg(_cornerRadius));
-    _borderWidget->setStyleSheet(styleSheet);
+    if (_borderWidget != nullptr) {
+        QString styleSheet = _borderWidget->styleSheet();
+        styleSheet.replace(QRegularExpression("border-radius:\\d+px;"),
+            QString("border-radius:%1px;").arg(_cornerRadius));
+        _borderWidget->setStyleSheet(styleSheet);
+    }
     
     // Reset the mask of the main widget
     QPainterPath path;
@@ -91,10 +93,12 @@ void RoundedCornerWidget::setBorderColor(QColor color) {
     _borderColor = color;
 
     // Modify the border color in the current style sheet of the border widget
-    QString styleSheet = _borderWidget->styleSheet();
-    styleSheet.replace(QRegularExpression("border:2px solid #\\w+;"),
-        QString("border:2px solid %1;").arg(_borderColor.name()));
-    _borderWidget->setStyleSheet(styleSheet);
+    if (_borderWidget != nullptr) {
+        QString styleSheet = _borderWidget->styleSheet();
+        styleSheet.replace(QRegularExpression("border:2px solid #\\w+;"),
+            QString("border:2px solid %1;").arg(_borderColor.name(QColor::HexArgb)));
+        _borderWidget->setStyleSheet(styleSheet);
+    }
 }
 
 QWidget* RoundedCornerWidget::mainWidget() const {
