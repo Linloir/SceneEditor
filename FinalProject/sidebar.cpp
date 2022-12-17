@@ -15,7 +15,7 @@ SideBar::SideBar(QWidget* parent)
 
     // Create stylesheet
     setObjectName("sideBar");
-    QString sideBarStyleSheet = "QWidget#sideBar{background-color:" + _backgroundColor.name() + "; }";
+    QString sideBarStyleSheet = "QWidget#sideBar{background-color:" + _backgroundColor.name(QColor::HexArgb) + "; }";
     setStyleSheet(sideBarStyleSheet);
 
     // Create main layout
@@ -119,7 +119,7 @@ void SideBar::collapse() {
 
 void SideBar::setBackgroundColor(QColor color) {
     _backgroundColor = color;
-    QString sideBarStyleSheet = "QWidget#sideBar{background-color:" + _backgroundColor.name() + "; }";
+    QString sideBarStyleSheet = "QWidget#sideBar{background-color:" + _backgroundColor.name(QColor::HexArgb) + "; }";
     setStyleSheet(sideBarStyleSheet);
 }
 
