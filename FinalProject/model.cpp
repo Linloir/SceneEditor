@@ -20,7 +20,6 @@ Model::Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::s
     _status = LOADED;
 }
 
-// file path is ...\\...\\.obj, and processnode & processmesh have been called here
 void Model::loadModel(std::string path) {
     Logger::info("Loading model from path: " + path);
     Assimp::Importer importer;
@@ -41,6 +40,8 @@ void Model::loadModel(std::string path) {
     processNode(scene->mRootNode, scene);
     _status = LOADED;
     Logger::info("Model loaded");
+    // 仅检查一次即可
+    //check_boundary();
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -72,9 +73,16 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         glm::vec3 vertexBitangent = glm::vec3(0.0f);
         
         // Process vertex positions
-        vertexPosition.x = mesh->mVertices[i].x;
-        vertexPosition.y = mesh->mVertices[i].y;
-        vertexPosition.z = mesh->mVertices[i].z;
+        //使用循环避免代码重复，如果可行的话，可以在此循环中确定法向量等信息
+        for (int j = 0; j < 3; j++) {
+            vertexPosition[j] = mesh->mVertices[i][j];
+            _left_down_back[j] = _left_down_back[j] < vertexPosition[j] ? _left_down_back[j] : vertexPosition[j];
+            _right_up_front[j] = _right_up_front[j] > vertexPosition[j] ? _right_up_front[j] : vertexPosition[j];
+        }
+
+        //vertexPosition.x = mesh->mVertices[i].x;
+        //vertexPosition.y = mesh->mVertices[i].y;
+        //vertexPosition.z = mesh->mVertices[i].z;
 
         // Process vertex normals
         if (mesh->mNormals) {
@@ -182,6 +190,21 @@ void Model::render(const ShaderProgram& shader) const {
     // Render the model
     for (unsigned int i = 0; i < _meshes.size(); i++) {
         _meshes[i].render(shader);
+    }
+}
+
+void Model::check_boundary() {
+    for (int i = 0; i < _meshes.size(); i++) {
+        for (int j = 0; j < _meshes[i].vertices().size();j++) {
+            // 0,1,2 for x,y,z
+            for (int k = 0; k < 3; k++) {
+                _left_down_back[k] = _left_down_back[k] < _meshes[i].vertices()[j]._position[k] ?
+                    _left_down_back[k] : _meshes[i].vertices()[j]._position[k];
+
+                _right_up_front[k] = _right_up_front[k] > _meshes[i].vertices()[j]._position[k] ?
+                    _right_up_front[k] : _meshes[i].vertices()[j]._position[k];
+            }
+        }
     }
 }
 
