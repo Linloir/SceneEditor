@@ -41,12 +41,12 @@ public:
 
 
     // maybe we can check if boundary has not been set yet
-    // Do remember to ensure you have called check_boundary
+    // Do remember to ensure you have called checkBoundary
     inline glm::vec3 get_upper_bound() {
         return _right_up_front;
     }
 
-    // Do remember to ensure you have called check_boundary
+    // Do remember to ensure you have called checkBoundary
     inline glm::vec3 get_lower_bound() {
         return _left_down_back;
     }
@@ -57,7 +57,7 @@ private:
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType textureType);
     // Since these are loacl position, this function should be called just once.
-    void check_boundary();
+    void checkBoundary();
 
 public:
     void render(const ShaderProgram& shader) const;

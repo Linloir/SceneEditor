@@ -41,7 +41,7 @@ void Model::loadModel(std::string path) {
     _status = LOADED;
     Logger::info("Model loaded");
     // 仅检查一次即可
-    //check_boundary();
+    //checkBoundary();
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -193,7 +193,7 @@ void Model::render(const ShaderProgram& shader) const {
     }
 }
 
-void Model::check_boundary() {
+void Model::checkBoundary() {
     for (int i = 0; i < _meshes.size(); i++) {
         for (int j = 0; j < _meshes[i].vertices().size();j++) {
             // 0,1,2 for x,y,z
