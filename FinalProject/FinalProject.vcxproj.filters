@@ -212,7 +212,7 @@
     <ClInclude Include="lightCaster.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
-    <ClInclude Include="illuminant.h">
+    <ClInclude Include="illuminer.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>
@@ -265,6 +265,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="vertexshader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="illuminant.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="illuminant.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

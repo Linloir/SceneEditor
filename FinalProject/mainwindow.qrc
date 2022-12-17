@@ -2,6 +2,8 @@
     <qresource prefix="/shaders">
         <file>fragmentshader.fs</file>
         <file>vertexshader.vs</file>
+        <file>illuminant.fs</file>
+        <file>illuminant.vs</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>font_awesome_6_regular_free.otf</file>
