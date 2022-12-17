@@ -165,6 +165,9 @@
     <ClCompile Include="modelthumbnailwidget.cpp">
       <Filter>Source Files\Qt Widgets\Pages\Scene Editor\Object Selector</Filter>
     </ClCompile>
+    <ClCompile Include="lightCaster.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -205,6 +208,12 @@
     </ClInclude>
     <ClInclude Include="modelsetter.h">
       <Filter>Header Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
+    </ClInclude>
+    <ClInclude Include="lightCaster.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="illuminant.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

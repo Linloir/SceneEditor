@@ -42,6 +42,7 @@ void Renderable::render(ShaderProgram shader) {
     }
     // Set model matrix
     shader.setUniform("model", modelMatrix());
+
     // Render
     _model->render(shader);
 }

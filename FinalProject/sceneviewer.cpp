@@ -1,18 +1,13 @@
 #include "sceneviewer.h"
 
-#include <vector>
 #include <string>
 #include <qresource.h>
 #include <qurl.h>
 #include <qdir.h>
+#include<time.h>
 
-#include "vbo.h"
-#include "vao.h"
-#include "shader.h"
-#include "logger.h"
-#include "model.h"
+#include "lightCaster.h"
 
-using std::vector;
 
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
@@ -22,38 +17,50 @@ SceneViewer::SceneViewer(QWidget* parent)
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setVersion(4, 3);
     setFormat(format);
-    
-    // Create a folder
-    QDir dir("./temp/shaders");
-    if (!dir.exists()) {
-        dir.mkpath(".");
+
+    // Create temp folder
+    QDir dir;
+    if (!dir.exists("./temp"))
+    {
+        dir.mkdir("./temp");
+    }
+    if (!dir.exists("./temp/shaders"))
+    {
+        dir.mkdir("./temp/shaders");
     }
     
-    // Copy the shaders to the folder
-    if (QFile::exists("./temp/shaders/vertexshader.vs")) {
-        QFile::remove("./temp/shaders/vertexshader.vs");
-    }
-    QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
-    QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
-        QFile::remove("./temp/shaders/fragmentshader.fs");
-    }
-    QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
-    QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
+    // Copy the shaders to the temp folder
+    extractShaderResorce("vertexshader.vs");
+    extractShaderResorce("fragmentshader.fs");
+    extractShaderResorce("illuminant.vs");
+    extractShaderResorce("illuminant.fs");
 }
 
 SceneViewer::~SceneViewer() {
+    
+}
 
+void SceneViewer::extractShaderResorce(const QString& shaderName) {
+    QString shaderResourcePath = ":/shaders/" + shaderName;
+    QString shaderTempPath = "./temp/shaders/" + shaderName;
+    
+    if (QFile::exists(shaderTempPath))
+    {
+        QFile::remove(shaderTempPath);
+    }
+    QFile::copy(shaderResourcePath, shaderTempPath);
+    QFile::setPermissions(shaderTempPath, QFile::ReadOwner | QFile::WriteOwner);
 }
 
 void SceneViewer::initializeGL() {
     initializeOpenGLFunctions();
-
+    
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
-
+    glEnable(GL_FRAMEBUFFER_SRGB);
+	
     Logger::info("Currently running on OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
 
     _shaderProgram.ensureInitialized();
@@ -65,8 +72,16 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
+
+    setAllLigntUniform(_shaderProgram);
+    init_queue();
+
+    addDirLight(glm::vec3(0.3, 0.5, -1), glm::vec3(0.2, 0.1, 0.2));
+    addSpotLight(glm::vec3(0.3, 0.5, -1), glm::vec3(-0.3, -0.5, 3), glm::vec3(0.2, 1, 0.1));
+    addPointLight(glm::vec3(0.5, 0.9, 0.4), glm::vec3(1, 0.2, 0.4));
+    addPointLight(glm::vec3(-0.3, -0.9, 0.4), glm::vec3(0, 0.2, 0.9));
     
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
 
 void SceneViewer::resizeGL(int w, int h) {
@@ -85,6 +100,8 @@ void SceneViewer::paintGL() {
     glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
+    
+    update_light();
 
     for (auto object : _objects) {
         object.render(_shaderProgram);
@@ -192,4 +209,25 @@ void SceneViewer::resizeEvent(QResizeEvent* event) {
     //QPainterPath mask;
     //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
     //setMask(mask.toFillPolygon().toPolygon());
+}
+
+
+void SceneViewer::update_light() {
+    setAllLigntUniform(_shaderProgram);
+    for (int i = 0; i < _illuminants.size(); i++) {
+        _illuminants[i].updateLight(_shaderProgram);
+    }
+}
+
+void SceneViewer::addDirLight(glm::vec3 direction, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(Illuminant::LightType::dir, direction,color));
+}
+void SceneViewer::addPointLight(glm::vec3 position, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(position, color, Illuminant::LightType::point));
+}
+void SceneViewer::addSpotLight(glm::vec3 direction, glm::vec3 position, glm::vec3 color) {
+    _illuminants.push_back(Illuminant(position,direction, color, Illuminant::LightType::spot));
+}
+void SceneViewer::deleteLight(int index) {
+    _illuminants.erase(_illuminants.begin() + index);
 }
