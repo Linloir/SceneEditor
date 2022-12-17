@@ -5,7 +5,6 @@
 #include <qresource.h>
 #include <qurl.h>
 #include <qdir.h>
-#include <qpainterpath.h>
 
 #include "vbo.h"
 #include "vao.h"
@@ -66,11 +65,6 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
-
-    Model* backpackModel = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
-    Logger::info("Model loaded");
-    Renderable backpack(backpackModel);
-    _objects.push_back(backpack);
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 }

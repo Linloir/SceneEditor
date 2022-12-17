@@ -7,6 +7,7 @@
 #include "pagewidget.h"
 #include "sceneviewer.h"
 #include "roundedcornerwidget.h"
+#include "modelselector.h"
 
 class EditorPage : public PageWidget {
     
@@ -31,6 +32,8 @@ private:
     
     QWidget* _mainWidget = nullptr;
     QHBoxLayout* _mainLayout = nullptr;
+
+    ModelSelector* _modelSelector = nullptr;
 
     RoundedCornerWidget* _sceneViewerContainer = nullptr;
     QVBoxLayout* _sceneViewerContainerLayout = nullptr;

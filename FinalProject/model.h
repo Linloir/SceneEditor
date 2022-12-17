@@ -23,8 +23,16 @@ public:
     Model(std::string path);
     ~Model();
 
+private:
+    Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::string directory);
+
 public:
     inline MODELSTATUS status() const { return _status; }
+    inline int meshCount() const { return _meshes.size(); }
+    inline int textureCount() const { return _texturesLoaded.size(); }
+    inline std::string directory() const { return _directory; }
+
+    Model* copyToCurrentContext() const;
 
 private:
     void loadModel(std::string path);

@@ -31,6 +31,11 @@ EditorPage::EditorPage(QWidget* parent) :
     _mainWidget->setLayout(_mainLayout);
     _titleLayout->addWidget(_mainWidget);
     _mainWidget->show();
+
+    // Generate model selector
+    _modelSelector = new ModelSelector(_mainWidget);
+    _mainLayout->addWidget(_modelSelector);
+    _modelSelector->show();
         
     // Generate scene viewer
     _sceneViewerContainer = new RoundedCornerWidget(_mainWidget);

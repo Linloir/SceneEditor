@@ -13,6 +13,13 @@ Model::~Model() {
     // TODO: Maybe delete all meshes?
 }
 
+Model::Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::string directory) {
+    _meshes = std::move(meshes);
+    _texturesLoaded = std::move(textures);
+    _directory = directory;
+    _status = LOADED;
+}
+
 // file path is ...\\...\\.obj, and processnode & processmesh have been called here
 void Model::loadModel(std::string path) {
     Logger::info("Loading model from path: " + path);
@@ -176,4 +183,26 @@ void Model::render(const ShaderProgram& shader) const {
     for (unsigned int i = 0; i < _meshes.size(); i++) {
         _meshes[i].render(shader);
     }
+}
+
+Model* Model::copyToCurrentContext() const {
+    // Reload all textures
+    std::vector<Texture> newTextures;
+    for (unsigned int i = 0; i < _texturesLoaded.size(); i++) {
+        // Load texture
+        Texture newTexture = Texture(_texturesLoaded[i].type(), _directory + '/' + _texturesLoaded[i].path());
+        newTextures.push_back(newTexture);
+    }
+    
+    // Copy all meshes
+    std::vector<Mesh> newMeshes;
+    for (unsigned int i = 0; i < _meshes.size(); i++) {
+        // Copy mesh
+        Mesh newMesh = Mesh(_meshes[i].vertices(), _meshes[i].indices(), newTextures);
+        newMeshes.push_back(newMesh);
+    }
+    
+    // Create new model
+    Model* newModel = new Model(std::move(newMeshes), std::move(newTextures), _directory);
+    return newModel;
 }

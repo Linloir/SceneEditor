@@ -13,6 +13,7 @@ FramelessWindow::FramelessWindow(int cornerRadius, unsigned int attributes, QWid
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint);
+    setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(true);
     setFocus();
     
@@ -27,7 +28,7 @@ FramelessWindow::FramelessWindow(int cornerRadius, unsigned int attributes, QWid
     setLayout(_stretchLayout);
 
     // Set style sheet for window widget
-    QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
+    QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
     _windowWidget->setStyleSheet(windowWidgetStyleSheet);
 
     // Set shadow for window widget
@@ -119,7 +120,7 @@ void FramelessWindow::initializeWindowUI() {
     _windowBorder = new QWidget(this);
     _windowBorder->setObjectName("windowBorder");
     QString windowBorderStyleSheet =
-        "QWidget#windowBorder{background-color:#00FFFFFF;border:1.5px solid " + _borderColor.name() + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
+        "QWidget#windowBorder{background-color:#00FFFFFF;border:1.5px solid " + _borderColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
     _windowBorder->setStyleSheet(windowBorderStyleSheet);
     _windowBorder->setAttribute(Qt::WA_TransparentForMouseEvents);
     _windowBorder->move(_windowWidget->pos() - QPoint(1, 1));
@@ -170,7 +171,7 @@ void FramelessWindow::controlWindowScale() {
 
         _windowShadow->setEnabled(false);
         _windowBorder->hide();
-        QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name() + ";}";
+        QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";}";
         _windowWidget->setStyleSheet(windowWidgetStyleSheet);
 
         _stretchLayout->setContentsMargins(0, 0, 0, 0);
@@ -194,7 +195,7 @@ void FramelessWindow::controlWindowScale() {
 
         _windowShadow->setEnabled(true);
         _windowBorder->show();
-        QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name() + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
+        QString windowWidgetStyleSheet = "QWidget#windowWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_cornerRadius) + "px;}";
         _windowWidget->setStyleSheet(windowWidgetStyleSheet);
 
         QPainterPath path;
