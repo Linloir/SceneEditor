@@ -1,17 +1,17 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "utils.h"
 #include "shader.h"
 #include "camera.h"
 
-#include <vector>
-#include <string>
 
-
-class skybox { 
+class SkyBox { 
 public:
     std::vector<std::string> faces;
-    skybox(std::string path);
+    SkyBox(std::string path);
     unsigned int cubemapTexture, skyboxVAO, skyboxVBO;
     void render();
 private:

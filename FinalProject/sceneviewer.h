@@ -28,7 +28,7 @@ private:
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     ShaderProgram _skyShader = ShaderProgram::empty();
-    skybox* sky;
+    SkyBox* _sky;
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;

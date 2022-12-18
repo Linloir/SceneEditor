@@ -168,6 +168,9 @@
     <ClCompile Include="illuminer.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -210,6 +213,9 @@
       <Filter>Header Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
     </ClInclude>
     <ClInclude Include="illuminer.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>
@@ -262,6 +268,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="vertexshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skyboxfragmentshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skyboxvertexshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="terrainfragmentshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="terrainvertexshader.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

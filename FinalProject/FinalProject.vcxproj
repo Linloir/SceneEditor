@@ -125,6 +125,7 @@
     <ClCompile Include="scrolllistwidget.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sidebar.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
@@ -153,6 +154,7 @@
     <QtMoc Include="roundedcornerwidget.h" />
     <QtMoc Include="scrolllistwidget.h" />
     <QtMoc Include="modelthumbnailwidget.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vbo.h" />
@@ -172,6 +174,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </None>
+    <None Include="skyboxfragmentshader.glsl" />
+    <None Include="skyboxvertexshader.glsl" />
+    <None Include="terrainfragmentshader.glsl" />
+    <None Include="terrainvertexshader.glsl" />
     <None Include="vertexshader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

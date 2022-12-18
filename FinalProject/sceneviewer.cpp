@@ -31,6 +31,8 @@ SceneViewer::SceneViewer(QWidget* parent)
     // Copy the shaders to the temp folder
     extractShaderResorce("vertexshader.glsl");
     extractShaderResorce("fragmentshader.glsl");
+    extractShaderResorce("skyboxvertexshader.glsl");
+    extractShaderResorce("skyboxfragmentshader.glsl");
 }
 
 SceneViewer::~SceneViewer() {
@@ -76,7 +78,19 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
+    _skyShader.ensureInitialized();
+    Logger::info("Sky Shader initialized");
+    
+    VertexShader skyVertexShader("./temp/shaders/skyboxvertexshader.glsl");
+    FragmentShader skyFragmentShader("./temp/shaders/skyboxfragmentshader.glsl");
+    _skyShader.attachShader(skyVertexShader);
+    _skyShader.attachShader(skyFragmentShader);
+    skyVertexShader.dispose();
+    skyFragmentShader.dispose();
+
     // Test Code Start
+    _sky = new SkyBox("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\SkyBoxes");
+    
     _dirLight = new DirLight();
 
     Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
@@ -140,6 +154,12 @@ void SceneViewer::paintGL() {
     }
 
     _shaderProgram.unbind();
+    
+    _skyShader.bind();
+    _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
+    _skyShader.setUniform("projection", projection);
+    _sky->render();
+    _skyShader.unbind();
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {

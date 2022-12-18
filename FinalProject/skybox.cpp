@@ -1,13 +1,12 @@
-#include "utils.h"
-#include "skybox.h"
-#include "shader.h"
-#include "camera.h"
-
 #include <STBImage/stb_image.h>
 #include <vector>
 #include <string>
 
-skybox::skybox(std::string path){
+#include "skybox.h"
+#include "shader.h"
+#include "camera.h"
+
+SkyBox::SkyBox(std::string path){
     faces.clear();
     faces.push_back(path + "/right.jpg");
     faces.push_back(path + "/left.jpg");
@@ -27,7 +26,7 @@ skybox::skybox(std::string path){
     OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
 
-void skybox::render() {
+void SkyBox::render() {
     OPENGL_EXTRA_FUNCTIONS->glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     // skybox cube
     OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(skyboxVAO);
@@ -38,7 +37,7 @@ void skybox::render() {
     OPENGL_EXTRA_FUNCTIONS->glDepthFunc(GL_LESS); // set depth function back to default
 }
 
-unsigned int skybox::loadCubemap(std::vector<std::string> faces)
+unsigned int SkyBox::loadCubemap(std::vector<std::string> faces)
 {
     unsigned int textureID;
     OPENGL_FUNCTIONS->glGenTextures(1, &textureID);
