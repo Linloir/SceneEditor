@@ -6,6 +6,8 @@
 #include "texture.h"
 #include "vao.h"
 #include "shader.h"
+#include "ray.h"
+#include "hitrecord.h"
 
 class Mesh {
 private:
@@ -34,6 +36,7 @@ public:
 
 public:
     void render(const ShaderProgram& shader) const ;
+    HitRecord hit(const Ray& ray) const;
 
 private:
     void setupMesh();
