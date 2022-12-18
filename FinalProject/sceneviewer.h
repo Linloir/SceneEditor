@@ -43,8 +43,13 @@ private:
 
     // User Interaction flags section---------------------
     QPoint _lastMousePosition;
+    bool _controlPressed = false;
+    bool _dragged = false;
+    bool _hideBound = false;
     Renderable* _hoveredObject = nullptr;
+    Renderable* _pressedObject = nullptr;
     Renderable* _selectedObject = nullptr;
+    Renderable* _operatingObject = nullptr;
     HitRecord _hitRecord;
 
     // UI interface control
@@ -57,7 +62,12 @@ public:
 
 private:
     void extractShaderResource(const QString& shaderName);
-    void hitTest(const Ray& ray);
+    Renderable* hitTest(const Ray& ray);
+
+private:
+    void moveCamera(QMouseEvent* event);
+    void rotateCamera(QMouseEvent* event);
+    void moveOperatingObject(const Ray& ray);
 
 protected:
     // OpenGL functions
@@ -67,6 +77,14 @@ protected:
 
     // Mouse events
     virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void keyPressEvent(QKeyEvent* event) override;
+    virtual void keyReleaseEvent(QKeyEvent* event) override;
+
+signals:
+    void onHover(Renderable* object);
+    void onSelect(Renderable* object);
+    void onUpdate(Renderable* object);
 };

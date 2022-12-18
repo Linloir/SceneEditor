@@ -38,6 +38,9 @@ public:
 
 public:
     inline glm::vec3 front() const { return _front; }
+    inline glm::vec3 right() const { return _right; }
+    inline glm::vec3 up() const { return _up; }
+    inline glm::vec3 position() const { return _position; }
     
     inline float fovy() const { return _fovy; }
     inline float nearPlane() const { return _nearPlane; }
@@ -48,7 +51,6 @@ public:
 
     Ray generateRay(glm::vec2 mouseRelativePosition, float aspectRatio) const;
 
-    inline glm::vec3 position() const { return _position; }
     
 public:
     inline void move(glm::vec2 offset);

@@ -13,6 +13,11 @@ SceneViewer::SceneViewer(QWidget* parent)
 {
     // Set mouse tracking
     setMouseTracking(true);
+    // Set key tracking
+    setFocusPolicy(Qt::StrongFocus);
+    // Set the focus
+    setFocus();
+
     // OpenGL initialize
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
@@ -61,13 +66,16 @@ void SceneViewer::extractShaderResource(const QString& shaderName) {
     QFile::setPermissions(shaderTempPath, QFile::ReadOwner | QFile::WriteOwner);
 }
 
-void SceneViewer::hitTest(const Ray& ray) {
+Renderable* SceneViewer::hitTest(const Ray& ray) {
     HitRecord newRecord = HitRecord();
     Renderable* newObject = nullptr;
-    int newObjectIndex = -1;
     for (int i = 0; i < _objects.size(); i++) {
         Logger::debug("Testing object " + std::to_string(i));
         Renderable* obj = _objects[i];
+        if (obj == _operatingObject) {
+            // Ignore current operating Object
+            continue;
+        }
         HitRecord hitRecord = obj->hit(ray);
         if (hitRecord.hitted()) {
             Logger::debug("Hitted object " + std::to_string(i));
@@ -78,14 +86,10 @@ void SceneViewer::hitTest(const Ray& ray) {
         if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
             newRecord = hitRecord;
             newObject = obj;
-            newObjectIndex = i;
         }
     }
-    if (newRecord.hitted()) {
-        Logger::debug("Hit test hitted object with index " + std::to_string(newObjectIndex));
-    }
     _hitRecord = newRecord;
-    _hoveredObject = newObject;
+    return newObject;
 }
 
 void SceneViewer::initializeGL() {
@@ -191,12 +195,31 @@ void SceneViewer::paintGL() {
     _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr ? 1 : 0);
 
     for (auto object : _objects) {
+        if (object == _pressedObject) {
+            _shaderProgram.setUniform("selColor", glm::vec3(0.22f));
+        }
+        else if (object == _operatingObject) {
+            _shaderProgram.setUniform("selColor", glm::vec3(0.1f));
+        }
+        else if (object == _hoveredObject) {
+            _shaderProgram.setUniform("selColor", glm::vec3(0.2f));
+        }
+        else {
+            _shaderProgram.setUniform("selColor", glm::vec3(0.0f));
+        }
         object->render(_shaderProgram);
     }
 
     _shaderProgram.unbind();
 
-    if (_hoveredObject != nullptr) {
+    if (_selectedObject != nullptr && !_hideBound) {
+        _boundShader.bind();
+        _boundShader.setUniform("view", view);
+        _boundShader.setUniform("projection", projection);
+        _selectedObject->boundary().render();
+        _boundShader.unbind();
+    }
+    if (_hoveredObject != nullptr && _hoveredObject != _selectedObject) {
         _boundShader.bind();
         _boundShader.setUniform("view", view);
         _boundShader.setUniform("projection", projection);
@@ -212,58 +235,128 @@ void SceneViewer::paintGL() {
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {
-    Logger::debug("Mouse pressed at: " + std::to_string(event->x()) + ", " + std::to_string(event->y()));
     if (event->button() == Qt::LeftButton) {
-        // TODO: Hit test on objects
+        _pressedObject = _hoveredObject;
     }
     else {
         _lastMousePosition = event->pos();
     }
+
+    parentWidget()->update();
+    setFocus();
+}
+
+void SceneViewer::mouseReleaseEvent(QMouseEvent* event) {
+    // State transfer
+    bool startOperatingObject = false;
+    if (_operatingObject != nullptr) {
+        // Click when having an operating object
+        _operatingObject->updateBoundary();
+        if (!_dragged) {
+            // if haven't changed since last mouse press, it's a submission click
+            _operatingObject = nullptr;
+            _hideBound = false;
+        }
+        else {
+            // dragged, keep it operational
+            _dragged = false;
+            _hideBound = true;
+            _operatingObject = _operatingObject;
+        }
+    }
+    else if (_pressedObject != nullptr && _pressedObject == _selectedObject) {
+        // Double select on an object, set in operating mode
+        _operatingObject = _selectedObject;
+        _hideBound = true;
+        startOperatingObject = true;
+    }
+    else if (_dragged) {
+        _dragged = false;
+        _hideBound = false;
+        if (_selectedObject != nullptr) {
+            _selectedObject->updateBoundary();
+        }
+    }
+    else {
+        _selectedObject = _pressedObject;
+        _hideBound = false;
+    }
+    
+    // Reset pressed object
+    _pressedObject = nullptr;
+
+    // Update hover object
+    float relX = (float)event->x() / (float)width();
+    float relY = 1 - (float)event->y() / (float)height();
+    Ray ray = _camera.generateRay(glm::vec2(relX, relY), (float)width() / (float)height());
+    _hoveredObject = hitTest(ray);
+    
+    if (startOperatingObject) {
+        // If just setted to operating mode, move the object
+        moveOperatingObject(ray);
+    }
+
+    // Update the view
+    parentWidget()->update();
 }
 
 void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
     // Check the type of button pressed
     switch (event->buttons()) {
         case Qt::LeftButton: {
-            // Move the selected object
             if (_selectedObject != nullptr) {
-                // TODO: move the selected object
+                // Set dragged
+                _dragged = true;
+                // Hide boundary
+                _hideBound = true;
+                // Rotate around camera up
+                glm::vec2 delta = glm::vec2(event->x() - _lastMousePosition.x(), event->y() - _lastMousePosition.y());
+                _selectedObject->rotate(_camera.up(), delta.x * 0.01f);
+                // Rotate around camera right
+                _selectedObject->rotate(_camera.right(), delta.y * 0.01f);
             }
             break;
         }
         case Qt::RightButton: {
-            // Move the camera
-            float xoffset = event->x() - _lastMousePosition.x();
-            float yoffset = _lastMousePosition.y() - event->y();    // reversed since y-coordinates go from bottom to top
-            float xmovement = xoffset * _cameraMovementSpeed;
-            float ymovement = yoffset * _cameraMovementSpeed;
-            glm::vec3 cameraPrevPos = _camera.position();
-            _camera.move({ -xmovement, -ymovement });
-            glm::vec3 cameraNewPos = _camera.position();
-            _rotateCenter += cameraNewPos - cameraPrevPos;
-            Logger::debug("Camera moved to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
-            Logger::debug("New center: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
+            // Set dragged
+            _dragged = true;
+            moveCamera(event);
             break;
         }
         case Qt::MiddleButton: {
-            // Rotate the camera
-            float xoffset = event->x() - _lastMousePosition.x();
-            float yoffset = _lastMousePosition.y() - event->y();    // reversed since y-coordinates go from bottom to top
-            // Calculate pitch angle
-            float pitch = yoffset * _cameraRotationSpeed;
-            // Calculate yaw angle
-            float yaw = xoffset * _cameraRotationSpeed;
-            _camera.rotate(_rotateCenter, pitch, -yaw);
-            Logger::debug("Camera rotated to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
-            Logger::debug("Center at: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
+            if (_controlPressed && _selectedObject != nullptr) {
+                // Set dragged
+                _dragged = true;
+                // Hide boundary
+                _hideBound = true;
+                // Scale object
+                glm::vec2 delta = glm::vec2(event->x() - _lastMousePosition.x(), event->y() - _lastMousePosition.y());
+                _selectedObject->scale(-delta.y * 0.01f);
+            }
+            else {
+                // Set dragged
+                _dragged = true;
+                rotateCamera(event);
+            }
             break;
         }
         case Qt::NoButton: {
-            // If no button pressed, do hit test and move the current object if selected
             float relX = (float)event->x() / (float)width();
             float relY = 1 - (float)event->y() / (float)height();
             Ray ray = _camera.generateRay(glm::vec2(relX, relY), (float)width() / (float)height());
-            hitTest(ray);
+            if (_operatingObject == nullptr) {
+                // If no button pressed, do hit test and move the current object if selected
+                _hoveredObject = hitTest(ray);
+                if (_hoveredObject != nullptr) {
+                    setCursor(Qt::PointingHandCursor);
+                }
+                else {
+                    setCursor(Qt::ArrowCursor);
+                }
+            }
+            else {
+                moveOperatingObject(ray);
+            }
             break;
         }
         default: {
@@ -289,4 +382,102 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
     parentWidget()->update();
+}
+
+void SceneViewer::moveCamera(QMouseEvent* event) {
+    // Move the camera
+    float xoffset = event->x() - _lastMousePosition.x();
+    float yoffset = _lastMousePosition.y() - event->y();    // reversed since y-coordinates go from bottom to top
+    float xmovement = xoffset * _cameraMovementSpeed;
+    float ymovement = yoffset * _cameraMovementSpeed;
+    glm::vec3 cameraPrevPos = _camera.position();
+    _camera.move({ -xmovement, -ymovement });
+    glm::vec3 cameraNewPos = _camera.position();
+    _rotateCenter += cameraNewPos - cameraPrevPos;
+    Logger::debug("Camera moved to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
+    Logger::debug("New center: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
+    if (_operatingObject != nullptr) {
+        float relX = (float)event->x() / (float)width();
+        float relY = 1 - (float)event->y() / (float)height();
+        Ray ray = _camera.generateRay(glm::vec2(relX, relY), (float)width() / (float)height());
+        moveOperatingObject(ray);
+    }
+}
+
+void SceneViewer::rotateCamera(QMouseEvent* event) {
+    // Rotate the camera
+    float xoffset = event->x() - _lastMousePosition.x();
+    float yoffset = _lastMousePosition.y() - event->y();    // reversed since y-coordinates go from bottom to top
+    // Calculate pitch angle
+    float pitch = yoffset * _cameraRotationSpeed;
+    // Calculate yaw angle
+    float yaw = xoffset * _cameraRotationSpeed;
+    _camera.rotate(_rotateCenter, pitch, -yaw);
+    Logger::debug("Camera rotated to: " + std::to_string(_camera.position().x) + ", " + std::to_string(_camera.position().y) + ", " + std::to_string(_camera.position().z));
+    Logger::debug("Center at: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
+    if (_operatingObject != nullptr) {
+        float relX = (float)event->x() / (float)width();
+        float relY = 1 - (float)event->y() / (float)height();
+        Ray ray = _camera.generateRay(glm::vec2(relX, relY), (float)width() / (float)height());
+        moveOperatingObject(ray);
+    }
+}
+
+void SceneViewer::keyPressEvent(QKeyEvent* event) {
+    Logger::debug("Detect keypress " + std::to_string(event->key()));
+    // If ctrl pressed
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
+        Logger::debug("Control pressed");
+        _controlPressed = true;
+    }
+}
+
+void SceneViewer::keyReleaseEvent(QKeyEvent* event) {
+    // If no control pressed
+    if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
+        Logger::debug("Control released");
+        _controlPressed = false;
+    }
+}
+
+void SceneViewer::moveOperatingObject(const Ray& ray) {
+    // Current moving object
+    hitTest(ray);
+    if (!_hitRecord.hitted()) {
+        // Move to the direction of current ray
+        glm::vec3 target = _camera.position() + ray.direction() * 15.0f;
+        _operatingObject->setPosition(target);
+        _operatingObject->updateBoundary();
+    }
+    // Move the object so that the bottom center of the object is at the hit point
+    else if (_stickToSurface) {
+        // Stick the bottom center of the model to the surface
+
+        // Clear current translation and rotation while keeping scale
+        _operatingObject->setPosition(glm::vec3(0.0f));
+        _operatingObject->setRotation(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f);
+        _operatingObject->updateBoundary();
+
+        // Set the bottom center of the model at local origin
+        glm::vec3 bottomCenter = _operatingObject->boundary().bottomCenterPoint();
+        _operatingObject->move(-bottomCenter);
+
+        // Rotate the model to align with the surface normal
+        glm::vec3 normal = _hitRecord.normal();
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::vec3 axis = glm::cross(up, normal);
+        float angle = glm::acos(glm::dot(up, normal));
+        _operatingObject->rotate(axis, angle);
+
+        // Move the model to the hit point
+        glm::vec3 hitPoint = _hitRecord.position();
+        _operatingObject->move(hitPoint);
+
+        // Update boundary
+        _operatingObject->updateBoundary();
+    }
+    else {
+        // Move the object to the hit point
+        _operatingObject->setPosition(_hitRecord.position());
+    }
 }

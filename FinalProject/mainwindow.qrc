@@ -8,6 +8,8 @@
         <file>skyboxfragmentshader.glsl</file>
         <file>boundfragmentshader.glsl</file>
         <file>boundvertexshader.glsl</file>
+        <file>thumbnailfragmentshader.glsl</file>
+        <file>thumbnailvertexshader.glsl</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>font_awesome_6_regular_free.otf</file>

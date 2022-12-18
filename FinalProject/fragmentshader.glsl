@@ -61,6 +61,8 @@ uniform DirLight dirlights[MAX_DIR_LIGHTS];
 uniform PointLight pointlights[MAX_POINT_LIGHTS];
 uniform SpotLight spotlights[MAX_SPOT_LIGHTS];
 
+uniform vec3 selColor;
+
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -79,10 +81,13 @@ void main()
     // phase 2: point lights
     for (int i = 0; i < pointlightnr; i++)
         result += CalcPointLight(pointlights[i], norm, FragPos, viewDir);    
-    // // phase 3: spot light
-    // for (int i = 0; i < spotlightnr; i++)
-    //     result += CalcSpotLight(spotlights[i], norm, FragPos, viewDir);    
+    // phase 3: spot light
+    for (int i = 0; i < spotlightnr; i++)
+        result += CalcSpotLight(spotlights[i], norm, FragPos, viewDir);    
     
+    if (selColor != vec3(0.0))
+        result += selColor;
+
     FragColor = vec4(result, 1.0);
 }
 
