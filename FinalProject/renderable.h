@@ -44,6 +44,8 @@ public:
     ScopedLight* originalLight() const; // pass out the light object to scene manager to set light attributes
     bool hasLight() const { return _light != nullptr; }
     void makeLight();   // create a light source in the object
+
+    const Boundary& boundary() const { return _boundary; }
     
     inline glm::mat4 modelMatrix() const;
 

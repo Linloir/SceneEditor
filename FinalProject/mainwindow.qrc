@@ -6,6 +6,8 @@
         <file>terrainfragmentshader.glsl</file>
         <file>terrainvertexshader.glsl</file>
         <file>skyboxfragmentshader.glsl</file>
+        <file>boundfragmentshader.glsl</file>
+        <file>boundvertexshader.glsl</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>font_awesome_6_regular_free.otf</file>

@@ -172,6 +172,8 @@
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="boundfragmentshader.glsl" />
+    <None Include="boundvertexshader.glsl" />
     <None Include="fragmentshader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>

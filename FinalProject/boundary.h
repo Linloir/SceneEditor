@@ -3,6 +3,7 @@
 #include <GLM/glm.hpp>
 
 #include "ray.h"
+#include "utils.h"
 
 class Boundary {
 private:
@@ -21,6 +22,8 @@ public:
     inline glm::vec3 bottomCenterPoint() const;
 
     bool hit(const Ray& ray) const;
+
+    void render() const;
 };
 
 inline glm::vec3 Boundary::bottomCenterPoint() const {

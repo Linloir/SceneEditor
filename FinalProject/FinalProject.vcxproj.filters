@@ -294,5 +294,11 @@
     <None Include="terrainvertexshader.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="boundvertexshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="boundfragmentshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
