@@ -104,6 +104,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aboutpage.cpp" />
+    <ClCompile Include="boundary.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="editorpage.cpp" />
@@ -146,6 +147,7 @@
     <QtMoc Include="editorpage.h" />
     <QtMoc Include="framelesswindow.h" />
     <QtMoc Include="lineeditwidget.h" />
+    <ClInclude Include="hitrecord.h" />
     <ClInclude Include="illuminer.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mesh.h" />
