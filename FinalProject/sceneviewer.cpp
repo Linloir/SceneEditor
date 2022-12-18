@@ -4,7 +4,6 @@
 #include <qresource.h>
 #include <qurl.h>
 #include <qdir.h>
-#include <time.h>
 
 #include "illuminer.h"
 

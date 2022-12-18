@@ -13,7 +13,7 @@
 #include "illuminer.h"
 #include "utils.h"
 #include "logger.h"
-
+#include "skybox.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -27,6 +27,8 @@ private:
     DirLight* _dirLight = nullptr;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
+    ShaderProgram _skyShader = ShaderProgram::empty();
+    skybox* sky;
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;
