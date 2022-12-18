@@ -23,14 +23,20 @@ void DirLight::updateShader(ShaderProgram shader, int index) const {
     //     vec3 specular;
     // };
 
-    shader.setUniform("dirlights[" + std::to_string(index) + "].direction", -_direction);
+    Logger::debug("Setting dir light " + std::to_string(index) + " to shader");
+    Logger::debug("[+] Direction: " + std::to_string(_direction.x) + ", " + std::to_string(_direction.y) + ", " + std::to_string(_direction.z));
+    Logger::debug("[+] Ambient: " + std::to_string(ambientLightColor().x) + ", " + std::to_string(ambientLightColor().y) + ", " + std::to_string(ambientLightColor().z));
+    Logger::debug("[+] Diffuse: " + std::to_string(diffuseLightColor().x) + ", " + std::to_string(diffuseLightColor().y) + ", " + std::to_string(diffuseLightColor().z));
+    Logger::debug("[+] Specular: " + std::to_string(specularLightColor().x) + ", " + std::to_string(specularLightColor().y) + ", " + std::to_string(specularLightColor().z));
+    
+    shader.setUniform("dirlights[" + std::to_string(index) + "].direction", _direction);
     shader.setUniform("dirlights[" + std::to_string(index) + "].ambient", ambientLightColor());
     shader.setUniform("dirlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
     shader.setUniform("dirlights[" + std::to_string(index) + "].specular", specularLightColor());
 }
 
 ScopedLight::ScopedLight(glm::vec3 position, glm::vec3 direction, glm::vec3 color) :
-    Illuminer(color), _position(position), _direction(direction)
+    Illuminer(color), _position(position), _direction(direction), _idealDistance(32)
 {
     updateLinear();
     updateQuadratic();
@@ -42,6 +48,10 @@ ScopedLight::ScopedLight(int distance, glm::vec3 position, glm::vec3 direction, 
     updateLinear();
     updateQuadratic();
 }
+
+ScopedLight::ScopedLight(glm::vec3 position, glm::vec3 direction, float cutOffAngle, int idealDistance, float linear, float quadratic, glm::vec3 color) :
+    Illuminer(color), _position(position), _direction(direction), _cutOffAngle(cutOffAngle), _idealDistance(idealDistance), _attLinear(linear), _attQuadratic(quadratic)
+{}
 
 ScopedLight::~ScopedLight() {}
 
@@ -58,8 +68,8 @@ inline void ScopedLight::updateQuadratic() {
 }
 
 void ScopedLight::setIdealDistance(int distance) {
-    if (distance < 10) {
-        distance = 10;
+    if (distance < 5) {
+        distance = 5;
     }
     if (distance > 3500) {
         distance = 3500;
@@ -81,6 +91,12 @@ void ScopedLight::setCutOffAngle(float angle) {
 
 inline float ScopedLight::innerCutOffAngle() const {
     return 0.0011 * glm::pow(_cutOffAngle, 2) + 0.6440 * _cutOffAngle;
+}
+
+ScopedLight ScopedLight::toWorldSpace(glm::mat4 modelMatrix) const {
+    glm::vec3 position = glm::vec3(modelMatrix * glm::vec4(_position, 1.0f));
+    glm::vec3 direction = glm::vec3(modelMatrix * glm::vec4(_direction, 0.0f));
+    return ScopedLight(position, direction, _cutOffAngle, _idealDistance, _attLinear, _attQuadratic, _lightColor);
 }
 
 void ScopedLight::updateShader(ShaderProgram shader, int index) const {
@@ -112,6 +128,13 @@ void ScopedLight::updateShader(ShaderProgram shader, int index) const {
     // Check the cutoff angle to determine the type of light
     if (abs(_cutOffAngle - 180.0f) < 1e-6) {
         // Point light
+        Logger::debug("Setting point light " + std::to_string(index) + " to shader");
+        Logger::debug("[+] Position: " + std::to_string(_position.x) + ", " + std::to_string(_position.y) + ", " + std::to_string(_position.z));
+        Logger::debug("[+] Ambient: " + std::to_string(ambientLightColor().x) + ", " + std::to_string(ambientLightColor().y) + ", " + std::to_string(ambientLightColor().z));
+        Logger::debug("[+] Diffuse: " + std::to_string(diffuseLightColor().x) + ", " + std::to_string(diffuseLightColor().y) + ", " + std::to_string(diffuseLightColor().z));
+        Logger::debug("[+] Specular: " + std::to_string(specularLightColor().x) + ", " + std::to_string(specularLightColor().y) + ", " + std::to_string(specularLightColor().z));
+        Logger::debug("[+] Linear: " + std::to_string(_attLinear));
+        Logger::debug("[+] Quadratic: " + std::to_string(_attQuadratic));
         shader.setUniform("pointlights[" + std::to_string(index) + "].position", _position);
         shader.setUniform("pointlights[" + std::to_string(index) + "].ambient", ambientLightColor());
         shader.setUniform("pointlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
@@ -122,8 +145,18 @@ void ScopedLight::updateShader(ShaderProgram shader, int index) const {
     }
     else {
         // Spot light
+        Logger::debug("Setting spot light " + std::to_string(index) + " to shader");
+        Logger::debug("[+] Position: " + std::to_string(_position.x) + ", " + std::to_string(_position.y) + ", " + std::to_string(_position.z));
+        Logger::debug("[+] Direction: " + std::to_string(_direction.x) + ", " + std::to_string(_direction.y) + ", " + std::to_string(_direction.z));
+        Logger::debug("[+] Ambient: " + std::to_string(ambientLightColor().x) + ", " + std::to_string(ambientLightColor().y) + ", " + std::to_string(ambientLightColor().z));
+        Logger::debug("[+] Diffuse: " + std::to_string(diffuseLightColor().x) + ", " + std::to_string(diffuseLightColor().y) + ", " + std::to_string(diffuseLightColor().z));
+        Logger::debug("[+] Specular: " + std::to_string(specularLightColor().x) + ", " + std::to_string(specularLightColor().y) + ", " + std::to_string(specularLightColor().z));
+        Logger::debug("[+] Linear: " + std::to_string(_attLinear));
+        Logger::debug("[+] Quadratic: " + std::to_string(_attQuadratic));
+        Logger::debug("[+] CutOff: " + std::to_string(_cutOffAngle));
+        Logger::debug("[+] InnerCutOff: " + std::to_string(innerCutOffAngle()));
         shader.setUniform("spotlights[" + std::to_string(index) + "].position", _position);
-        shader.setUniform("spotlights[" + std::to_string(index) + "].direction", -_direction);
+        shader.setUniform("spotlights[" + std::to_string(index) + "].direction", _direction);
         shader.setUniform("spotlights[" + std::to_string(index) + "].ambient", ambientLightColor());
         shader.setUniform("spotlights[" + std::to_string(index) + "].diffuse", diffuseLightColor());
         shader.setUniform("spotlights[" + std::to_string(index) + "].specular", specularLightColor());
