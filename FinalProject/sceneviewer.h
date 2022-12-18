@@ -27,6 +27,7 @@ private:
     DirLight* _dirLight = nullptr;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
+    ShaderProgram _boundShader = ShaderProgram::empty();
     ShaderProgram _skyShader = ShaderProgram::empty();
     SkyBox* _sky;
     // Main camera
@@ -55,7 +56,7 @@ public:
 	~SceneViewer();
 
 private:
-    void extractShaderResorce(const QString& shaderName);
+    void extractShaderResource(const QString& shaderName);
     void hitTest(const Ray& ray);
 
 protected:

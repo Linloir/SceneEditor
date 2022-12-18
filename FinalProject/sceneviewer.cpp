@@ -31,10 +31,12 @@ SceneViewer::SceneViewer(QWidget* parent)
     }
     
     // Copy the shaders to the temp folder
-    extractShaderResorce("vertexshader.glsl");
-    extractShaderResorce("fragmentshader.glsl");
-    extractShaderResorce("skyboxvertexshader.glsl");
-    extractShaderResorce("skyboxfragmentshader.glsl");
+    extractShaderResource("vertexshader.glsl");
+    extractShaderResource("fragmentshader.glsl");
+    extractShaderResource("skyboxvertexshader.glsl");
+    extractShaderResource("skyboxfragmentshader.glsl");
+    extractShaderResource("boundfragmentshader.glsl");
+    extractShaderResource("boundvertexshader.glsl");
 }
 
 SceneViewer::~SceneViewer() {
@@ -47,7 +49,7 @@ SceneViewer::~SceneViewer() {
     }
 }
 
-void SceneViewer::extractShaderResorce(const QString& shaderName) {
+void SceneViewer::extractShaderResource(const QString& shaderName) {
     QString shaderResourcePath = ":/shaders/" + shaderName;
     QString shaderTempPath = "./temp/shaders/" + shaderName;
     
@@ -106,6 +108,15 @@ void SceneViewer::initializeGL() {
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
+
+    _boundShader.ensureInitialized();
+    Logger::info("Bound Shader initialized");
+    VertexShader boundVertexShader("./temp/shaders/boundvertexshader.glsl");
+    FragmentShader boundFragmentShader("./temp/shaders/boundfragmentshader.glsl");
+    _boundShader.attachShader(boundVertexShader);
+    _boundShader.attachShader(boundFragmentShader);
+    boundVertexShader.dispose();
+    boundFragmentShader.dispose();
 
     _skyShader.ensureInitialized();
     Logger::info("Sky Shader initialized");
@@ -184,6 +195,14 @@ void SceneViewer::paintGL() {
     }
 
     _shaderProgram.unbind();
+
+    if (_hoveredObject != nullptr) {
+        _boundShader.bind();
+        _boundShader.setUniform("view", view);
+        _boundShader.setUniform("projection", projection);
+        _hoveredObject->boundary().render();
+        _boundShader.unbind();
+    }
     
     _skyShader.bind();
     _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
