@@ -61,7 +61,7 @@ void ModelThumbnailWidget::paintGL() {
     _shaderProgram.bind();
     
     glm::mat4 view = _camera.viewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
+    glm::mat4 projection = _camera.projectionMatrix((float)width() / (float)height());
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
     
