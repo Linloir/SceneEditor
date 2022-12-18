@@ -110,7 +110,7 @@ void SceneViewer::paintGL() {
     glm::mat4 view = _camera.viewMatrix();
     glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
     Model = glm::translate(Model, glm::vec3(0.0f, -5.0f, 0.0f));
-    Model = glm::scale(Model, glm::vec3(10.0f));
+    Model = glm::scale(Model, glm::vec3(100.0f));
     terrainShader.setUniform("view", view);
     terrainShader.setUniform("projection", projection);
     terrainShader.setUniform("model", Model);
