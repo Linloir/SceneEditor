@@ -34,19 +34,22 @@ Texture::Texture(TextureType type, std::string path) {
     if (data) {
         GLenum format;
         if (nrChannels == 1) {
+            Logger::debug("Texture " + _path + " is a grayscale image");
             format = GL_RED;
         }
         else if (nrChannels == 3) {
+            Logger::debug("Texture " + _path + " is a RGB image");
             format = GL_RGB;
         }
         else if (nrChannels == 4) {
+            Logger::debug("Texture " + _path + " is a RGBA image");
             format = GL_RGBA;
         }
         else {
             Logger::error("Unexpected channel count");
             return;
         }
-
+        
         OPENGL_FUNCTIONS->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         OPENGL_FUNCTIONS->glGenerateMipmap(GL_TEXTURE_2D);
     }
