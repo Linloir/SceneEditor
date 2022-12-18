@@ -4,17 +4,15 @@
 #include <qevent.h>
 #include <qopenglfunctions.h>
 #include <QtOpenGLWidgets/qopenglwidget.h>
+
 #include <vector>
 
 #include "camera.h"
 #include "shader.h"
 #include "renderable.h"
-#include "vao.h"
+#include "illuminer.h"
 #include "utils.h"
-#include "lightCaster.h"
-#include "vbo.h"
 #include "logger.h"
-#include "model.h"
 
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
@@ -24,9 +22,9 @@ class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 private:
     // OpenGL section-------------------------------------
     // List of objects currently in the scene
-    std::vector<Renderable> _objects;
-    // List of light casters in the scene
-    std::vector<Illuminant> _illuminants;
+    std::vector<Renderable*> _objects;
+    // Dir light
+    DirLight* _dirLight = nullptr;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     // Main camera
@@ -48,11 +46,6 @@ private:
 public:
 	SceneViewer(QWidget* parent = 0);
 	~SceneViewer();
-    void update_light();
-    void addDirLight(glm::vec3 direction, glm::vec3 color);
-    void addPointLight(glm::vec3 position, glm::vec3 color);
-    void addSpotLight(glm::vec3 direction,glm::vec3 position, glm::vec3 color);
-    void deleteLight(int index);
 
 private:
     void extractShaderResorce(const QString& shaderName);

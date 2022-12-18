@@ -4,9 +4,9 @@
 #include <qresource.h>
 #include <qurl.h>
 #include <qdir.h>
-#include<time.h>
+#include <time.h>
 
-#include "lightCaster.h"
+#include "illuminer.h"
 
 
 SceneViewer::SceneViewer(QWidget* parent)
@@ -30,14 +30,18 @@ SceneViewer::SceneViewer(QWidget* parent)
     }
     
     // Copy the shaders to the temp folder
-    extractShaderResorce("vertexshader.vs");
-    extractShaderResorce("fragmentshader.fs");
-    extractShaderResorce("illuminant.vs");
-    extractShaderResorce("illuminant.fs");
+    extractShaderResorce("vertexshader.glsl");
+    extractShaderResorce("fragmentshader.glsl");
 }
 
 SceneViewer::~SceneViewer() {
-    
+    if (_dirLight) {
+        delete _dirLight;
+    }
+
+    for (auto obj : _objects) {
+        delete obj;
+    }
 }
 
 void SceneViewer::extractShaderResorce(const QString& shaderName) {
@@ -66,20 +70,26 @@ void SceneViewer::initializeGL() {
     _shaderProgram.ensureInitialized();
     Logger::info("Shader Program initialized");
 
-    VertexShader vertexShader("./temp/shaders/vertexshader.vs");
-    FragmentShader fragmentShader("./temp/shaders/fragmentshader.fs");
+    VertexShader vertexShader("./temp/shaders/vertexshader.glsl");
+    FragmentShader fragmentShader("./temp/shaders/fragmentshader.glsl");
     _shaderProgram.attachShader(vertexShader);
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    setAllLigntUniform(_shaderProgram);
-    init_queue();
+    // Test Code Start
+    _dirLight = new DirLight();
 
-    addDirLight(glm::vec3(0.3, 0.5, -1), glm::vec3(0.2, 0.1, 0.2));
-    addSpotLight(glm::vec3(0.3, 0.5, -1), glm::vec3(-0.3, -0.5, 3), glm::vec3(0.2, 1, 0.1));
-    addPointLight(glm::vec3(0.5, 0.9, 0.4), glm::vec3(1, 0.2, 0.4));
-    addPointLight(glm::vec3(-0.3, -0.9, 0.4), glm::vec3(0, 0.2, 0.9));
+    Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
+    Renderable* backpack = new Renderable(model);
+    _objects.push_back(backpack);
+    
+    Renderable* backpack2 = new Renderable(model);
+    backpack2->move(glm::vec3(-5.0f, -2.0f, -2.0f));
+    backpack2->makeLight();
+    backpack2->originalLight()->setIdealDistance(500);
+    _objects.push_back(backpack2);
+    // Test Code End
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
@@ -100,11 +110,34 @@ void SceneViewer::paintGL() {
     glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
-    
-    update_light();
+    _shaderProgram.setUniform("viewPos", _camera.position());
+
+    int pointLights = 0;
+    int spotLights = 0;
 
     for (auto object : _objects) {
-        object.render(_shaderProgram);
+        if (object->hasLight()) {
+            ScopedLight light = object->transformedLight();
+            if (light.isPointLight()) {
+                light.updateShader(_shaderProgram, pointLights++);
+            }
+            else {
+                light.updateShader(_shaderProgram, spotLights++);
+            }
+        }
+    }
+    
+    _shaderProgram.setUniform("pointlightnr", pointLights);
+    _shaderProgram.setUniform("spotlightnr", spotLights);
+
+    if (_dirLight != nullptr) {
+        _dirLight->updateShader(_shaderProgram, 0);
+    }
+
+    _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr ? 1 : 0);
+
+    for (auto object : _objects) {
+        object->render(_shaderProgram);
     }
 
     _shaderProgram.unbind();
@@ -209,25 +242,4 @@ void SceneViewer::resizeEvent(QResizeEvent* event) {
     //QPainterPath mask;
     //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
     //setMask(mask.toFillPolygon().toPolygon());
-}
-
-
-void SceneViewer::update_light() {
-    setAllLigntUniform(_shaderProgram);
-    for (int i = 0; i < _illuminants.size(); i++) {
-        _illuminants[i].updateLight(_shaderProgram);
-    }
-}
-
-void SceneViewer::addDirLight(glm::vec3 direction, glm::vec3 color) {
-    _illuminants.push_back(Illuminant(Illuminant::LightType::dir, direction,color));
-}
-void SceneViewer::addPointLight(glm::vec3 position, glm::vec3 color) {
-    _illuminants.push_back(Illuminant(position, color, Illuminant::LightType::point));
-}
-void SceneViewer::addSpotLight(glm::vec3 direction, glm::vec3 position, glm::vec3 color) {
-    _illuminants.push_back(Illuminant(position,direction, color, Illuminant::LightType::spot));
-}
-void SceneViewer::deleteLight(int index) {
-    _illuminants.erase(_illuminants.begin() + index);
 }
