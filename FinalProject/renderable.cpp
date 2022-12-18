@@ -2,9 +2,13 @@
 
 #include "renderable.h"
 
-Renderable::Renderable(Model* model) : _model(model) {}
+Renderable::Renderable(Model* model) : _model(model) {
+    _boundary = model->boundBox();
+}
 
-Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {}
+Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {
+    _boundary = model->boundBox();
+}
 
 Renderable::~Renderable() {
     if (_light != nullptr) {
@@ -15,6 +19,7 @@ Renderable::~Renderable() {
 
 void Renderable::setModel(Model* model) {
     _model = model;
+    _boundary = model->boundBox();
 }
 
 void Renderable::move(glm::vec3 deltaVec) {
@@ -67,27 +72,24 @@ void Renderable::render(ShaderProgram shader) {
     _model->render(shader);
 }
 
-// check here to get global boundary
-// must check before get boundary
-void Renderable::checkBoundary() {
-    if (_model == nullptr) {
-        return;
-    }
-
-    std::vector<glm::vec3> temp = {_model->upperBoundVex(),_model->lowerBoundVex()};
-    
-    _lowerBoundVex = glm::vec3(3e36, 3e36, 3e36);
-    _upperBoundVex = -_lowerBoundVex;
-    
-    auto model = this->modelMatrix();   // transform matrix
-
-    // Bit calculation
-    for (int i = 0; i < 8; i++) {
-        glm::vec4 vx = glm::vec4(temp[(i & 4) >> 2][0], temp[(i & 2)>>1][1], temp[i & 1][2], 1.0f);
-        auto vex = model * vx; // Transformed vertex position
-        for (int j = 0; j < 3; j++) {
-            _lowerBoundVex[j] = _lowerBoundVex[j] < vex[j] ? _lowerBoundVex[j] : vex[j];
-            _upperBoundVex[j] = _upperBoundVex[j] > vex[j] ? _upperBoundVex[j] : vex[j];
+void Renderable::updateBoundary() {
+    // Traverse every vertex in the transferred model and update the boundary
+    Boundary newBoundary;
+    for (auto& mesh : _model->meshes()) {
+        for (auto& vertex : mesh.vertices()) {
+            glm::vec4 transformedVertex = modelMatrix() * glm::vec4(vertex._position, 1.0f);
+            newBoundary.updateControlPoints(glm::vec3(transformedVertex));
         }
+    }
+}
+
+HitRecord Renderable::hit(const Ray& ray) const {
+    // First test if the ray hits the boundary box
+    if (!_boundary.hit(ray)) {
+        return HitRecord();
+    }
+    else {
+        // If the ray hits the boundary box
+        return _model->hit(ray.toLocalSpace(modelMatrix()));
     }
 }

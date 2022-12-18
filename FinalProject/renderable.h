@@ -6,6 +6,8 @@
 #include "model.h"
 #include "illuminer.h"
 #include "shader.h"
+#include "boundary.h"
+#include "hitrecord.h"
 
 class Renderable {
 public:
@@ -22,8 +24,7 @@ private:
     glm::vec3 _position = glm::vec3(0.0f);
     glm::mat4 _rotation = glm::mat4(1.0f);
     glm::vec3 _scale = glm::vec3(1.0f);
-    glm::vec3 _lowerBoundVex;
-    glm::vec3 _upperBoundVex;
+    Boundary _boundary; // the renderable's boudary box, should be updated after a transformation is done
 
 public:
     Renderable(Model* model);
@@ -46,12 +47,10 @@ public:
     
     inline glm::mat4 modelMatrix() const;
 
-    inline glm::vec3 upperBoundVex()const;
-    inline glm::vec3 lowerBoundVex()const;
-
 public:
+    void updateBoundary();  // update the boundary of the renderable after a transformation is done
+    HitRecord hit(const Ray& ray) const;    // test the hit record of an input array
     void render(ShaderProgram shader);
-    void checkBoundary();
 };
 
 inline glm::mat4 Renderable::modelMatrix() const {
@@ -60,11 +59,4 @@ inline glm::mat4 Renderable::modelMatrix() const {
     model = _rotation * model;
     model = glm::scale(model, _scale);
     return model;
-}
-
-inline glm::vec3 Renderable::lowerBoundVex() const {
-    return _lowerBoundVex;
-}
-inline glm::vec3 Renderable::upperBoundVex() const {
-    return _upperBoundVex;
 }
