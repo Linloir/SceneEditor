@@ -119,6 +119,7 @@
     <ClCompile Include="modelthumbnailwidget.cpp" />
     <ClCompile Include="pagewidget.cpp" />
     <ClCompile Include="pushbutton.cpp" />
+    <ClCompile Include="ray.cpp" />
     <ClCompile Include="renderable.cpp" />
     <ClCompile Include="roundedcornerwidget.cpp" />
     <ClCompile Include="sceneviewer.cpp" />
@@ -140,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="aboutpage.h" />
+    <ClInclude Include="boundary.h" />
     <ClInclude Include="camera.h" />
     <QtMoc Include="editorpage.h" />
     <QtMoc Include="framelesswindow.h" />
@@ -154,6 +156,7 @@
     <QtMoc Include="roundedcornerwidget.h" />
     <QtMoc Include="scrolllistwidget.h" />
     <QtMoc Include="modelthumbnailwidget.h" />
+    <ClInclude Include="ray.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />

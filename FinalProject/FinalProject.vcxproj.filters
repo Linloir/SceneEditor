@@ -171,6 +171,9 @@
     <ClCompile Include="skybox.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>
+    <ClCompile Include="ray.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -216,6 +219,12 @@
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="boundary.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>
