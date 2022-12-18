@@ -49,6 +49,9 @@ EditorPage::EditorPage(QWidget* parent) :
     _sceneViewer->show();
     _mainLayout->addWidget(_sceneViewerContainer);
     _sceneViewerContainer->show();
+
+    // Connect signals
+    connect(_modelSelector, &ModelSelector::onObjectSelected, _sceneViewer, &SceneViewer::addObject);
 }
 
 EditorPage::~EditorPage() {}

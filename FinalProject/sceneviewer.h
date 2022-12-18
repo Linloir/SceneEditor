@@ -69,6 +69,9 @@ private:
     void rotateCamera(QMouseEvent* event);
     void moveOperatingObject(const Ray& ray);
 
+public:
+    void addObject(Model* model);
+
 protected:
     // OpenGL functions
 	virtual void initializeGL() override;

@@ -137,16 +137,16 @@ void SceneViewer::initializeGL() {
     
     _dirLight = new DirLight();
 
-    Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
-    Renderable* backpack = new Renderable(model);
-    backpack->move(glm::vec3(-5.0f, -2.0f, -2.0f));
-    backpack->updateBoundary();
-    _objects.push_back(backpack);
-    
-    Renderable* backpack2 = new Renderable(model);
-    backpack2->makeLight();
-    backpack2->originalLight()->setIdealDistance(500);
-    _objects.push_back(backpack2);
+    //Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
+    //Renderable* backpack = new Renderable(model);
+    //backpack->move(glm::vec3(-5.0f, -2.0f, -2.0f));
+    //backpack->updateBoundary();
+    //_objects.push_back(backpack);
+    //
+    //Renderable* backpack2 = new Renderable(model);
+    //backpack2->makeLight();
+    //backpack2->originalLight()->setIdealDistance(500);
+    //_objects.push_back(backpack2);
     // Test Code End
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
@@ -480,4 +480,14 @@ void SceneViewer::moveOperatingObject(const Ray& ray) {
         // Move the object to the hit point
         _operatingObject->setPosition(_hitRecord.position());
     }
+}
+
+void SceneViewer::addObject(Model* model) {
+    makeCurrent();
+    Model* newModel = model->copyToCurrentContext();
+    Renderable* newObject = new Renderable(newModel);
+    _selectedObject = newObject;
+    _operatingObject = newObject;
+    _objects.push_back(newObject);
+    parentWidget()->update();
 }
