@@ -104,7 +104,7 @@ void SceneViewer::initializeGL() {
     _objects.push_back(backpack2);
     // Test Code End
     
-    _camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 }
 
 void SceneViewer::resizeGL(int w, int h) {

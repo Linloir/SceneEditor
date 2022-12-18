@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.setMouseTracking(true);
-    w.resize(900, 600);
+    w.resize(1250, 750);
     w.show();
 
     return a.exec();
