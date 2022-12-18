@@ -83,7 +83,7 @@ HitRecord Mesh::hit(const Ray& ray) const {
             // Hit
             glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
             glm::vec3 hitPoint = ray.origin() + t * ray.direction();
-            return HitRecord(hitPoint, normal);
+            return HitRecord(t, hitPoint, normal);
         }
     }
     return HitRecord();

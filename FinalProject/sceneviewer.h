@@ -37,9 +37,14 @@ private:
     // Rotate center
     glm::vec3 _rotateCenter = glm::vec3(0.0f, 0.0f, 0.0f);
 
+    // User preferences
+    bool _stickToSurface = false;   // whether to rotate the object to the normal of the hitted surface
+
     // User Interaction flags section---------------------
     QPoint _lastMousePosition;
+    Renderable* _hoveredObject = nullptr;
     Renderable* _selectedObject = nullptr;
+    HitRecord _hitRecord;
 
     // UI interface control
     const int _cornerRadius = 10;
@@ -51,6 +56,7 @@ public:
 
 private:
     void extractShaderResorce(const QString& shaderName);
+    void hitTest(const Ray& ray);
 
 protected:
     // OpenGL functions
@@ -62,8 +68,4 @@ protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
-    
-    // UI update events
-    virtual void showEvent(QShowEvent* event) override;
-    virtual void resizeEvent(QResizeEvent* event) override;
 };

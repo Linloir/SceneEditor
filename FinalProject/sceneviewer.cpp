@@ -11,6 +11,8 @@
 SceneViewer::SceneViewer(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
+    // Set mouse tracking
+    setMouseTracking(true);
     // OpenGL initialize
     QSurfaceFormat format;
     format.setProfile(QSurfaceFormat::CoreProfile);
@@ -57,6 +59,33 @@ void SceneViewer::extractShaderResorce(const QString& shaderName) {
     QFile::setPermissions(shaderTempPath, QFile::ReadOwner | QFile::WriteOwner);
 }
 
+void SceneViewer::hitTest(const Ray& ray) {
+    HitRecord newRecord = HitRecord();
+    Renderable* newObject = nullptr;
+    int newObjectIndex = -1;
+    for (int i = 0; i < _objects.size(); i++) {
+        Logger::debug("Testing object " + std::to_string(i));
+        Renderable* obj = _objects[i];
+        HitRecord hitRecord = obj->hit(ray);
+        if (hitRecord.hitted()) {
+            Logger::debug("Hitted object " + std::to_string(i));
+        }
+        else {
+            Logger::debug("Missed object " + std::to_string(i));
+        }
+        if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
+            newRecord = hitRecord;
+            newObject = obj;
+            newObjectIndex = i;
+        }
+    }
+    if (newRecord.hitted()) {
+        Logger::debug("Hit test hitted object with index " + std::to_string(newObjectIndex));
+    }
+    _hitRecord = newRecord;
+    _hoveredObject = newObject;
+}
+
 void SceneViewer::initializeGL() {
     initializeOpenGLFunctions();
     
@@ -95,10 +124,10 @@ void SceneViewer::initializeGL() {
 
     Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
     Renderable* backpack = new Renderable(model);
+    backpack->move(glm::vec3(-5.0f, -2.0f, -2.0f));
     _objects.push_back(backpack);
     
     Renderable* backpack2 = new Renderable(model);
-    backpack2->move(glm::vec3(-5.0f, -2.0f, -2.0f));
     backpack2->makeLight();
     backpack2->originalLight()->setIdealDistance(500);
     _objects.push_back(backpack2);
@@ -173,9 +202,6 @@ void SceneViewer::mousePressEvent(QMouseEvent* event) {
 }
 
 void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
-    if (event->buttons() != Qt::NoButton) {
-        Logger::debug("Mouse moved with offset: " + std::to_string(event->x() - _lastMousePosition.x()) + ", " + std::to_string(event->y() - _lastMousePosition.y()));
-    }
     // Check the type of button pressed
     switch (event->buttons()) {
         case Qt::LeftButton: {
@@ -212,6 +238,14 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
             Logger::debug("Center at: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
             break;
         }
+        case Qt::NoButton: {
+            // If no button pressed, do hit test and move the current object if selected
+            float relX = (float)event->x() / (float)width();
+            float relY = 1 - (float)event->y() / (float)height();
+            Ray ray = _camera.generateRay(glm::vec2(relX, relY), (float)width() / (float)height());
+            hitTest(ray);
+            break;
+        }
         default: {
             Logger::warning("Unknown mouse button input");
             Logger::warning("Mouse button: " + std::to_string(event->buttons()));
@@ -235,30 +269,4 @@ void SceneViewer::wheelEvent(QWheelEvent* event) {
     Logger::debug("New center position: " + std::to_string(_rotateCenter.x) + ", " + std::to_string(_rotateCenter.y) + ", " + std::to_string(_rotateCenter.z));
     // Update the view
     parentWidget()->update();
-}
-
-void SceneViewer::showEvent(QShowEvent* event) {
-    // Call show event of super class
-    QOpenGLWidget::showEvent(event);
-
-    if (_initialized) {
-        return;
-    }
-
-    //// Create mask for rounded corner
-    //QPainterPath mask;
-    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
-    //setMask(mask.toFillPolygon().toPolygon());
-
-    _initialized = true;
-}
-
-void SceneViewer::resizeEvent(QResizeEvent* event) {
-    // Call resize event of super class
-    QOpenGLWidget::resizeEvent(event);
-
-    //// Create mask for rounded corner
-    //QPainterPath mask;
-    //mask.addRoundedRect(rect(), _cornerRadius, _cornerRadius);
-    //setMask(mask.toFillPolygon().toPolygon());
 }
