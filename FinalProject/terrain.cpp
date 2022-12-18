@@ -194,7 +194,8 @@ Vertex Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
             return Vertex(glm::vec3(0.0f));
         }
         if (flag * temp == -1 || temp == 2) {
-            return Vertex(right);
+            glm::vec4 ans = Model * glm::vec4(right,1.0f);
+            return Vertex(glm::vec3(ans));
         }
     }
 
