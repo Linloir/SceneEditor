@@ -32,6 +32,19 @@ Camera::Camera(glm::vec3 position, float yaw, float pitch) :
     updateCameraState();
 }
 
+Ray Camera::generateRay(glm::vec2 mouseRelativePosition, float aspectRatio) const {
+    // Calculate the near plane basic geometry
+    float nearPlaneHeight = 2.0f * glm::tan(glm::radians(_fovy) / 2.0f) * _nearPlane;
+    float nearPlaneWidth = nearPlaneHeight * aspectRatio;
+    // Calculate the vector that points from camera to left bottom corner of the near plane
+    glm::vec3 basic = _front * _nearPlane - _right * nearPlaneWidth / 2.0f - _up * nearPlaneHeight / 2.0f;
+    // Get the offset vector on the near plane from left bottom corner
+    glm::vec3 offset = _right * mouseRelativePosition.x * nearPlaneWidth + _up * mouseRelativePosition.y * nearPlaneHeight;
+    // Calculate the final ray direction
+    glm::vec3 direction = glm::normalize(basic + offset);
+    return Ray(_position, direction);
+}
+
 void Camera::updateCameraState() {
     
     // Update front vector

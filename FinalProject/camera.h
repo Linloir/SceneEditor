@@ -3,8 +3,10 @@
 #include <GLM/glm.hpp>
 #include <GLM/ext/matrix_transform.hpp>
 
-#define CAMERA_MAX_ZOOM 90.0f
-#define CAMERA_MIN_ZOOM 1.0f
+#include "ray.h"
+
+#define CAMERA_MAX_FOVY 90.0f
+#define CAMERA_MIN_FOVY 30.0f
 
 class Camera {
 public:
@@ -19,7 +21,9 @@ private:
     glm::vec3 _up;
     float _yaw = 0.0f;
     float _pitch = 0.0f;
-    float _zoom = 45.0f;
+    float _fovy = 45.0f;
+    float _nearPlane = 0.1f;
+    float _farPlane = 100.0f;
     
 private:
     // World settings
@@ -33,8 +37,15 @@ public:
 
 public:
     inline glm::vec3 front() const { return _front; }
-    inline float zoomVal() const { return _zoom; }
+    
+    inline float fovy() const { return _fovy; }
+    inline float nearPlane() const { return _nearPlane; }
+    inline float farPlane() const { return _farPlane; }
+    
     inline glm::mat4 viewMatrix();
+    inline glm::mat4 projectionMatrix(float aspectRatio);
+
+    Ray generateRay(glm::vec2 mouseRelativePosition, float aspectRatio) const;
 
     inline glm::vec3 position() const { return _position; }
     
@@ -49,8 +60,7 @@ public:
     inline void setRotation(float pitchAngle, float yawAngle);
     void rotate(glm::vec3 center, float deltaPitchAngle, float deltaYawAngle);
     void setRotation(glm::vec3 center, float pitchAngle, float yawAngle);
-    inline void zoom(float deltaZoom);
-    inline void setZoom(float zoom);
+    inline void setFovy(float fovy);
     inline void push(float distance);
 
 private:
@@ -114,26 +124,14 @@ inline void Camera::setRotation(float pitchAngle, float yawAngle) {
     updateCameraState();
 }
 
-inline void Camera::zoom(float deltaZoom) {
-    _zoom += deltaZoom;
-    if (_zoom > CAMERA_MAX_ZOOM) {
-        _zoom = CAMERA_MAX_ZOOM;
+inline void Camera::setFovy(float fovy) {
+    _fovy = fovy;
+    if (_fovy > CAMERA_MAX_FOVY) {
+        _fovy = CAMERA_MAX_FOVY;
     }
-    else if (_zoom < CAMERA_MIN_ZOOM) {
-        _zoom = CAMERA_MIN_ZOOM;
+    if (_fovy < CAMERA_MIN_FOVY) {
+        _fovy = CAMERA_MIN_FOVY;
     }
-    updateCameraState();
-}
-
-inline void Camera::setZoom(float zoom) {
-    _zoom = zoom;
-    if (_zoom > CAMERA_MAX_ZOOM) {
-        _zoom = CAMERA_MAX_ZOOM;
-    }
-    else if (_zoom < CAMERA_MIN_ZOOM) {
-        _zoom = CAMERA_MIN_ZOOM;
-    }
-    updateCameraState();
 }
 
 inline void Camera::push(float distance) {
@@ -143,4 +141,8 @@ inline void Camera::push(float distance) {
 
 inline glm::mat4 Camera::viewMatrix() {
     return glm::lookAt(_position, _position + _front, _up);
+}
+
+inline glm::mat4 Camera::projectionMatrix(float aspectRatio) {
+    return glm::perspective(glm::radians(_fovy), aspectRatio, _nearPlane, _farPlane);
 }
