@@ -22,6 +22,9 @@ private:
     Renderable _object = Renderable::empty();
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     Camera _camera;
+
+private:
+    void extractShaderResource(const QString& shaderName);
     
 protected:
     virtual void initializeGL() override;

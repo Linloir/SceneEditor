@@ -19,19 +19,23 @@ ModelThumbnailWidget::ModelThumbnailWidget(Model* model, QWidget* parent) :
     }
 
     // Copy the shaders to the folder
-    if (QFile::exists("./temp/shaders/vertexshader.vs")) {
-        QFile::remove("./temp/shaders/vertexshader.vs");
-    }
-    QFile::copy(":/shaders/vertexshader.vs", "./temp/shaders/vertexshader.vs");
-    QFile::setPermissions("./temp/shaders/vertexshader.vs", QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (QFile::exists("./temp/shaders/fragmentshader.fs")) {
-        QFile::remove("./temp/shaders/fragmentshader.fs");
-    }
-    QFile::copy(":/shaders/fragmentshader.fs", "./temp/shaders/fragmentshader.fs");
-    QFile::setPermissions("./temp/shaders/fragmentshader.fs", QFile::ReadOwner | QFile::WriteOwner);
+    extractShaderResource("thumbnailvertexshader.glsl");
+    extractShaderResource("thumbnailfragmentshader.glsl");
 }
 
 ModelThumbnailWidget::~ModelThumbnailWidget() {
+}
+
+void ModelThumbnailWidget::extractShaderResource(const QString& shaderName) {
+    QString shaderResourcePath = ":/shaders/" + shaderName;
+    QString shaderTempPath = "./temp/shaders/" + shaderName;
+
+    if (QFile::exists(shaderTempPath))
+    {
+        QFile::remove(shaderTempPath);
+    }
+    QFile::copy(shaderResourcePath, shaderTempPath);
+    QFile::setPermissions(shaderTempPath, QFile::ReadOwner | QFile::WriteOwner);
 }
 
 void ModelThumbnailWidget::initializeGL() {
@@ -44,8 +48,8 @@ void ModelThumbnailWidget::initializeGL() {
 
     _shaderProgram.ensureInitialized();
     
-    VertexShader vertexShader("./temp/shaders/vertexshader.vs");
-    FragmentShader fragmentShader("./temp/shaders/fragmentshader.fs");
+    VertexShader vertexShader("./temp/shaders/thumbnailvertexshader.glsl");
+    FragmentShader fragmentShader("./temp/shaders/thumbnailfragmentshader.glsl");
     _shaderProgram.attachShader(vertexShader);
     _shaderProgram.attachShader(fragmentShader);
     vertexShader.dispose();
