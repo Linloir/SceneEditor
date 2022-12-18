@@ -165,9 +165,6 @@
     <ClCompile Include="modelthumbnailwidget.cpp">
       <Filter>Source Files\Qt Widgets\Pages\Scene Editor\Object Selector</Filter>
     </ClCompile>
-    <ClCompile Include="lightCaster.cpp">
-      <Filter>Source Files\OpenGL Abstractions</Filter>
-    </ClCompile>
     <ClCompile Include="illuminer.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>
@@ -211,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="modelsetter.h">
       <Filter>Header Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
-    </ClInclude>
-    <ClInclude Include="lightCaster.h">
-      <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
     <ClInclude Include="illuminer.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
@@ -264,16 +258,10 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentshader.fs">
+    <None Include="fragmentshader.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vertexshader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="illuminant.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="illuminant.vs">
+    <None Include="vertexshader.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

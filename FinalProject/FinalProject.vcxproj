@@ -109,7 +109,6 @@
     <ClCompile Include="editorpage.cpp" />
     <ClCompile Include="framelesswindow.cpp" />
     <ClCompile Include="illuminer.cpp" />
-    <ClCompile Include="lightCaster.cpp" />
     <ClCompile Include="lineeditwidget.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mesh.cpp" />
@@ -145,7 +144,6 @@
     <QtMoc Include="framelesswindow.h" />
     <QtMoc Include="lineeditwidget.h" />
     <ClInclude Include="illuminer.h" />
-    <ClInclude Include="lightCaster.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
@@ -168,10 +166,13 @@
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentshader.fs" />
-    <None Include="illuminant.fs" />
-    <None Include="illuminant.vs" />
-    <None Include="vertexshader.vs" />
+    <None Include="fragmentshader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </None>
+    <None Include="vertexshader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
