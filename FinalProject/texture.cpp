@@ -5,6 +5,7 @@
 #include <qopengl.h>
 #include <qopenglcontext.h>
 
+
 #include "texture.h"
 #include "logger.h"
 

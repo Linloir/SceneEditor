@@ -104,16 +104,15 @@ void SceneViewer::resizeGL(int w, int h) {
 void SceneViewer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glm::mat4 view = _camera.viewMatrix();
+    glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
 
     terrainShader.bind();
     glm::mat4 Model = glm::mat4(1.0f);
-    glm::mat4 view = _camera.viewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(_camera.zoomVal()), (float)width() / (float)height(), 0.1f, 100.0f);
-    Model = glm::translate(Model, glm::vec3(0.0f, -5.0f, 0.0f));
-    Model = glm::scale(Model, glm::vec3(100.0f));
+   
     terrainShader.setUniform("view", view);
     terrainShader.setUniform("projection", projection);
-    terrainShader.setUniform("model", Model);
+    terrainShader.setUniform("model",ter->Model);
     terrainShader.setUniform("texture1", 2);
     ter->render();
     terrainShader.unbind();
