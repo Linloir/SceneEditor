@@ -13,11 +13,12 @@ Model::~Model() {
     // TODO: Maybe delete all meshes?
 }
 
-Model::Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::string directory) {
+Model::Model(std::vector<Mesh>&& meshes, std::vector<Texture>&& textures, std::string directory, Boundary boundBox) {
     _meshes = std::move(meshes);
     _texturesLoaded = std::move(textures);
     _directory = directory;
     _status = LOADED;
+    _boundBox = boundBox;
 }
 
 void Model::loadModel(std::string path) {
@@ -38,10 +39,9 @@ void Model::loadModel(std::string path) {
     Logger::info("Model read successfully");
     Logger::info("Processing model nodes");
     processNode(scene->mRootNode, scene);
+    
     _status = LOADED;
     Logger::info("Model loaded");
-    // 仅检查一次即可
-    //checkBoundary();
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -72,17 +72,13 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         glm::vec3 vertexTangent = glm::vec3(0.0f);
         glm::vec3 vertexBitangent = glm::vec3(0.0f);
         
-        // Process vertex positions
-        //使用循环避免代码重复，如果可行的话，可以在此循环中确定法向量等信息
-        for (int j = 0; j < 3; j++) {
-            vertexPosition[j] = mesh->mVertices[i][j];
-            _leftBackBottomVex[j] = _leftBackBottomVex[j] < vertexPosition[j] ? _leftBackBottomVex[j] : vertexPosition[j];
-            _rightFrontTopVex[j] = _rightFrontTopVex[j] > vertexPosition[j] ? _rightFrontTopVex[j] : vertexPosition[j];
-        }
+        // Process vertex position
+        vertexPosition.x = mesh->mVertices[i].x;
+        vertexPosition.y = mesh->mVertices[i].y;
+        vertexPosition.z = mesh->mVertices[i].z;
 
-        //vertexPosition.x = mesh->mVertices[i].x;
-        //vertexPosition.y = mesh->mVertices[i].y;
-        //vertexPosition.z = mesh->mVertices[i].z;
+        // Update boundary box
+        _boundBox.updateControlPoints(vertexPosition);
 
         // Process vertex normals
         if (mesh->mNormals) {
@@ -193,18 +189,21 @@ void Model::render(const ShaderProgram& shader) const {
     }
 }
 
-void Model::checkBoundary() {
-    for (int i = 0; i < _meshes.size(); i++) {
-        for (int j = 0; j < _meshes[i].vertices().size();j++) {
-            // 0,1,2 for x,y,z
-            for (int k = 0; k < 3; k++) {
-                _leftBackBottomVex[k] = _leftBackBottomVex[k] < _meshes[i].vertices()[j]._position[k] ?
-                    _leftBackBottomVex[k] : _meshes[i].vertices()[j]._position[k];
-
-                _rightFrontTopVex[k] = _rightFrontTopVex[k] > _meshes[i].vertices()[j]._position[k] ?
-                    _rightFrontTopVex[k] : _meshes[i].vertices()[j]._position[k];
+HitRecord Model::hit(const Ray& ray) const {
+    // 1. use the aabb method to test whether hit the boundary box
+    // 2. if hit, use the mesh hit method to test whether hit the mesh
+    
+    if (_boundBox.hit(ray)) {
+        for (unsigned int i = 0; i < _meshes.size(); i++) {
+            HitRecord hitRecord = _meshes[i].hit(ray);
+            if (hitRecord.hitted()) {
+                return hitRecord;
             }
         }
+        return HitRecord();
+    }
+    else {
+        return HitRecord(); // return a false hit record
     }
 }
 
@@ -226,6 +225,6 @@ Model* Model::copyToCurrentContext() const {
     }
     
     // Create new model
-    Model* newModel = new Model(std::move(newMeshes), std::move(newTextures), _directory);
+    Model* newModel = new Model(std::move(newMeshes), std::move(newTextures), _directory, _boundBox);
     return newModel;
 }
