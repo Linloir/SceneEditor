@@ -171,9 +171,6 @@
     <ClCompile Include="skybox.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>
-    <ClCompile Include="ray.cpp">
-      <Filter>Source Files\OpenGL Abstractions</Filter>
-    </ClCompile>
     <ClCompile Include="boundary.cpp">
       <Filter>Source Files\OpenGL Abstractions</Filter>
     </ClCompile>

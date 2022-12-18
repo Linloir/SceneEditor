@@ -36,7 +36,7 @@ public:
 
 public:
     void render(const ShaderProgram& shader) const ;
-    HitRecord hit(const Ray& ray) const;
+    HitRecord hit(const Ray& ray, const glm::mat4& modelMatrix) const;
 
 private:
     void setupMesh();

@@ -120,7 +120,6 @@
     <ClCompile Include="modelthumbnailwidget.cpp" />
     <ClCompile Include="pagewidget.cpp" />
     <ClCompile Include="pushbutton.cpp" />
-    <ClCompile Include="ray.cpp" />
     <ClCompile Include="renderable.cpp" />
     <ClCompile Include="roundedcornerwidget.cpp" />
     <ClCompile Include="sceneviewer.cpp" />

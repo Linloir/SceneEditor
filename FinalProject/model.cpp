@@ -189,22 +189,14 @@ void Model::render(const ShaderProgram& shader) const {
     }
 }
 
-HitRecord Model::hit(const Ray& ray) const {
-    // 1. use the aabb method to test whether hit the boundary box
-    // 2. if hit, use the mesh hit method to test whether hit the mesh
-    
-    if (_boundBox.hit(ray)) {
-        for (unsigned int i = 0; i < _meshes.size(); i++) {
-            HitRecord hitRecord = _meshes[i].hit(ray);
-            if (hitRecord.hitted()) {
-                return hitRecord;
-            }
+HitRecord Model::hit(const Ray& ray, const glm::mat4& modelMatrix) const {
+    for (unsigned int i = 0; i < _meshes.size(); i++) {
+        HitRecord hitRecord = _meshes[i].hit(ray, modelMatrix);
+        if (hitRecord.hitted()) {
+            return hitRecord;
         }
-        return HitRecord();
     }
-    else {
-        return HitRecord(); // return a false hit record
-    }
+    return HitRecord();
 }
 
 Model* Model::copyToCurrentContext() const {

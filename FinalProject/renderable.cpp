@@ -75,12 +75,17 @@ void Renderable::render(ShaderProgram shader) {
 void Renderable::updateBoundary() {
     // Traverse every vertex in the transferred model and update the boundary
     Boundary newBoundary;
+    glm::mat4 model = modelMatrix();
     for (auto& mesh : _model->meshes()) {
         for (auto& vertex : mesh.vertices()) {
-            glm::vec4 transformedVertex = modelMatrix() * glm::vec4(vertex._position, 1.0f);
+            glm::vec4 transformedVertex = model * glm::vec4(vertex._position, 1.0f);
             newBoundary.updateControlPoints(glm::vec3(transformedVertex));
         }
     }
+    _boundary = newBoundary;
+    Logger::debug("Boundary updated");
+    Logger::debug("[+] Bottom control point: " + std::to_string(newBoundary.bottomControlPoint().x) + ", " + std::to_string(newBoundary.bottomControlPoint().y) + ", " + std::to_string(newBoundary.bottomControlPoint().z));
+    Logger::debug("[+] Top control point: " + std::to_string(newBoundary.topControlPoint().x) + ", " + std::to_string(newBoundary.topControlPoint().y) + ", " + std::to_string(newBoundary.topControlPoint().z));
 }
 
 HitRecord Renderable::hit(const Ray& ray) const {
@@ -90,6 +95,6 @@ HitRecord Renderable::hit(const Ray& ray) const {
     }
     else {
         // If the ray hits the boundary box
-        return _model->hit(ray.toLocalSpace(modelMatrix()));
+        return _model->hit(ray, modelMatrix());
     }
 }

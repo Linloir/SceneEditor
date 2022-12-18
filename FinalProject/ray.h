@@ -14,7 +14,4 @@ public:
 public:
     inline glm::vec3 origin() const { return _origin; }
     inline glm::vec3 direction() const { return _direction; }
-
-public:
-    Ray toLocalSpace(glm::mat4 modelMatrix) const;
 };

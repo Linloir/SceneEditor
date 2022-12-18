@@ -125,6 +125,7 @@ void SceneViewer::initializeGL() {
     Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
     Renderable* backpack = new Renderable(model);
     backpack->move(glm::vec3(-5.0f, -2.0f, -2.0f));
+    backpack->updateBoundary();
     _objects.push_back(backpack);
     
     Renderable* backpack2 = new Renderable(model);
