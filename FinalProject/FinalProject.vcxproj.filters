@@ -300,5 +300,11 @@
     <None Include="boundfragmentshader.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="thumbnailvertexshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="thumbnailfragmentshader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

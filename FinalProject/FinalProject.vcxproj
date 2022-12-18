@@ -184,6 +184,8 @@
     <None Include="skyboxvertexshader.glsl" />
     <None Include="terrainfragmentshader.glsl" />
     <None Include="terrainvertexshader.glsl" />
+    <None Include="thumbnailfragmentshader.glsl" />
+    <None Include="thumbnailvertexshader.glsl" />
     <None Include="vertexshader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
