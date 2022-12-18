@@ -1,6 +1,6 @@
 #include "ray.h"
 
-Ray Ray::toLocalSpace(glm::mat4 modelMatrix) {
+Ray Ray::toLocalSpace(glm::mat4 modelMatrix) const {
     // The model matrix is the matrix that transforms local space to world space
     // Therefore the inverse of the model matrix transforms world space to local space
     glm::mat4 inversedModelMatrix = glm::inverse(modelMatrix);
