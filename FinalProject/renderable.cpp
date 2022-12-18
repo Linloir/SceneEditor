@@ -6,6 +6,13 @@ Renderable::Renderable(Model* model) : _model(model) {}
 
 Renderable::Renderable(Model* model, glm::vec3 position) : _model(model), _position(position) {}
 
+Renderable::~Renderable() {
+    if (_light != nullptr) {
+        delete _light;
+        _light = nullptr;
+    }
+}
+
 void Renderable::setModel(Model* model) {
     _model = model;
 }
@@ -34,6 +41,19 @@ void Renderable::setScale(float scale) {
     _scale = glm::vec3(scale);
 }
 
+ScopedLight Renderable::transformedLight() const {
+    // Transform the light position to the world space
+    return _light->toWorldSpace(modelMatrix());
+}
+
+ScopedLight* Renderable::originalLight() const {
+    return _light;
+}
+
+void Renderable::makeLight() {
+    _light = new ScopedLight(glm::vec3(0.0f));
+}
+
 void Renderable::render(ShaderProgram shader) {
     // Check if initialized
     if (_model == nullptr) {
@@ -50,6 +70,10 @@ void Renderable::render(ShaderProgram shader) {
 // check here to get global boundary
 // must check before get boundary
 void Renderable::checkBoundary() {
+    if (_model == nullptr) {
+        return;
+    }
+
     std::vector<glm::vec3> temp = {_model->upperBoundVex(),_model->lowerBoundVex()};
     
     _lowerBoundVex = glm::vec3(3e36, 3e36, 3e36);

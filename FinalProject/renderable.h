@@ -4,6 +4,7 @@
 #include <GLM/ext/matrix_transform.hpp>
 
 #include "model.h"
+#include "illuminer.h"
 #include "shader.h"
 
 class Renderable {
@@ -17,6 +18,7 @@ private:
 
 private:
     Model* _model = nullptr;
+    ScopedLight* _light = nullptr;
     glm::vec3 _position = glm::vec3(0.0f);
     glm::mat4 _rotation = glm::mat4(1.0f);
     glm::vec3 _scale = glm::vec3(1.0f);
@@ -26,6 +28,7 @@ private:
 public:
     Renderable(Model* model);
     Renderable(Model* model, glm::vec3 position);
+    ~Renderable();
 
 public:
     void setModel(Model* model);
@@ -36,6 +39,11 @@ public:
     void scale(float deltaScale);
     void setScale(float scale);
 
+    ScopedLight transformedLight() const; // pass out the light object to scene manager to gather all light sources
+    ScopedLight* originalLight() const; // pass out the light object to scene manager to set light attributes
+    bool hasLight() const { return _light != nullptr; }
+    void makeLight();   // create a light source in the object
+    
     inline glm::mat4 modelMatrix() const;
 
     inline glm::vec3 upperBoundVex()const;
@@ -43,7 +51,6 @@ public:
 
 public:
     void render(ShaderProgram shader);
-    // check here to get global boundary
     void checkBoundary();
 };
 
