@@ -84,6 +84,10 @@ void PushButton::generateColor(QColor colorScheme) {
 }
 
 void PushButton::enterEvent(QEnterEvent* event) {
+    if (!_enabled) {
+        return;
+    }
+
     setCursor(Qt::PointingHandCursor);
 
     _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
@@ -141,6 +145,10 @@ void PushButton::enterEvent(QEnterEvent* event) {
 }
 
 void PushButton::leaveEvent(QEvent* event) {
+    if (!_enabled) {
+        return;
+    }
+
     setCursor(Qt::ArrowCursor);
 
     if (_selected) {
@@ -203,6 +211,10 @@ void PushButton::leaveEvent(QEvent* event) {
 }
 
 void PushButton::mousePressEvent(QMouseEvent* event) {
+    if (!_enabled) {
+        return;
+    }
+
     _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
     
     QPropertyAnimation* indicatorShrinkLength = new QPropertyAnimation(_indicator, "geometry", this);
@@ -599,6 +611,49 @@ void PushButton::deselect() {
 
     // Set selected state
     _selected = false;
+}
+
+void PushButton::setEnabled(bool enabled) {
+    if (enabled == _enabled) {
+        return;
+    }
+
+    if (enabled) {
+        _enabled = true;
+        // Restore colors
+        _backgroundColor = _restoredColor[0];
+        _hoverColor = _restoredColor[1];
+        _pressedColor = _restoredColor[2];
+        _selectedColor = _restoredColor[3];
+        _indicatorColor = _restoredColor[4];
+        if (_pressed) {
+            _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _pressedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+        }
+        else if (_hovered) {
+            _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _hoverColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+        }
+        else if (_selected) {
+            _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _selectedColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+        }
+        else {
+            _backgroundWidget->setStyleSheet("QWidget#backgroundWidget{background-color:" + _backgroundColor.name(QColor::HexArgb) + ";border-radius:" + QString::number(_radius) + "px;}");
+        }
+        _indicator->setStyleSheet("QWidget#indicator{background-color:" + _indicatorColor.name(QColor::HexArgb) + ";"
+            "border-radius:" + QString::number((float)_indicatorWidth / 2) + "px;}");
+    }
+    else {
+        _enabled = false;
+        _pressed = false;
+        _hovered = false;
+        // Store color
+        _restoredColor[0] = _backgroundColor;
+        _restoredColor[1] = _hoverColor;
+        _restoredColor[2] = _pressedColor;
+        _restoredColor[3] = _selectedColor;
+        _restoredColor[4] = _indicatorColor;
+        // Set disabled colors
+        setColorScheme(QColor(200, 200, 200));
+    }
 }
 
 void PushButton::setRadius(int radius) {
