@@ -448,14 +448,24 @@ void ModelSetter::update(Renderable* object) {
             _rotateY->setEnabled();
             _rotateZ->setEnabled();
         }
-        // Extract x, y, z axis rotation from rotation matrix
-        glm::mat4 rotationMatrix = object->rotation();
-        float rotateX = glm::degrees(glm::asin(-rotationMatrix[1][2]));
-        float rotateY = glm::degrees(glm::atan(rotationMatrix[0][2] / rotationMatrix[2][2]));
-        float rotateZ = glm::degrees(glm::atan(rotationMatrix[1][0] / rotationMatrix[1][1]));
-        _rotateX->setValue(rotateX);
-        _rotateY->setValue(rotateY);
-        _rotateZ->setValue(rotateZ);
+        // Extract x, y, z axis rotation degree from rotation matrix
+        glm::quat quat(object->rotation());
+        glm::vec3 euler = glm::eulerAngles(quat);
+        float x = glm::degrees(euler.x);
+        float y = glm::degrees(euler.y);
+        float z = glm::degrees(euler.z);
+        if (x < 0) {
+            x += 360;
+        }
+        if (y < 0) {
+            y += 360;
+        }
+        if (z < 0) {
+            z += 360;
+        }
+        _rotateX->setValue(x);
+        _rotateY->setValue(y);
+        _rotateZ->setValue(z);
         
         if (_object == nullptr) {
             _lightSwitch->setEnabled();

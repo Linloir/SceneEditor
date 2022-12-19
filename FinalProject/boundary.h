@@ -20,6 +20,7 @@ public:
     inline glm::vec3 bottomControlPoint() const { return _bottomControlPoint; }
     inline glm::vec3 topControlPoint() const { return _topControlPoint; }
     inline glm::vec3 bottomCenterPoint() const;
+    inline glm::vec3 centerPoint() const;
 
     bool hit(const Ray& ray) const;
 
@@ -28,4 +29,8 @@ public:
 
 inline glm::vec3 Boundary::bottomCenterPoint() const {
     return glm::vec3((_bottomControlPoint.x + _topControlPoint.x) / 2.0f, _bottomControlPoint.y, (_bottomControlPoint.z + _topControlPoint.z) / 2.0f);
+}
+
+inline glm::vec3 Boundary::centerPoint() const {
+    return glm::vec3((_bottomControlPoint.x + _topControlPoint.x) / 2.0f, (_bottomControlPoint.y + _topControlPoint.y) / 2.0f, (_bottomControlPoint.z + _topControlPoint.z) / 2.0f);
 }

@@ -190,13 +190,14 @@ void Model::render(const ShaderProgram& shader) const {
 }
 
 HitRecord Model::hit(const Ray& ray, const glm::mat4& modelMatrix) const {
+    HitRecord record = HitRecord();
     for (unsigned int i = 0; i < _meshes.size(); i++) {
         HitRecord hitRecord = _meshes[i].hit(ray, modelMatrix);
-        if (hitRecord.hitted()) {
-            return hitRecord;
+        if (hitRecord.hitted() && hitRecord.t() < record.t()) {
+            record = hitRecord;
         }
     }
-    return HitRecord();
+    return record;
 }
 
 Model* Model::copyToCurrentContext() const {

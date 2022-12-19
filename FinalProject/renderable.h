@@ -2,6 +2,7 @@
 
 #include <GLM/glm.hpp>
 #include <GLM/ext/matrix_transform.hpp>
+#include <GLM/gtx/quaternion.hpp>
 
 #include "model.h"
 #include "illuminer.h"
@@ -35,6 +36,7 @@ public:
     glm::vec3 position() const { return _position; }
     glm::mat4 rotation() const { return _rotation; }
     glm::vec3 scaleVal() const { return _scale; }
+    Model* model() const { return _model; }
     
     void setModel(Model* model);
     void move(glm::vec3 deltaVec);
@@ -61,9 +63,23 @@ public:
 };
 
 inline glm::mat4 Renderable::modelMatrix() const {
+    // Calculate rotate direction and angle from rotation matrix _rotation without glm
+    glm::vec3 axis;
+    float angle;
+    glm::quat quat(_rotation);
+    glm::vec3 axisAngle = glm::axis(quat);
+    axis = glm::normalize(axisAngle);
+    angle = glm::angle(quat);
+    //float rotateX = glm::degrees(glm::asin(-_rotation[1][2]));
+    //float rotateY = glm::degrees(glm::atan(_rotation[0][2] / _rotation[2][2]));
+    //float rotateZ = glm::degrees(glm::atan(_rotation[1][0] / _rotation[1][1]));
+    // Calculate model matrix
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, _position);
-    model = _rotation * model;
+    model = glm::rotate(model, angle, axis);
+    //model = glm::rotate(model, glm::radians(rotateX), glm::vec3(1.0f, 0.0f, 0.0f));
+    //model = glm::rotate(model, glm::radians(rotateY), glm::vec3(0.0f, 1.0f, 0.0f));
+    //model = glm::rotate(model, glm::radians(rotateZ), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, _scale);
     return model;
 }

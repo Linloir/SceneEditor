@@ -31,11 +31,11 @@ void Renderable::setPosition(glm::vec3 position) {
 }
 
 void Renderable::rotate(glm::vec3 axis, float deltaAngle) {
-    _rotation = glm::rotate(_rotation, deltaAngle, axis);
+    _rotation = glm::rotate(_rotation, glm::radians(deltaAngle), axis);
 }
 
 void Renderable::setRotation(glm::vec3 axis, float angle) {
-    _rotation = glm::rotate(glm::mat4(1.0f), angle, axis);
+    _rotation = glm::rotate(glm::mat4(1.0f), glm::radians(angle), axis);
 }
 
 void Renderable::scale(float deltaScale) {

@@ -300,10 +300,18 @@ void SceneViewer::mouseReleaseEvent(QMouseEvent* event) {
         }
     }
     else if (_pressedObject != nullptr && _pressedObject == _selectedObject) {
-        // Double select on an object, set in operating mode
-        _operatingObject = _selectedObject;
-        _hideBound = true;
-        startOperatingObject = true;
+        if (!_dragged) {
+            // Double select on an object, set in operating mode
+            _operatingObject = _selectedObject;
+            _hideBound = true;
+            startOperatingObject = true;
+        }
+        else {
+            // keep it selected
+            _dragged = false;
+            _hideBound = false;
+            _selectedObject->updateBoundary();
+        }
     }
     else if (_dragged) {
         _dragged = false;
@@ -347,9 +355,9 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
                 _hideBound = true;
                 // Rotate around camera up
                 glm::vec2 delta = glm::vec2(event->x() - _lastMousePosition.x(), event->y() - _lastMousePosition.y());
-                _selectedObject->rotate(_camera.up(), delta.x * 0.01f);
+                _selectedObject->rotate(_camera.up(), delta.x * 1.0f);
                 // Rotate around camera right
-                _selectedObject->rotate(_camera.right(), delta.y * 0.01f);
+                _selectedObject->rotate(_camera.right(), delta.y * 1.0f);
                 emit onUpdate(_selectedObject);
             }
             break;
@@ -490,34 +498,39 @@ void SceneViewer::moveOperatingObject(const Ray& ray) {
     }
     // Move the object so that the bottom center of the object is at the hit point
     else if (_stickToSurface) {
-        // Stick the bottom center of the model to the surface
-
-        // Clear current translation and rotation while keeping scale
-        _operatingObject->setPosition(glm::vec3(0.0f));
-        _operatingObject->setRotation(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f);
-        _operatingObject->updateBoundary();
-
         // Set the bottom center of the model at local origin
         glm::vec3 bottomCenter = _operatingObject->boundary().bottomCenterPoint();
-        _operatingObject->move(-bottomCenter);
+        glm::vec3 modelCenter = _operatingObject->modelMatrix() * glm::vec4(glm::vec3(0.0f), 1.0f);   // model center in world space
 
         // Rotate the model to align with the surface normal
         glm::vec3 normal = _hitRecord.normal();
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
         glm::vec3 axis = glm::cross(up, normal);
         float angle = glm::acos(glm::dot(up, normal));
-        _operatingObject->rotate(axis, angle);
+        _operatingObject->setRotation(axis, angle);
 
         // Move the model to the hit point
         glm::vec3 hitPoint = _hitRecord.position();
-        _operatingObject->move(hitPoint);
+        glm::vec3 newCenter = hitPoint + normal * (modelCenter.y - bottomCenter.y);
+        
+        // Move the model to the new center
+        _operatingObject->setPosition(newCenter);
 
-        // Update boundary
+        // Update the boundary
         _operatingObject->updateBoundary();
     }
     else {
         // Move the object to the hit point
-        _operatingObject->setPosition(_hitRecord.position());
+        Logger::debug("Hit point: " + std::to_string(_hitRecord.position().x) + ", " + std::to_string(_hitRecord.position().y) + ", " + std::to_string(_hitRecord.position().z));
+        Logger::debug("Bottom center: " + std::to_string(_operatingObject->boundary().bottomCenterPoint().x) + ", " + std::to_string(_operatingObject->boundary().bottomCenterPoint().y) + ", " + std::to_string(_operatingObject->boundary().bottomCenterPoint().z));
+        glm::vec3 target = _hitRecord.position();
+        glm::vec3 modelCenter = _operatingObject->modelMatrix() * glm::vec4(glm::vec3(0.0f), 1.0f);   // model center in world space
+        glm::vec3 bottomCenter = _operatingObject->modelMatrix() * glm::vec4(_operatingObject->model()->boundBox().bottomCenterPoint(), 1.0f);   // model center in world space
+        glm::vec3 newCenter = target + modelCenter - bottomCenter;
+        _operatingObject->setPosition(newCenter);
+
+        // Update the boundary
+        _operatingObject->updateBoundary();
     }
 }
 
@@ -559,7 +572,12 @@ void SceneViewer::deleteObject() {
 void SceneViewer::updateSetting(QPair<QString, QString> setting) {
     makeCurrent();
     if (setting.first == "stickSurface") {
-        _stickToSurface = true;
+        if (setting.second == "true") {
+            _stickToSurface = true;
+        }
+        else {
+            _stickToSurface = false;
+        }
     }
     else if (setting.first == "skybox") {
         if (_sky != nullptr) {

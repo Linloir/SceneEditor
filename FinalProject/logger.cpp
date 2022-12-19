@@ -5,6 +5,7 @@
 #include "logger.h"
 
 Logger::LogLevel Logger::_level = Logger::LogLevel::LOCALLOGLEVEL;
+std::string Logger::_previous = "";
 
 void Logger::setLogLevel(LogLevel level) {
     _level = level;
