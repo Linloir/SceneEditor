@@ -477,6 +477,39 @@ void SceneViewer::keyPressEvent(QKeyEvent* event) {
         Logger::debug("Control pressed");
         _controlPressed = true;
     }
+    if (event->modifiers() == Qt::NoModifier && _selectedObject != nullptr) {
+        switch (event->key()) {
+            case Qt::Key_W: {
+                // move a bit upward
+                glm::vec3 up = _camera.up();
+                _selectedObject->move(up * 0.1f);
+                _selectedObject->updateBoundary();
+                break;
+            }
+            case Qt::Key_S: {
+                // move a bit downward
+                glm::vec3 up = _camera.up();
+                _selectedObject->move(-up * 0.1f);
+                _selectedObject->updateBoundary();
+                break;
+            }
+            case Qt::Key_A: {
+                // move a bit left
+                glm::vec3 right = _camera.right();
+                _selectedObject->move(-right * 0.1f);
+                _selectedObject->updateBoundary();
+                break;
+            }
+            case Qt::Key_D: {
+                // move a bit right
+                glm::vec3 right = _camera.right();
+                _selectedObject->move(right * 0.1f);
+                _selectedObject->updateBoundary();
+                break;
+            }
+        }
+        parentWidget()->update();
+    }
 }
 
 void SceneViewer::keyReleaseEvent(QKeyEvent* event) {

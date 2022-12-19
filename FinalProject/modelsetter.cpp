@@ -430,11 +430,11 @@ void ModelSetter::update(Renderable* object) {
         _lightB->setEnabled(false);
         _lightSwitch->setEnabled(false);
         _lightColorPanel->setEnabled(false);
-        _deleteBtn->setEnabled(false);
         _lightSwitchIcon->setFont(QFont("Font Awesome 6 Free Regular", 12));
         _lightSwitch->deselect();
         _lightColorPanel->deselect();
         _deleteBtn->setEnabled(false);
+        _deleteBtn->setIndicatorColor(QColor(171, 59, 58, 0));
     }
     else {
         // Update settings
@@ -530,6 +530,7 @@ void ModelSetter::update(Renderable* object) {
             }
         }
         _deleteBtn->setEnabled();
+        _deleteBtn->setIndicatorColor(QColor(171, 59, 58, 0));
     }
     
     if (_object != object || _object == nullptr) {
