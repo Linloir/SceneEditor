@@ -180,6 +180,9 @@
     <ClCompile Include="modelattrslide.cpp">
       <Filter>Source Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
     </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -231,6 +234,9 @@
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
     <ClInclude Include="hitrecord.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
   </ItemGroup>

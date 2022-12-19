@@ -40,6 +40,8 @@ SceneViewer::SceneViewer(QWidget* parent)
     extractShaderResource("fragmentshader.glsl");
     extractShaderResource("skyboxvertexshader.glsl");
     extractShaderResource("skyboxfragmentshader.glsl");
+    extractShaderResource("terrainvertexshader.glsl");
+    extractShaderResource("terrainfragmentshader.glsl");
     extractShaderResource("boundfragmentshader.glsl");
     extractShaderResource("boundvertexshader.glsl");
 }
@@ -132,8 +134,19 @@ void SceneViewer::initializeGL() {
     skyVertexShader.dispose();
     skyFragmentShader.dispose();
 
+    _terrainShader.ensureInitialized();
+    Logger::info("Terrain Shader initialized");
+    
+    VertexShader terrainVertexShader("./temp/shaders/terrainvertexshader.glsl");
+    FragmentShader terrainFragmentShader("./temp/shaders/terrainfragmentshader.glsl");
+    _terrainShader.attachShader(terrainVertexShader);
+    _terrainShader.attachShader(terrainFragmentShader);
+    terrainVertexShader.dispose();
+    terrainFragmentShader.dispose();
+
     // Test Code Start
     _sky = new SkyBox("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\SkyBoxes");
+    _terrain = new Terrain("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Terrains");
     
     _dirLight = new DirLight();
 
@@ -161,11 +174,35 @@ void SceneViewer::paintGL() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    _shaderProgram.bind();
-
     // Set view and projection matrices
     glm::mat4 view = _camera.viewMatrix();
     glm::mat4 projection = _camera.projectionMatrix((float)width() / (float)height());
+
+    // Sky Box Render ---------------------------------------------------
+    if (_sky != nullptr) {
+        _skyShader.bind();
+        _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
+        _skyShader.setUniform("projection", projection);
+        _sky->render();
+        _skyShader.unbind();
+    }
+    // ------------------------------------------------------------------
+
+    // Terrain Render ---------------------------------------------------
+    if (_terrain != nullptr) {
+        _terrainShader.bind();
+        _terrainShader.setUniform("view", view);
+        _terrainShader.setUniform("projection", projection);
+        _terrainShader.setUniform("model", _terrain->modelMatrix());
+        _terrainShader.setUniform("texture1", 2);
+        _terrain->render();
+        _terrainShader.unbind();
+    }
+    // ------------------------------------------------------------------
+
+    // Renderable Render ------------------------------------------------
+    _shaderProgram.bind();
+
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
     _shaderProgram.setUniform("viewPos", _camera.position());
@@ -173,6 +210,7 @@ void SceneViewer::paintGL() {
     int pointLights = 0;
     int spotLights = 0;
 
+    // Update lights
     for (auto object : _objects) {
         if (object->hasLight()) {
             ScopedLight light = object->transformedLight();
@@ -194,6 +232,7 @@ void SceneViewer::paintGL() {
 
     _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr ? 1 : 0);
 
+    // Render objects
     for (auto object : _objects) {
         if (object == _pressedObject) {
             _shaderProgram.setUniform("selColor", glm::vec3(0.22f));
@@ -211,7 +250,9 @@ void SceneViewer::paintGL() {
     }
 
     _shaderProgram.unbind();
+    // ------------------------------------------------------------------
 
+    // Bound box render -------------------------------------------------
     if (_selectedObject != nullptr && !_hideBound) {
         _boundShader.bind();
         _boundShader.setUniform("view", view);
@@ -226,12 +267,7 @@ void SceneViewer::paintGL() {
         _hoveredObject->boundary().render();
         _boundShader.unbind();
     }
-    
-    _skyShader.bind();
-    _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
-    _skyShader.setUniform("projection", projection);
-    _sky->render();
-    _skyShader.unbind();
+    // ------------------------------------------------------------------
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {
