@@ -298,7 +298,8 @@ void SettingPage::selectTerrain() {
     }
     
     QDir terrainDir(dir);
-    QStringList terrainFiles = terrainDir.entryList(QStringList() << "*.jpg", QDir::Files);
+    // filter *.jpg and *.png
+    QStringList terrainFiles = terrainDir.entryList(QStringList() << "*.jpg" << "*.png", QDir::Files);
     if (
         terrainFiles.indexOf("heightmap.png") == -1 ||
         terrainFiles.indexOf("texture.jpg") == -1

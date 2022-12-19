@@ -20,7 +20,7 @@ public:
 
 private:
     // Data
-    Model* _model;
+    Model* _model = nullptr;
     
     // UI control variables
     const QColor _borderColor = QColor(58, 143, 183);

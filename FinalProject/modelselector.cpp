@@ -42,7 +42,13 @@ void ModelSelector::addNewObject() {
         return;
     }
     
+    Logger::info("Loading model file from " + path.toStdString());
     Model* model = loadObject(path);
+    if (model->status() != Model::LOADED) {
+        delete model;
+        Logger::error("Invalid model file");
+        return;
+    }
     ModelSelectable* newSelectable = new ModelSelectable(model, this);
     
     _objectSelectables.push_back(newSelectable);

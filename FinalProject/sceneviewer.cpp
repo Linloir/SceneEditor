@@ -92,16 +92,18 @@ Renderable* SceneViewer::hitTest(const Ray& ray) {
         }
     }
     // Terrain hit test
-    HitRecord hitRecord = _terrain->hit(ray);
-    if (hitRecord.hitted()) {
-        Logger::debug("Hitted terrain");
-    }
-    else {
-        Logger::debug("Missed terrain");
-    }
-    if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
-        newRecord = hitRecord;
-        newObject = nullptr;
+    if (_terrain != nullptr) {
+        HitRecord hitRecord = _terrain->hit(ray);
+        if (hitRecord.hitted()) {
+            Logger::debug("Hitted terrain");
+        }
+        else {
+            Logger::debug("Missed terrain");
+        }
+        if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
+            newRecord = hitRecord;
+            newObject = nullptr;
+        }
     }
     _hitRecord = newRecord;
     return newObject;

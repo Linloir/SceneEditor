@@ -19,39 +19,39 @@ public:
 
 private:
     // UI Elemenets
-    QHBoxLayout* _mainLayout;
+    QHBoxLayout* _mainLayout = nullptr;
     
-    QWidget* _objectSettingPanel;
-    QVBoxLayout* _objectSettingLayout;
+    QWidget* _objectSettingPanel = nullptr;
+    QVBoxLayout* _objectSettingLayout = nullptr;
 
-    QWidget* _lightSettingButtons;
-    QVBoxLayout* _lightSettingsButtonsLayout;
+    QWidget* _lightSettingButtons = nullptr;
+    QVBoxLayout* _lightSettingsButtonsLayout = nullptr;
     
-    QWidget* _lightSettingPanel;
-    QVBoxLayout* _lightSettingLayout;
+    QWidget* _lightSettingPanel = nullptr;
+    QVBoxLayout* _lightSettingLayout = nullptr;
     
-    QWidget* _lightColorSettingPanel;
-    QVBoxLayout* _lightColorSettingPanelLayout;
+    QWidget* _lightColorSettingPanel = nullptr;
+    QVBoxLayout* _lightColorSettingPanelLayout = nullptr;
 
-    ModelAttributeSlide* _scale;
-    ModelAttributeSlide* _rotateX;
-    ModelAttributeSlide* _rotateY;
-    ModelAttributeSlide* _rotateZ;
-    ModelAttributeSlide* _lightDistance;
-    ModelAttributeSlide* _lightRotateTheta;
-    ModelAttributeSlide* _lightRotatePhi;
-    ModelAttributeSlide* _lightCutoffAngle;
-    ModelAttributeSlide* _lightR;
-    ModelAttributeSlide* _lightG;
-    ModelAttributeSlide* _lightB;
-    QWidget* _lightSwitchPanel;
-    QVBoxLayout* _lightSwitchLayout;
-    PushButton* _lightSwitch;
-    QLabel* _lightSwitchIcon;
-    PushButton* _lightColorPanel;
-    QLabel* _lightColorPanelIcon;
-    PushButton* _deleteBtn;
-    QLabel* _deleteIcon;
+    ModelAttributeSlide* _scale = nullptr;
+    ModelAttributeSlide* _rotateX = nullptr;
+    ModelAttributeSlide* _rotateY = nullptr;
+    ModelAttributeSlide* _rotateZ = nullptr;
+    ModelAttributeSlide* _lightDistance = nullptr;
+    ModelAttributeSlide* _lightRotateTheta = nullptr;
+    ModelAttributeSlide* _lightRotatePhi = nullptr;
+    ModelAttributeSlide* _lightCutoffAngle = nullptr;
+    ModelAttributeSlide* _lightR = nullptr;
+    ModelAttributeSlide* _lightG = nullptr;
+    ModelAttributeSlide* _lightB = nullptr;
+    QWidget* _lightSwitchPanel = nullptr;
+    QVBoxLayout* _lightSwitchLayout = nullptr;
+    PushButton* _lightSwitch = nullptr;
+    QLabel* _lightSwitchIcon = nullptr;
+    PushButton* _lightColorPanel = nullptr;
+    QLabel* _lightColorPanelIcon = nullptr;
+    PushButton* _deleteBtn = nullptr;
+    QLabel* _deleteIcon = nullptr;
 
     // State
     Renderable* _object = nullptr;

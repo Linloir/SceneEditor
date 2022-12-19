@@ -15,10 +15,10 @@ public:
     ~ModelAttributeSlide();
 
 private:
-    QHBoxLayout* _stretchLayout;
-    QLabel* _label;
-    QLabel* _val;
-    Slider* _slider;
+    QHBoxLayout* _stretchLayout = nullptr;
+    QLabel* _label = nullptr;
+    QLabel* _val = nullptr;
+    Slider* _slider = nullptr;
 
 public:
     // Getter APIs

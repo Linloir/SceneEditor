@@ -72,7 +72,7 @@ Terrain::Terrain(std::string path){
 
     
     //textureID = loadTexture2(texName, GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    tex = loadTexture(path + "/grass.jpg");
+    tex = loadTexture(path + "/texture.jpg");
 
 }
 
