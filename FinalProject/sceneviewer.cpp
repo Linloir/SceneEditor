@@ -117,27 +117,27 @@ void SceneViewer::paintGL() {
     ter->render();
     terrainShader.unbind();
     
-    //_shaderProgram.bind();
+    _shaderProgram.bind();
 
-    //// Set view and projection matrices
-    //_shaderProgram.setUniform("view", view);
-    //_shaderProgram.setUniform("projection", projection);
+    // Set view and projection matrices
+    _shaderProgram.setUniform("view", view);
+    _shaderProgram.setUniform("projection", projection);
 
-    //for (auto object : _objects) {
-    //    object.render(_shaderProgram);
-    //}
+    for (auto object : _objects) {
+        object.render(_shaderProgram);
+    }
 
-    //_shaderProgram.unbind();
+    _shaderProgram.unbind();
 
     
 
 
-    //skyshader.bind();
-    //view = glm::mat4(glm::mat3(view));
-    //skyshader.setUniform("view", view);
-    //skyshader.setUniform("projection", projection);
-    //sky->render();
-    //skyshader.unbind();
+    skyshader.bind();
+    view = glm::mat4(glm::mat3(view));
+    skyshader.setUniform("view", view);
+    skyshader.setUniform("projection", projection);
+    sky->render();
+    skyshader.unbind();
 
 
 }

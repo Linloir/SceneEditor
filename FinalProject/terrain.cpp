@@ -8,16 +8,16 @@
 
 Terrain::Terrain(std::string path){
     
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load((path + "/heightmap.png").c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load("D:/ProgrammingFile/LearnOpenGL/src/8.guest/2021/3.tessellation/terrain_gpu_dist/resources/heightmaps/iceland_heightmap.png", &width, &height, &nrChannels, 0);
 
-
-    float yScale = 64.0f / 256.0f, yShift = 16.0f;
+    
     int rez = 1;
     unsigned bytePerPixel = nrChannels;
     for (int i = 0; i < height; i++)
     {
+        std::vector<float> temp;
         for (int j = 0; j < width; j++)
         {
             unsigned char* pixelOffset = data + (j + width * i) * bytePerPixel;
@@ -27,7 +27,11 @@ Terrain::Terrain(std::string path){
             vertices.push_back(-height / 2.0f + height * i / (float)height);   // vx
             vertices.push_back((int)y * yScale - yShift);   // vy
             vertices.push_back(-width / 2.0f + width * j / (float)width);   // vz
+            vertices.push_back((float)i);
+            vertices.push_back((float)j);
+            temp.push_back((int)y * yScale - yShift);
         }
+        Point.push_back(temp);
     }
     stbi_image_free(data);
 
@@ -53,8 +57,11 @@ Terrain::Terrain(std::string path){
     OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
     // position attribute
-    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     OPENGL_EXTRA_FUNCTIONS->glEnableVertexAttribArray(0);
+    // texCoord attribute
+    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
+    OPENGL_EXTRA_FUNCTIONS->glEnableVertexAttribArray(1);
 
     OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &terrainIBO);
     OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
@@ -62,7 +69,7 @@ Terrain::Terrain(std::string path){
 
 
     //textureID = loadTexture2(texName, GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    tex = loadTexture(path + "/white.jpg");
+    tex = loadTexture(path + "/grass.jpg");
 
 }
 
@@ -127,48 +134,62 @@ void Terrain::render() {
 
 }
 
-int Terrain::if_under_terrain(glm::vec3 point) {
+float Terrain::GetHeight(float px, float pz) {
+    float fx = px + height / 2;
+    float fz = pz + width / 2;
 
-    int greater_x = ceil(point.x);
-    int greater_y = ceil(point.y);
-    int less_x = floor(point.x);
-    int less_y = floor(point.y);
+    int x = ((int)fx) % height;
+    int z = ((int)fz) % width;
+    int gx = (x + 1) % height;
+    int gz = (z + 1) % width;
 
-    float great_z = Point[greater_x][greater_y];
-    float less_z = Point[less_x][less_y];
+    float ans = (x - fx) * (Point[gx][gz] - Point[x][z]) + Point[x][z];
 
-    float z = (point.x - less_x) * (great_z - less_z) + less_z;
-
-    if (fabs(z - point.z) < 1e-2) {
-        return 2;
-    }
-    if (z > point.z) {
-        return 1;
-    }
-    else
-    {
-        return -1;
-    }
-
+    return ans;
 }
 
-Vertex Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
+glm::vec3 Terrain::GetNormal(glm::vec3 pos) {
+    float fx = pos.x;
+    float fz = pos.z;
 
-    glm::vec3 step = glm::normalize(dir);
+    glm::vec3 point1(fx - 1, GetHeight(fx - 1, fz - 1), fz - 1);
+    glm::vec3 point2(fx + 1, GetHeight(fx + 1, fz + 1), fz + 1);
 
-    int flag = if_under_terrain(orig);
+    glm::vec3 l1 = pos - point1;
+    glm::vec3 l2 = point2 - point1;
+    glm::vec3 ans = glm::normalize(glm::cross(l1, l2));
+    return ans;
+}
 
-    glm::vec3 right = orig;
-    while (true) {
-        right += step;
-        int temp = if_under_terrain(right);
-        if (temp == 0) {
-            return Vertex(glm::vec3(0.0f));
-        }
-        if (flag * temp == -1 || temp == 2) {
-            glm::vec4 ans = Model * glm::vec4(right,1.0f);
-            return Vertex(glm::vec3(ans));
-        }
+void Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
+    // A good ray step is half of the blockScale 
+    glm::vec3 rayStep = dir * (float)width * 0.25f;
+    glm::vec3 rayStartPosition = orig;
+
+    // Linear search - Loop until find a point inside and outside the terrain Vector3 
+    glm::vec3 lastRayPosition = orig; 
+    orig += rayStep;
+    float map_height = GetHeight(orig.x,orig.z);
+    while (orig.y > map_height)
+    {
+        lastRayPosition = orig;
+        orig += rayStep;
+        map_height = GetHeight(orig.x, orig.z);
     }
 
+    glm::vec3 startPosition = lastRayPosition;
+    glm::vec3 endPosition = orig;
+
+    // Binary search with 32 steps. Try to find the exact collision point 
+    for (int i = 0; i < 32; i++)
+    {
+        // Binary search pass 
+        glm::vec3 middlePoint = (startPosition + endPosition) * 0.5f;
+        if (middlePoint.y < height)
+            endPosition = middlePoint;
+        else
+            startPosition = middlePoint;
+    }
+    glm::vec3 position = (startPosition + endPosition) * 0.5f;
+    glm::vec3 normal = GetNormal(position);
 }
