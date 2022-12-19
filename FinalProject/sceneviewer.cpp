@@ -280,6 +280,7 @@ void SceneViewer::mouseReleaseEvent(QMouseEvent* event) {
     else {
         _selectedObject = _pressedObject;
         _hideBound = false;
+        emit onSelect(_selectedObject);
     }
     
     // Reset pressed object
@@ -314,6 +315,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
                 _selectedObject->rotate(_camera.up(), delta.x * 0.01f);
                 // Rotate around camera right
                 _selectedObject->rotate(_camera.right(), delta.y * 0.01f);
+                emit onUpdate(_selectedObject);
             }
             break;
         }
@@ -332,6 +334,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
                 // Scale object
                 glm::vec2 delta = glm::vec2(event->x() - _lastMousePosition.x(), event->y() - _lastMousePosition.y());
                 _selectedObject->scale(-delta.y * 0.01f);
+                emit onUpdate(_selectedObject);
             }
             else {
                 // Set dragged
@@ -356,6 +359,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event) {
             }
             else {
                 moveOperatingObject(ray);
+                emit onUpdate(_selectedObject);
             }
             break;
         }
@@ -489,5 +493,30 @@ void SceneViewer::addObject(Model* model) {
     _selectedObject = newObject;
     _operatingObject = newObject;
     _objects.push_back(newObject);
+    parentWidget()->update();
+    emit onSelect(_selectedObject);
+}
+
+void SceneViewer::deleteObject() {
+    if (_selectedObject == nullptr) {
+        return;
+    }
+    makeCurrent();
+    for (auto it = _objects.begin(); it != _objects.end(); ++it) {
+        if (*it == _selectedObject) {
+            _objects.erase(it);
+            break;
+        }
+    }
+    delete _selectedObject;
+    if (_hoveredObject == _selectedObject) {
+        _hoveredObject = nullptr;
+    }
+    if (_pressedObject == _selectedObject) {
+        _pressedObject = nullptr;
+    }
+    _selectedObject = nullptr;
+    _operatingObject = nullptr;
+    emit onSelect(nullptr);
     parentWidget()->update();
 }

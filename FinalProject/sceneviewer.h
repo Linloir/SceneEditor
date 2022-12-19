@@ -86,6 +86,19 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event) override;
     virtual void keyReleaseEvent(QKeyEvent* event) override;
 
+public:
+    void setDragFlag() { 
+        _hideBound = true;
+        parentWidget()->update();
+    }
+    void clearDragFlag() {
+        _hideBound = false;
+        if (_selectedObject != nullptr)
+            _selectedObject->updateBoundary();
+        parentWidget()->update();
+    }
+    void deleteObject();
+
 signals:
     void onHover(Renderable* object);
     void onSelect(Renderable* object);

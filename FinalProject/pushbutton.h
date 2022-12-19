@@ -39,6 +39,7 @@ private:
     QColor _hoverColor;
     QColor _pressedColor;
     QColor _selectedColor;
+    QColor _restoredColor[5];
     
     QWidget* _indicator;
     LUI_BTN_INDICATOR_POS _indicatorPosition = LUI_BTN_POS_LEFT;
@@ -51,6 +52,7 @@ private:
     QGraphicsOpacityEffect* _indicatorEffect;
 
     // Button state
+    bool _enabled = true;
     bool _hovered = false;
     bool _pressed = false;
     bool _selected = false;
@@ -72,6 +74,7 @@ public:
     // Operation APIs
     void select();
     void deselect();
+    void setEnabled(bool enabled = true);
     
     // Attribute setter APIs
     void setRadius(int radius);

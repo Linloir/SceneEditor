@@ -14,5 +14,9 @@
     <qresource prefix="/fonts">
         <file>font_awesome_6_regular_free.otf</file>
         <file>font_awesome_6_solid_free.otf</file>
+        <file>corbel.ttf</file>
+        <file>Deng.ttf</file>
+        <file>Dengb.ttf</file>
+        <file>Dengl.ttf</file>
     </qresource>
 </RCC>
