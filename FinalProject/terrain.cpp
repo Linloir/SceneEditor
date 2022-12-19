@@ -10,7 +10,7 @@ Terrain::Terrain(std::string path){
     
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load("D:/ProgrammingFile/LearnOpenGL/src/8.guest/2021/3.tessellation/terrain_gpu_dist/resources/heightmaps/iceland_heightmap.png", &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load((path+"/heightmap.png").c_str(), &width, &height, &nrChannels, 0);
 
     
     int rez = 1;
