@@ -3,6 +3,7 @@
 #include <qwidget.h>
 #include <qboxlayout.h>
 #include <qlabel.h>
+#include <qpair.h>
 
 #include "pagewidget.h"
 #include "sceneviewer.h"
@@ -43,6 +44,9 @@ private:
     SceneViewer* _sceneViewer = nullptr;
 
     ModelSetter* _modelSetter = nullptr;
+
+public:
+    void updateSetting(QPair<QString, QString> setting);
 
 public:
     virtual PushButton* getPageIconButton(QWidget* context) override;

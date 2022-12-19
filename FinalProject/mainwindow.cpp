@@ -45,10 +45,17 @@ MainWindow::MainWindow(QWidget *parent)
     _editorPage->setMouseTracking(true);
     _sideBar->addPage(_editorPage);
 
+    // Create setting page and connect to side bar
+    _settingPage = new SettingPage(_placeHolderWidget);
+    _settingPage->setMouseTracking(true);
+    _sideBar->addPage(_settingPage);
+
     // Create about page and connect to side bar
     _aboutPage = new AboutPage(_placeHolderWidget);
     _aboutPage->setMouseTracking(true);
     _sideBar->addPage(_aboutPage);
+
+    connect(_settingPage, &SettingPage::onSettingsChanged, _editorPage, &EditorPage::updateSetting);
 }
 
 MainWindow::~MainWindow() {
@@ -65,6 +72,7 @@ void MainWindow::resizePages(QResizeEvent* event) {
 
     // Resize the editor page
     _editorPage->resize(size);
+    _settingPage->resize(size);
     _aboutPage->resize(size);
 }
 
@@ -74,6 +82,7 @@ void MainWindow::showEvent(QShowEvent* event) {
 
     // Resize all the pages based on the placeholder widget
     _editorPage->resize(_placeHolderWidget->size());
+    _settingPage->resize(_placeHolderWidget->size());
     _aboutPage->resize(_placeHolderWidget->size());
 }
 

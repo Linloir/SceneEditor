@@ -3,6 +3,7 @@
 #include <qwidget.h>
 #include <qevent.h>
 #include <qopenglfunctions.h>
+#include <qpair.h>
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
 #include <vector>
@@ -24,10 +25,11 @@ private:
     // OpenGL section-------------------------------------
     // List of objects currently in the scene
     std::vector<Renderable*> _objects;
+    // Sky Box
+    SkyBox* _sky = nullptr;
     // Dir light
+    bool _dirLightOn = false;
     DirLight* _dirLight = nullptr;
-	// Sky Box
-    SkyBox* _sky;
     // Terrain
     Terrain* _terrain;
     // Shader program for objects
@@ -103,6 +105,7 @@ public:
         parentWidget()->update();
     }
     void deleteObject();
+    void updateSetting(QPair<QString, QString> setting);
 
 signals:
     void onHover(Renderable* object);

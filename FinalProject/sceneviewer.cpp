@@ -146,7 +146,7 @@ void SceneViewer::initializeGL() {
     _skyShader.attachShader(skyFragmentShader);
     skyVertexShader.dispose();
     skyFragmentShader.dispose();
-
+    
     _terrainShader.ensureInitialized();
     Logger::info("Terrain Shader initialized");
     
@@ -156,24 +156,8 @@ void SceneViewer::initializeGL() {
     _terrainShader.attachShader(terrainFragmentShader);
     terrainVertexShader.dispose();
     terrainFragmentShader.dispose();
-
-    // Test Code Start
-    _sky = new SkyBox("D:\\ProgrammingFile\\SceneEditor\\SkyBoxes");
-    _terrain = new Terrain("D:\\ProgrammingFile\\SceneEditor\\Terrains");
     
     _dirLight = new DirLight();
-
-    //Model* model = new Model("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Models\\backpack\\backpack.obj");
-    //Renderable* backpack = new Renderable(model);
-    //backpack->move(glm::vec3(-5.0f, -2.0f, -2.0f));
-    //backpack->updateBoundary();
-    //_objects.push_back(backpack);
-    //
-    //Renderable* backpack2 = new Renderable(model);
-    //backpack2->makeLight();
-    //backpack2->originalLight()->setIdealDistance(500);
-    //_objects.push_back(backpack2);
-    // Test Code End
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 }
@@ -239,7 +223,7 @@ void SceneViewer::paintGL() {
     _shaderProgram.setUniform("pointlightnr", pointLights);
     _shaderProgram.setUniform("spotlightnr", spotLights);
 
-    if (_dirLight != nullptr) {
+    if (_dirLight != nullptr && _dirLightOn) {
         _dirLight->updateShader(_shaderProgram, 0);
     }
 
@@ -568,4 +552,63 @@ void SceneViewer::deleteObject() {
     _operatingObject = nullptr;
     emit onSelect(nullptr);
     parentWidget()->update();
+}
+
+void SceneViewer::updateSetting(QPair<QString, QString> setting) {
+    makeCurrent();
+    if (setting.first == "stickSurface") {
+        _stickToSurface = true;
+    }
+    else if (setting.first == "skybox") {
+        if (_sky != nullptr) {
+            delete _sky;
+            _sky = nullptr;
+        }
+        if (!setting.second.isEmpty()) {
+            _sky = new SkyBox(setting.second.toStdString());
+        }
+    }
+    else if (setting.first == "terrain") {
+        if (_terrain != nullptr) {
+            delete _terrain;
+            _terrain = nullptr;
+        }
+        if (!setting.second.isEmpty()) {
+            _terrain = new Terrain(setting.second.toStdString());
+        }
+    }
+    else if (setting.first == "dirLight") {
+        if (setting.second == "true") {
+            _dirLightOn = true;
+        }
+        else {
+            _dirLightOn = false;
+        }
+    }
+    else if (setting.first == "dirLightColorR") {
+        _dirLight->setLightColor(glm::vec3(setting.second.toFloat(), _dirLight->lightColor().y, _dirLight->lightColor().z));
+    }
+    else if (setting.first == "dirLightColorG") {
+        _dirLight->setLightColor(glm::vec3(_dirLight->lightColor().x, setting.second.toFloat(), _dirLight->lightColor().z));
+    }
+    else if (setting.first == "dirLightColorB") {
+        _dirLight->setLightColor(glm::vec3(_dirLight->lightColor().x, _dirLight->lightColor().y, setting.second.toFloat()));
+    }
+    else if (setting.first == "dirLightIntensity") {
+        _dirLight->setIntensity(setting.second.toFloat());
+    }
+    else if (setting.first == "dirLightDir") {
+        // parse "x,y,z"
+        QStringList list = setting.second.split(",");
+        if (list.size() == 3) {
+            _dirLight->setLightDirection(glm::vec3(list[0].toFloat(), list[1].toFloat(), list[2].toFloat()));
+        }
+        else {
+            Logger::error("Invalid direction light direction setting");
+        }
+    }
+    else {
+        Logger::warning("Unknown setting input");
+    }
+    doneCurrent();
 }
