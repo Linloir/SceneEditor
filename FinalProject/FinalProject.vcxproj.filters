@@ -242,6 +242,9 @@
     <ClInclude Include="hitrecord.h">
       <Filter>Header Files\OpenGL Abstractions</Filter>
     </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>Header Files\OpenGL Abstractions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">

@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "logger.h"
 #include "skybox.h"
+#include "terrain.h"
 
 class SceneViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -29,10 +30,13 @@ private:
     // Dir light
     bool _dirLightOn = false;
     DirLight* _dirLight = nullptr;
+    // Terrain
+    Terrain* _terrain;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     ShaderProgram _boundShader = ShaderProgram::empty();
     ShaderProgram _skyShader = ShaderProgram::empty();
+    ShaderProgram _terrainShader = ShaderProgram::empty();
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;

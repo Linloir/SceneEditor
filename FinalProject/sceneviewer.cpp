@@ -40,6 +40,8 @@ SceneViewer::SceneViewer(QWidget* parent)
     extractShaderResource("fragmentshader.glsl");
     extractShaderResource("skyboxvertexshader.glsl");
     extractShaderResource("skyboxfragmentshader.glsl");
+    extractShaderResource("terrainvertexshader.glsl");
+    extractShaderResource("terrainfragmentshader.glsl");
     extractShaderResource("boundfragmentshader.glsl");
     extractShaderResource("boundvertexshader.glsl");
 }
@@ -69,6 +71,7 @@ void SceneViewer::extractShaderResource(const QString& shaderName) {
 Renderable* SceneViewer::hitTest(const Ray& ray) {
     HitRecord newRecord = HitRecord();
     Renderable* newObject = nullptr;
+    // Object hit test
     for (int i = 0; i < _objects.size(); i++) {
         Logger::debug("Testing object " + std::to_string(i));
         Renderable* obj = _objects[i];
@@ -87,6 +90,18 @@ Renderable* SceneViewer::hitTest(const Ray& ray) {
             newRecord = hitRecord;
             newObject = obj;
         }
+    }
+    // Terrain hit test
+    HitRecord hitRecord = _terrain->hit(ray);
+    if (hitRecord.hitted()) {
+        Logger::debug("Hitted terrain");
+    }
+    else {
+        Logger::debug("Missed terrain");
+    }
+    if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
+        newRecord = hitRecord;
+        newObject = nullptr;
     }
     _hitRecord = newRecord;
     return newObject;
@@ -132,6 +147,16 @@ void SceneViewer::initializeGL() {
     skyVertexShader.dispose();
     skyFragmentShader.dispose();
     
+    _terrainShader.ensureInitialized();
+    Logger::info("Terrain Shader initialized");
+    
+    VertexShader terrainVertexShader("./temp/shaders/terrainvertexshader.glsl");
+    FragmentShader terrainFragmentShader("./temp/shaders/terrainfragmentshader.glsl");
+    _terrainShader.attachShader(terrainVertexShader);
+    _terrainShader.attachShader(terrainFragmentShader);
+    terrainVertexShader.dispose();
+    terrainFragmentShader.dispose();
+    
     _dirLight = new DirLight();
     
     _camera.setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
@@ -146,11 +171,35 @@ void SceneViewer::paintGL() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    _shaderProgram.bind();
-
     // Set view and projection matrices
     glm::mat4 view = _camera.viewMatrix();
     glm::mat4 projection = _camera.projectionMatrix((float)width() / (float)height());
+
+    // Sky Box Render ---------------------------------------------------
+    if (_sky != nullptr) {
+        _skyShader.bind();
+        _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
+        _skyShader.setUniform("projection", projection);
+        _sky->render();
+        _skyShader.unbind();
+    }
+    // ------------------------------------------------------------------
+
+    // Terrain Render ---------------------------------------------------
+    if (_terrain != nullptr) {
+        _terrainShader.bind();
+        _terrainShader.setUniform("view", view);
+        _terrainShader.setUniform("projection", projection);
+        _terrainShader.setUniform("model", _terrain->modelMatrix());
+        _terrainShader.setUniform("texture1", 2);
+        _terrain->render();
+        _terrainShader.unbind();
+    }
+    // ------------------------------------------------------------------
+
+    // Renderable Render ------------------------------------------------
+    _shaderProgram.bind();
+
     _shaderProgram.setUniform("view", view);
     _shaderProgram.setUniform("projection", projection);
     _shaderProgram.setUniform("viewPos", _camera.position());
@@ -158,6 +207,7 @@ void SceneViewer::paintGL() {
     int pointLights = 0;
     int spotLights = 0;
 
+    // Update lights
     for (auto object : _objects) {
         if (object->hasLight()) {
             ScopedLight light = object->transformedLight();
@@ -179,6 +229,7 @@ void SceneViewer::paintGL() {
 
     _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr ? 1 : 0);
 
+    // Render objects
     for (auto object : _objects) {
         if (object == _pressedObject) {
             _shaderProgram.setUniform("selColor", glm::vec3(0.22f));
@@ -196,7 +247,9 @@ void SceneViewer::paintGL() {
     }
 
     _shaderProgram.unbind();
+    // ------------------------------------------------------------------
 
+    // Bound box render -------------------------------------------------
     if (_selectedObject != nullptr && !_hideBound) {
         _boundShader.bind();
         _boundShader.setUniform("view", view);
@@ -211,14 +264,7 @@ void SceneViewer::paintGL() {
         _hoveredObject->boundary().render();
         _boundShader.unbind();
     }
-    
-    if (_sky != nullptr) {
-        _skyShader.bind();
-        _skyShader.setUniform("view", glm::mat4(glm::mat3(view)));
-        _skyShader.setUniform("projection", projection);
-        _sky->render();
-        _skyShader.unbind();
-    }
+    // ------------------------------------------------------------------
 }
 
 void SceneViewer::mousePressEvent(QMouseEvent* event) {
@@ -523,13 +569,13 @@ void SceneViewer::updateSetting(QPair<QString, QString> setting) {
         }
     }
     else if (setting.first == "terrain") {
-        //if (_terrain != nullptr) {
-        //    delete _terrain;
-        //    _terrain = nullptr;
-        //}
-        //if (!setting.second.isEmpty()) {
-        //    _terrain = new Terrain(setting.second.toStdString());
-        //}
+        if (_terrain != nullptr) {
+            delete _terrain;
+            _terrain = nullptr;
+        }
+        if (!setting.second.isEmpty()) {
+            _terrain = new Terrain(setting.second.toStdString());
+        }
     }
     else if (setting.first == "dirLight") {
         if (setting.second == "true") {
