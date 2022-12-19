@@ -71,6 +71,7 @@ void SceneViewer::extractShaderResource(const QString& shaderName) {
 Renderable* SceneViewer::hitTest(const Ray& ray) {
     HitRecord newRecord = HitRecord();
     Renderable* newObject = nullptr;
+    // Object hit test
     for (int i = 0; i < _objects.size(); i++) {
         Logger::debug("Testing object " + std::to_string(i));
         Renderable* obj = _objects[i];
@@ -89,6 +90,18 @@ Renderable* SceneViewer::hitTest(const Ray& ray) {
             newRecord = hitRecord;
             newObject = obj;
         }
+    }
+    // Terrain hit test
+    HitRecord hitRecord = _terrain->hit(ray);
+    if (hitRecord.hitted()) {
+        Logger::debug("Hitted terrain");
+    }
+    else {
+        Logger::debug("Missed terrain");
+    }
+    if (hitRecord.hitted() && hitRecord.t() < newRecord.t()) {
+        newRecord = hitRecord;
+        newObject = nullptr;
     }
     _hitRecord = newRecord;
     return newObject;
