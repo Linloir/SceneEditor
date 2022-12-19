@@ -3,6 +3,7 @@
 #include <qwidget.h>
 #include <qevent.h>
 #include <qopenglfunctions.h>
+#include <qpair.h>
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
 #include <vector>
@@ -23,13 +24,15 @@ private:
     // OpenGL section-------------------------------------
     // List of objects currently in the scene
     std::vector<Renderable*> _objects;
+    // Sky Box
+    SkyBox* _sky = nullptr;
     // Dir light
+    bool _dirLightOn = false;
     DirLight* _dirLight = nullptr;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     ShaderProgram _boundShader = ShaderProgram::empty();
     ShaderProgram _skyShader = ShaderProgram::empty();
-    SkyBox* _sky;
     // Main camera
     Camera _camera;
     float _cameraMovementSpeed = 0.02f;
@@ -98,6 +101,7 @@ public:
         parentWidget()->update();
     }
     void deleteObject();
+    void updateSetting(QPair<QString, QString> setting);
 
 signals:
     void onHover(Renderable* object);

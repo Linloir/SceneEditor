@@ -30,19 +30,21 @@ public:
 class DirLight : public Illuminer{
 protected:
     glm::vec3 _direction;   // The outgoing direction of the light source
+    float _intensity = 50;
     
 public:
     DirLight(glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3 color = glm::vec3(1.0f));
     ~DirLight();
     
 protected:
-    virtual glm::vec3 ambientLightColor() const override { return glm::vec3(0.2f) * _lightColor; }
-    virtual glm::vec3 diffuseLightColor() const override { return glm::vec3(0.6f) * _lightColor; }
+    virtual glm::vec3 ambientLightColor() const override { return glm::vec3(_intensity / 200.0f) * _lightColor; }
+    virtual glm::vec3 diffuseLightColor() const override { return glm::vec3(_intensity / 100.0f) * _lightColor; }
     virtual glm::vec3 specularLightColor() const override { return glm::vec3(1.0f) * _lightColor; }
     
 public:
     glm::vec3 lightDirection() const { return _direction; }  // The same direction as the outgoing direction
     void setLightDirection(glm::vec3 direction) { _direction = direction; }
+    void setIntensity(float intensity) { _intensity = intensity; }
     
     // Render util function
     virtual void updateShader(ShaderProgram shader, int index) const override;

@@ -26,7 +26,7 @@ AboutPage::AboutPage(QWidget* parent) :
     _mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     _mainWidget->setStyleSheet("QWidget#mainWidget { background-color: #efefef; border-radius: 8px; }");
     _mainLayout = new QVBoxLayout(_mainWidget);
-    _mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    _mainLayout->setAlignment(Qt::AlignTop);
     _mainLayout->setContentsMargins(0, 8, 0, 8);
     _mainLayout->setSpacing(8);
     _mainWidget->setLayout(_mainLayout);

@@ -77,6 +77,12 @@
     <Filter Include="Header Files\Qt Widgets\Pages\Scene Editor\Object Setter">
       <UniqueIdentifier>{6c5ac0df-26ad-40ad-860c-3d0372b81094}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Qt Widgets\Pages\Setting Page">
+      <UniqueIdentifier>{cb50686f-5bfb-4087-a103-04188e392f6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qt Widgets\Pages\Setting Page">
+      <UniqueIdentifier>{9bdb6f33-7b69-4419-878a-e4891d73f84f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="mainwindow.qrc">
@@ -179,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="modelattrslide.cpp">
       <Filter>Source Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
+    </ClCompile>
+    <ClCompile Include="settingpage.cpp">
+      <Filter>Source Files\Qt Widgets\Pages\Setting Page</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -285,6 +294,9 @@
     </QtMoc>
     <QtMoc Include="modelattrslide.h">
       <Filter>Header Files\Qt Widgets\Pages\Scene Editor\Object Setter</Filter>
+    </QtMoc>
+    <QtMoc Include="settingpage.h">
+      <Filter>Header Files\Qt Widgets\Pages\Setting Page</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

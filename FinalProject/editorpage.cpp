@@ -78,6 +78,12 @@ EditorPage::EditorPage(QWidget* parent) :
 
 EditorPage::~EditorPage() {}
 
+void EditorPage::updateSetting(QPair<QString, QString> setting) {
+    if (_sceneViewer != nullptr) {
+        _sceneViewer->updateSetting(setting);
+    }
+}
+
 PushButton* EditorPage::getPageIconButton(QWidget* context) {
     // Check for existed button
     if (_iconButton != nullptr) {

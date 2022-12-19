@@ -125,6 +125,12 @@
     <ClCompile Include="roundedcornerwidget.cpp" />
     <ClCompile Include="sceneviewer.cpp" />
     <ClCompile Include="scrolllistwidget.cpp" />
+    <ClCompile Include="settingpage.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sidebar.cpp" />
     <ClCompile Include="skybox.cpp" />
@@ -161,6 +167,7 @@
     <QtMoc Include="modelthumbnailwidget.h" />
     <QtMoc Include="modelattrslide.h" />
     <ClInclude Include="ray.h" />
+    <QtMoc Include="settingpage.h" />
     <ClInclude Include="skybox.h" />
     <QtMoc Include="slider.h" />
     <ClInclude Include="texture.h" />
