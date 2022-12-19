@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define LOCALLOGLEVEL DEBUG
+#define LOCALLOGLEVEL INFO
 
 class Logger {
 public:
@@ -10,6 +10,7 @@ public:
     
 private:
     static LogLevel _level;
+    static std::string _previous;
     
 public:
     static void setLogLevel(LogLevel level);

@@ -12,6 +12,8 @@ void Logger::setLogLevel(LogLevel level) {
 
 void Logger::log(LogLevel level, std::string message) {
     if (level < _level) return;
+    if (message == _previous) return;
+    _previous = message;
 
     switch (level) {
         case DEBUG:
