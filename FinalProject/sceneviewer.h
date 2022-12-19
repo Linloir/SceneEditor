@@ -31,7 +31,7 @@ private:
     bool _dirLightOn = false;
     DirLight* _dirLight = nullptr;
     // Terrain
-    Terrain* _terrain;
+    Terrain* _terrain = nullptr;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
     ShaderProgram _boundShader = ShaderProgram::empty();
