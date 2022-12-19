@@ -8,6 +8,7 @@
 #include "sceneviewer.h"
 #include "roundedcornerwidget.h"
 #include "modelselector.h"
+#include "modelsetter.h"
 
 class EditorPage : public PageWidget {
     
@@ -35,9 +36,13 @@ private:
 
     ModelSelector* _modelSelector = nullptr;
 
+    QVBoxLayout* _editingLayout = nullptr;
+
     RoundedCornerWidget* _sceneViewerContainer = nullptr;
     QVBoxLayout* _sceneViewerContainerLayout = nullptr;
     SceneViewer* _sceneViewer = nullptr;
+
+    ModelSetter* _modelSetter = nullptr;
 
 public:
     virtual PushButton* getPageIconButton(QWidget* context) override;

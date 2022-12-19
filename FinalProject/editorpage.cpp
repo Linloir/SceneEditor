@@ -36,6 +36,12 @@ EditorPage::EditorPage(QWidget* parent) :
     _modelSelector = new ModelSelector(_mainWidget);
     _mainLayout->addWidget(_modelSelector);
     _modelSelector->show();
+
+    // Generate editing layout
+    _editingLayout = new QVBoxLayout(_mainWidget);
+    _editingLayout->setContentsMargins(0, 0, 0, 0);
+    _editingLayout->setSpacing(16);
+    _mainLayout->addLayout(_editingLayout);
         
     // Generate scene viewer
     _sceneViewerContainer = new RoundedCornerWidget(_mainWidget);
@@ -47,11 +53,27 @@ EditorPage::EditorPage(QWidget* parent) :
     _sceneViewer = new SceneViewer(_sceneViewerContainer->mainWidget());
     _sceneViewerContainerLayout->addWidget(_sceneViewer);
     _sceneViewer->show();
-    _mainLayout->addWidget(_sceneViewerContainer);
+    _editingLayout->addWidget(_sceneViewerContainer);
     _sceneViewerContainer->show();
+
+    // Generate model setter
+    _modelSetter = new ModelSetter(_mainWidget);
+    _modelSetter->setMaximumHeight(150);
+    _editingLayout->addWidget(_modelSetter);
+    _modelSetter->show();
+    _modelSetter->setObjectName("ModelSetter");
+    _modelSetter->setStyleSheet("#ModelSetter { background-color: #f0f0f0; border-radius: 10px; }");
 
     // Connect signals
     connect(_modelSelector, &ModelSelector::onObjectSelected, _sceneViewer, &SceneViewer::addObject);
+    connect(_sceneViewer, &SceneViewer::onSelect, _modelSetter, &ModelSetter::update);
+    connect(_sceneViewer, &SceneViewer::onUpdate, _modelSetter, &ModelSetter::update);
+    connect(_modelSetter, &ModelSetter::onAdjustStart, _sceneViewer, &SceneViewer::setDragFlag);
+    connect(_modelSetter, &ModelSetter::onAdjustEnd, _sceneViewer, &SceneViewer::clearDragFlag);
+    connect(_modelSetter, &ModelSetter::onAdjust, this, [=]() {
+        _sceneViewer->update();
+    });
+    connect(_modelSetter, &ModelSetter::onDeleteObject, _sceneViewer, &SceneViewer::deleteObject);
 }
 
 EditorPage::~EditorPage() {}
