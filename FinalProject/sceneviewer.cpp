@@ -66,12 +66,12 @@ void SceneViewer::initializeGL() {
     vertexShader.dispose();
     fragmentShader.dispose();
 
-    skyShader.ensureInitialized();
+    skyshader.ensureInitialized();
 
     VertexShader vertexShader_sky("./temp/shaders/skyboxShader.vs");
     FragmentShader fragmentShader_sky("./temp/shaders/skyboxShader.fs");
-    skyShader.attachShader(vertexShader_sky);
-    skyShader.attachShader(fragmentShader_sky);
+    skyshader.attachShader(vertexShader_sky);
+    skyshader.attachShader(fragmentShader_sky);
     vertexShader_sky.dispose();
     fragmentShader_sky.dispose();
 
@@ -117,27 +117,27 @@ void SceneViewer::paintGL() {
     ter->render();
     terrainShader.unbind();
     
-    _shaderProgram.bind();
+    //_shaderProgram.bind();
 
-    // Set view and projection matrices
-    _shaderProgram.setUniform("view", view);
-    _shaderProgram.setUniform("projection", projection);
+    //// Set view and projection matrices
+    //_shaderProgram.setUniform("view", view);
+    //_shaderProgram.setUniform("projection", projection);
 
-    for (auto object : _objects) {
-        object.render(_shaderProgram);
-    }
+    //for (auto object : _objects) {
+    //    object.render(_shaderProgram);
+    //}
 
-    _shaderProgram.unbind();
+    //_shaderProgram.unbind();
 
     
 
 
-    skyShader.bind();
-    view = glm::mat4(glm::mat3(view));
-    skyShader.setUniform("view", view);
-    skyShader.setUniform("projection", projection);
-    sky->render();
-    skyShader.unbind();
+    //skyshader.bind();
+    //view = glm::mat4(glm::mat3(view));
+    //skyshader.setUniform("view", view);
+    //skyshader.setUniform("projection", projection);
+    //sky->render();
+    //skyshader.unbind();
 
 
 }

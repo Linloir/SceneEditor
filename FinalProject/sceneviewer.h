@@ -25,7 +25,7 @@ private:
     std::vector<Renderable> _objects;
     // Shader program for objects
     ShaderProgram _shaderProgram = ShaderProgram::empty();
-    ShaderProgram skyShader = ShaderProgram::empty();
+    ShaderProgram skyshader = ShaderProgram::empty();
     ShaderProgram terrainShader = ShaderProgram::empty();
     skybox* sky;
     Terrain* ter;

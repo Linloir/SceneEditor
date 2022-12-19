@@ -8,12 +8,15 @@
 
 class Terrain {
 private:
-    std::vector<float> _Vertex;
-    std::vector<unsigned int> Indicess;
-    unsigned int VAO, VBO, EBO;
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    unsigned int terrainVAO, terrainVBO, terrainIBO;
     std::vector<std::vector<float>> Point;
     int if_under_terrain(glm::vec3 point);
-    int imgW, imgH, imgChannel;
+    int width, height, nrChannels;
+    int numStrips, numTrisPerStrip;
+    int NUM_PATCH_PTS = 4;
+    unsigned rez = 20;
 public:
     unsigned int tex;
     Terrain(std::string path);

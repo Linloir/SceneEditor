@@ -7,94 +7,62 @@
 #include <GLM/gtc/type_ptr.hpp>
 
 Terrain::Terrain(std::string path){
-    _Vertex.clear();
-    Indicess.clear(); 
-    Point.clear();
     
+    stbi_set_flip_vertically_on_load(false);
 
-    Model = glm::translate(Model, glm::vec3(0.0f, -10.0f, 0.0f));
-    Model = glm::scale(Model, glm::vec3(20.0f));
-
-    unsigned char* data = stbi_load((path + "/heightmap.jpg").c_str(), &imgW, &imgH, &imgChannel, 1);
+    unsigned char* data = stbi_load((path + "/heightmap.png").c_str(), &width, &height, &nrChannels, 0);
 
 
-    int index1 = 0, index = 0;
-    float xrate = imgW / 2.0f;
-    float rrate = imgH / 2.0f;
-
-    if (data) {
-        for (int r = 0; r < imgH; r++)
+    float yScale = 64.0f / 256.0f, yShift = 16.0f;
+    int rez = 1;
+    unsigned bytePerPixel = nrChannels;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
         {
-            std::vector<float> temp;
-            for (int c = 0; c < imgW; c++)
-            {
-                //生成顶点数组, 坐标按照三角网格处理 GL_TRIGANLES
-                index1 = r * imgW + c;
-                _Vertex.push_back((c - xrate) / xrate);
-                _Vertex.push_back(data[index1] / 255.0f);
-                _Vertex.push_back((r - rrate) / rrate);
+            unsigned char* pixelOffset = data + (j + width * i) * bytePerPixel;
+            unsigned char y = pixelOffset[0];
 
-                temp.push_back(data[index1] / 255.0f);
-
-                //顶点颜色
-                _Vertex.push_back(1.0f);
-                _Vertex.push_back(0.0f);
-                _Vertex.push_back(0.0f);
-                //纹理坐标
-                _Vertex.push_back((c - xrate) / imgW);
-                _Vertex.push_back((r - rrate) / imgH);
-            }
-            Point.push_back(temp);
-        }
-        imgH -= 1;
-        int iW = imgW - 1;
-        for (int r = 0; r < imgH; r++)
-        {
-            for (int c = 0; c < iW; c++)
-            {
-
-                index1 = r * imgW + c;
-                index = (r + 1) * imgW + c;
-                Indicess.push_back(index1);
-                Indicess.push_back(index1 + 1);
-                Indicess.push_back(index + 1);
-
-                Indicess.push_back(index1);
-                Indicess.push_back(index);
-                Indicess.push_back(index + 1);
-
-            }
+            // vertex
+            vertices.push_back(-height / 2.0f + height * i / (float)height);   // vx
+            vertices.push_back((int)y * yScale - yShift);   // vy
+            vertices.push_back(-width / 2.0f + width * j / (float)width);   // vz
         }
     }
     stbi_image_free(data);
+
+    for (unsigned i = 0; i < height - 1; i += rez)
+    {
+        for (unsigned j = 0; j < width; j += rez)
+        {
+            for (unsigned k = 0; k < 2; k++)
+            {
+                indices.push_back(j + width * (i + k * rez));
+            }
+        }
+    }
     
+    numStrips = (height - 1) / rez;
+    numTrisPerStrip = (width / rez) * 2 - 2;
 
-    OPENGL_EXTRA_FUNCTIONS->glGenVertexArrays(1, &VAO);
-    OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &VBO);
-    OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &EBO);
+    OPENGL_EXTRA_FUNCTIONS->glGenVertexArrays(1, &terrainVAO);
+    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(terrainVAO);
 
-    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(VAO);
+    OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &terrainVBO);
+    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
+    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
-    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ARRAY_BUFFER, _Vertex.size() * sizeof(float), &_Vertex[0], GL_STATIC_DRAW);
-
-    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indicess.size() * sizeof(unsigned int), &Indicess[0], GL_STATIC_DRAW);
-
-    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    // position attribute
+    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     OPENGL_EXTRA_FUNCTIONS->glEnableVertexAttribArray(0);
-    // color attribute
-    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    OPENGL_EXTRA_FUNCTIONS->glEnableVertexAttribArray(1);
-    // texture coord attribute
-    OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    OPENGL_EXTRA_FUNCTIONS->glEnableVertexAttribArray(2);
 
-    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, 0);
-    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(0);
+    OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &terrainIBO);
+    OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
+    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
 
     //textureID = loadTexture2(texName, GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    tex = loadTexture(path + "/texture.jpg");
+    tex = loadTexture(path + "/white.jpg");
 
 }
 
@@ -103,12 +71,7 @@ unsigned int Terrain::loadTexture(std::string path) {
     OPENGL_FUNCTIONS->glGenTextures(1, &textureID);
     OPENGL_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, textureID);
 
-    // Set the texture wrapping parameters
-    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // Set texture filtering parameters
-    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -142,18 +105,30 @@ unsigned int Terrain::loadTexture(std::string path) {
 void Terrain::render() {
     OPENGL_EXTRA_FUNCTIONS->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     OPENGL_EXTRA_FUNCTIONS->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Set the texture wrapping parameters
+    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering parameters
+    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    OPENGL_FUNCTIONS->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     OPENGL_EXTRA_FUNCTIONS->glActiveTexture(GL_TEXTURE2);
     OPENGL_EXTRA_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, tex);
 
-    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(VAO);
-    OPENGL_EXTRA_FUNCTIONS->glDrawElements(GL_TRIANGLES, Indicess.size(), GL_UNSIGNED_INT, 0);
+    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(terrainVAO);
+    for (unsigned strip = 0; strip < numStrips; strip++)
+    {
+        OPENGL_EXTRA_FUNCTIONS->glDrawElements(GL_TRIANGLE_STRIP,   // primitive type
+            numTrisPerStrip + 2,   // number of indices to render
+            GL_UNSIGNED_INT,     // index data type
+            (void*)(sizeof(unsigned) * (numTrisPerStrip + 2) * strip)); // offset to starting index
+    }
 
 }
 
 int Terrain::if_under_terrain(glm::vec3 point) {
-    if (point.x >= imgH-1 || point.y >= imgW-1 || point.x < 0 || point.y < 0) {
-        return 0;
-    }
+
     int greater_x = ceil(point.x);
     int greater_y = ceil(point.y);
     int less_x = floor(point.x);
@@ -178,9 +153,6 @@ int Terrain::if_under_terrain(glm::vec3 point) {
 }
 
 Vertex Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
-    if (orig.x >= imgH - 1 || orig.y >= imgW - 1 || orig.x <0 || orig.y < 0) {
-        return Vertex(glm::vec3(0.0f));
-    }
 
     glm::vec3 step = glm::normalize(dir);
 
