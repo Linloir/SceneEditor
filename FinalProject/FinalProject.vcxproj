@@ -114,6 +114,7 @@
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="modelattrslide.cpp" />
     <ClCompile Include="modelselectable.cpp" />
     <ClCompile Include="modelselector.cpp" />
     <ClCompile Include="modelsetter.cpp" />
@@ -127,6 +128,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sidebar.cpp" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="slider.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
@@ -157,8 +159,10 @@
     <QtMoc Include="roundedcornerwidget.h" />
     <QtMoc Include="scrolllistwidget.h" />
     <QtMoc Include="modelthumbnailwidget.h" />
+    <QtMoc Include="modelattrslide.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="skybox.h" />
+    <QtMoc Include="slider.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vbo.h" />
@@ -167,7 +171,7 @@
     <ClInclude Include="vao.h" />
     <QtMoc Include="modelselectable.h" />
     <QtMoc Include="modelselector.h" />
-    <ClInclude Include="modelsetter.h" />
+    <QtMoc Include="modelsetter.h" />
     <ClInclude Include="renderable.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
