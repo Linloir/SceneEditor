@@ -32,6 +32,10 @@ public:
     ~Renderable();
 
 public:
+    glm::vec3 position() const { return _position; }
+    glm::mat4 rotation() const { return _rotation; }
+    glm::vec3 scaleVal() const { return _scale; }
+    
     void setModel(Model* model);
     void move(glm::vec3 deltaVec);
     void setPosition(glm::vec3 position);
@@ -44,6 +48,7 @@ public:
     ScopedLight* originalLight() const; // pass out the light object to scene manager to set light attributes
     bool hasLight() const { return _light != nullptr; }
     void makeLight();   // create a light source in the object
+    void disposeLight();    // remove the light source in the object
 
     const Boundary& boundary() const { return _boundary; }
     

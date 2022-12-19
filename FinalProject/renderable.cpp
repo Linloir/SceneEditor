@@ -59,6 +59,13 @@ void Renderable::makeLight() {
     _light = new ScopedLight(glm::vec3(0.0f));
 }
 
+void Renderable::disposeLight() {
+    if (_light != nullptr) {
+        delete _light;
+        _light = nullptr;
+    }
+}
+
 void Renderable::render(ShaderProgram shader) {
     // Check if initialized
     if (_model == nullptr) {
