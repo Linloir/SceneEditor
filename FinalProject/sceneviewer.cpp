@@ -158,8 +158,8 @@ void SceneViewer::initializeGL() {
     terrainFragmentShader.dispose();
 
     // Test Code Start
-    _sky = new SkyBox("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\SkyBoxes");
-    _terrain = new Terrain("E:\\Repositories\\CollegeProjects\\CGAssignments\\FinalProject\\Terrains");
+    _sky = new SkyBox("D:\\ProgrammingFile\\SceneEditor\\SkyBoxes");
+    _terrain = new Terrain("D:\\ProgrammingFile\\SceneEditor\\Terrains");
     
     _dirLight = new DirLight();
 

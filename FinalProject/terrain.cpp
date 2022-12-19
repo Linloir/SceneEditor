@@ -147,6 +147,8 @@ float Terrain::GetHeight(float px, float pz) {
 
     float ans = (x - fx) * (Point[gx][gz] - Point[x][z]) + Point[x][z];
 
+    //float ans = Point[x][z];
+
     return ans;
 }
 
@@ -166,9 +168,12 @@ glm::vec3 Terrain::GetNormal(glm::vec3 pos) {
 HitRecord Terrain::hit(const Ray& ray) {
     glm::vec3 orig = ray.origin();
     glm::vec3 dir = ray.direction();
+    if (orig.x >= width / 2 || orig.x <= -width / 2 || orig.z >= height / 2 || orig.z <= -height / 2) {
+        return HitRecord();
+    }
 
     // A good ray step is half of the blockScale 
-    glm::vec3 rayStep = dir * (float)width * 0.25f;
+    glm::vec3 rayStep = dir;
     glm::vec3 rayStartPosition = orig;
 
     // Linear search - Loop until find a point inside and outside the terrain Vector3 
@@ -179,6 +184,9 @@ HitRecord Terrain::hit(const Ray& ray) {
     {
         lastRayPosition = orig;
         orig += rayStep;
+        if (orig.x >= width / 2 || orig.x <= -width / 2 || orig.z >= height / 2 || orig.z <= -height / 2) {
+            return HitRecord();
+        }
         map_height = GetHeight(orig.x, orig.z);
     }
 
