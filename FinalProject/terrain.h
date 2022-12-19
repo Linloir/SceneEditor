@@ -1,10 +1,12 @@
 #pragma once
 
-#include "utils.h"
-#include "vertex.h"
-
 #include <vector>
 #include <string>
+
+#include "utils.h"
+#include "vertex.h"
+#include "ray.h"
+#include "hitrecord.h"
 
 class Terrain {
 private:
@@ -24,6 +26,6 @@ public:
     Terrain(std::string path);
     void render();
     unsigned int loadTexture(std::string path);
-    void hitPoint(glm::vec3 orig, glm::vec3 dir);
+    HitRecord hit(const Ray& ray);
     glm::mat4 modelMatrix() const { return glm::mat4(1.0f); }
 };

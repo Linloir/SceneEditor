@@ -1,10 +1,11 @@
-#include "terrain.h"
-#include "utils.h"
-#include "vertex.h"
 #include <STBImage/stb_image.h>
 #include <vector>
 #include <GLM/glm.hpp>
 #include <GLM/gtc/type_ptr.hpp>
+
+#include "terrain.h"
+#include "utils.h"
+#include "vertex.h"
 
 Terrain::Terrain(std::string path){
     // Convert '\ ' to '/' for Windows
@@ -56,7 +57,7 @@ Terrain::Terrain(std::string path){
 
     OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &terrainVBO);
     OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
     // position attribute
     OPENGL_EXTRA_FUNCTIONS->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -67,9 +68,9 @@ Terrain::Terrain(std::string path){
 
     OPENGL_EXTRA_FUNCTIONS->glGenBuffers(1, &terrainIBO);
     OPENGL_EXTRA_FUNCTIONS->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
-    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+    OPENGL_EXTRA_FUNCTIONS->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
 
-
+    
     //textureID = loadTexture2(texName, GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     tex = loadTexture(path + "/grass.jpg");
 
@@ -129,7 +130,10 @@ void Terrain::render() {
             numTrisPerStrip + 2,   // number of indices to render
             GL_UNSIGNED_INT,     // index data type
             (void*)(sizeof(unsigned) * (numTrisPerStrip + 2) * strip)); // offset to starting index
+
     }
+    OPENGL_EXTRA_FUNCTIONS->glBindVertexArray(0);
+    OPENGL_EXTRA_FUNCTIONS->glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 float Terrain::GetHeight(float px, float pz) {
@@ -159,7 +163,10 @@ glm::vec3 Terrain::GetNormal(glm::vec3 pos) {
     return ans;
 }
 
-void Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
+HitRecord Terrain::hit(const Ray& ray) {
+    glm::vec3 orig = ray.origin();
+    glm::vec3 dir = ray.direction();
+
     // A good ray step is half of the blockScale 
     glm::vec3 rayStep = dir * (float)width * 0.25f;
     glm::vec3 rayStartPosition = orig;
@@ -190,4 +197,11 @@ void Terrain::hitPoint(glm::vec3 orig, glm::vec3 dir) {
     }
     glm::vec3 position = (startPosition + endPosition) * 0.5f;
     glm::vec3 normal = GetNormal(position);
+
+    // If t > 200, consider the ray as not hitted
+    float t = glm::length(position - rayStartPosition);
+    if (t > 200.0f)
+        return HitRecord();
+    else
+        return HitRecord(t, position, normal);
 }
