@@ -567,21 +567,20 @@ void SceneViewer::moveOperatingObject(const Ray& ray) {
     // Move the object so that the bottom center of the object is at the hit point
     else if (_stickToSurface) {
         // Set the bottom center of the model at local origin
-        glm::vec3 bottomCenter = _operatingObject->boundary().bottomCenterPoint();
+        glm::vec3 bottomCenter = _operatingObject->modelMatrix() * glm::vec4(_operatingObject->model()->boundBox().bottomCenterPoint(), 1.0f);
         glm::vec3 modelCenter = _operatingObject->modelMatrix() * glm::vec4(glm::vec3(0.0f), 1.0f);   // model center in world space
 
         // Rotate the model to align with the surface normal
         glm::vec3 normal = _hitRecord.normal();
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::vec3 axis = glm::cross(up, normal);
-        float angle = glm::acos(glm::dot(up, normal));
-        _operatingObject->setRotation(axis, angle);
+        glm::vec3 axis = glm::normalize(glm::cross(up, normal));
+        float deg = glm::degrees(glm::acos(glm::dot(up, normal)));
+        _operatingObject->setRotation(axis, deg);
 
         // Move the model to the hit point
-        glm::vec3 hitPoint = _hitRecord.position();
-        glm::vec3 newCenter = hitPoint + normal * (modelCenter.y - bottomCenter.y);
+        glm::vec3 target = _hitRecord.position();
         
-        // Move the model to the new center
+        glm::vec3 newCenter = target + modelCenter - bottomCenter;
         _operatingObject->setPosition(newCenter);
 
         // Update the boundary
