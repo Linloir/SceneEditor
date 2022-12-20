@@ -229,7 +229,7 @@ void SceneViewer::paintGL() {
         _dirLight->updateShader(_shaderProgram, 0);
     }
 
-    _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr ? 1 : 0);
+    _shaderProgram.setUniform("dirlightnr", _dirLight != nullptr && _dirLightOn ? 1 : 0);
 
     // Render objects
     for (auto object : _objects) {

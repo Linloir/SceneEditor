@@ -162,7 +162,7 @@ SettingPage::SettingPage(QWidget* parent) :
     });
     
     _dirLightTheta = new ModelAttributeSlide("Rotate\u03B8", 0, 360, 3600, _mainWidget);
-    _dirLightTheta->setValue(0);
+    _dirLightTheta->setValue(270);
     _dirLightTheta->setEnabled(false);
     _mainLayout->addWidget(_dirLightTheta);
     _dirLightTheta->show();
@@ -170,15 +170,15 @@ SettingPage::SettingPage(QWidget* parent) :
         // Calculate direction vector by theta and phi
         float theta = _dirLightTheta->val();    // theta angle
         float phi = _dirLightPhi->val();        // phi angle
-        float x = sin(theta) * cos(phi);
-        float y = sin(theta) * sin(phi);
-        float z = cos(theta);
-        glm::vec3 dir = glm::vec3(x, y, z);
+        float x = sin(glm::radians(phi)) * cos(glm::radians(theta));
+        float y = sin(glm::radians(phi)) * sin(glm::radians(theta));
+        float z = cos(glm::radians(phi));
+        glm::vec3 dir = glm::normalize(glm::vec3(x, y, z));
         emit onSettingsChanged(QPair<QString, QString>("dirLightDir", QString::number(dir.x) + "," + QString::number(dir.y) + "," + QString::number(dir.z)));
     });
     
     _dirLightPhi = new ModelAttributeSlide("Rotate\u03C6", 0, 360, 3600, _mainWidget);
-    _dirLightPhi->setValue(0);
+    _dirLightPhi->setValue(90);
     _dirLightPhi->setEnabled(false);
     _mainLayout->addWidget(_dirLightPhi);
     _dirLightPhi->show();
@@ -186,10 +186,10 @@ SettingPage::SettingPage(QWidget* parent) :
         // Calculate direction vector by theta and phi
         float theta = _dirLightTheta->val();    // theta angle
         float phi = _dirLightPhi->val();        // phi angle
-        float x = sin(theta) * cos(phi);
-        float y = sin(theta) * sin(phi);
-        float z = cos(theta);
-        glm::vec3 dir = glm::vec3(x, y, z);
+        float x = sin(glm::radians(phi)) * cos(glm::radians(theta));
+        float y = sin(glm::radians(phi)) * sin(glm::radians(theta));
+        float z = cos(glm::radians(phi));
+        glm::vec3 dir = glm::normalize(glm::vec3(x, y, z));
         emit onSettingsChanged(QPair<QString, QString>("dirLightDir", QString::number(dir.x) + "," + QString::number(dir.y) + "," + QString::number(dir.z)));
     });
 }
