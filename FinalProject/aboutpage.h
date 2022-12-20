@@ -35,6 +35,16 @@ private:
     LineEditWidget* _versionLabel = nullptr;
     LineEditWidget* _dateLabel = nullptr;
 
+    LineEditWidget* _skyTerDev = nullptr;
+    LineEditWidget* _lightingDev = nullptr;
+    LineEditWidget* _coreDev = nullptr;
+    LineEditWidget* _uiDesigner = nullptr;
+
+    LineEditWidget* _license = nullptr;
+    LineEditWidget* _qtVersion = nullptr;
+    LineEditWidget* _usedLibraries = nullptr;
+    LineEditWidget* _githubLink = nullptr;
+
 public:
     virtual PushButton* getPageIconButton(QWidget* context) override;
     virtual PushButton* getPageTextButton(QWidget* context) override;

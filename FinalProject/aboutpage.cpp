@@ -35,12 +35,12 @@ AboutPage::AboutPage(QWidget* parent) :
     
     // Construct contents
     _authorLabel = new LineEditWidget(_mainWidget);
-    _authorLabel->mainLayout()->insertWidget(0, new QLabel("Author"));
+    _authorLabel->mainLayout()->insertWidget(0, new QLabel("Authored by"));
     _authorLabel->mainLayout()->insertSpacing(1, 8);
     _authorLabel->setBackgroundColor(QColor(0, 0, 0, 0));
     _authorLabel->setHoverColor(QColor(0, 0, 0, 10));
     _authorLabel->setPressedColor(QColor(0, 0, 0, 20));
-    _authorLabel->setText("Linloir");
+    _authorLabel->setText("Linloir with love \u2665");
     _authorLabel->setEnabled(false);
     _mainLayout->addWidget(_authorLabel);
     _authorLabel->show();
@@ -51,7 +51,7 @@ AboutPage::AboutPage(QWidget* parent) :
     _versionLabel->setBackgroundColor(QColor(0, 0, 0, 0));
     _versionLabel->setHoverColor(QColor(0, 0, 0, 10));
     _versionLabel->setPressedColor(QColor(0, 0, 0, 20));
-    _versionLabel->setText("1.0.0");
+    _versionLabel->setText("v1.0.0 release");
     _versionLabel->setEnabled(false);
     _mainLayout->addWidget(_versionLabel);
     _versionLabel->show();
@@ -62,10 +62,114 @@ AboutPage::AboutPage(QWidget* parent) :
     _dateLabel->setBackgroundColor(QColor(0, 0, 0, 0));
     _dateLabel->setHoverColor(QColor(0, 0, 0, 10));
     _dateLabel->setPressedColor(QColor(0, 0, 0, 20));
-    _dateLabel->setText("2020/12/31");
+    _dateLabel->setText("2022-12-20");
     _dateLabel->setEnabled(false);
     _mainLayout->addWidget(_dateLabel);
     _dateLabel->show();
+
+    // insert line break
+    QWidget* _line = new QWidget(_mainWidget);
+    _line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    _line->setFixedHeight(1);
+    _line->setStyleSheet("background-color: #c2c2c2;");
+    _mainLayout->addWidget(_line);
+    _line->show();
+    
+    _skyTerDev = new LineEditWidget(_mainWidget);
+    _skyTerDev->mainLayout()->insertWidget(0, new QLabel("Sky & Terrain developer"));
+    _skyTerDev->mainLayout()->insertSpacing(1, 8);
+    _skyTerDev->setBackgroundColor(QColor(0, 0, 0, 0));
+    _skyTerDev->setHoverColor(QColor(0, 0, 0, 10));
+    _skyTerDev->setPressedColor(QColor(0, 0, 0, 20));
+    _skyTerDev->setText("Gong ChangHao @12gch138");
+    _skyTerDev->setEnabled(false);
+    _mainLayout->addWidget(_skyTerDev);
+    _skyTerDev->show();
+    
+    _lightingDev = new LineEditWidget(_mainWidget);
+    _lightingDev->mainLayout()->insertWidget(0, new QLabel("Lighting developer"));
+    _lightingDev->mainLayout()->insertSpacing(1, 8);
+    _lightingDev->setBackgroundColor(QColor(0, 0, 0, 0));
+    _lightingDev->setHoverColor(QColor(0, 0, 0, 10));
+    _lightingDev->setPressedColor(QColor(0, 0, 0, 20));
+    _lightingDev->setText("Liu YuMing @ayachi3 | Linloir @Linloir");
+    _lightingDev->setEnabled(false);
+    _mainLayout->addWidget(_lightingDev);
+    _lightingDev->show();
+    
+    _coreDev = new LineEditWidget(_mainWidget);
+    _coreDev->mainLayout()->insertWidget(0, new QLabel("Core developer"));
+    _coreDev->mainLayout()->insertSpacing(1, 8);
+    _coreDev->setBackgroundColor(QColor(0, 0, 0, 0));
+    _coreDev->setHoverColor(QColor(0, 0, 0, 10));
+    _coreDev->setPressedColor(QColor(0, 0, 0, 20));
+    _coreDev->setText("Linloir @Linloir");
+    _coreDev->setEnabled(false);
+    _mainLayout->addWidget(_coreDev);
+    _coreDev->show();
+    
+    _uiDesigner = new LineEditWidget(_mainWidget);
+    _uiDesigner->mainLayout()->insertWidget(0, new QLabel("UI designed by"));
+    _uiDesigner->mainLayout()->insertSpacing(1, 8);
+    _uiDesigner->setBackgroundColor(QColor(0, 0, 0, 0));
+    _uiDesigner->setHoverColor(QColor(0, 0, 0, 10));
+    _uiDesigner->setPressedColor(QColor(0, 0, 0, 20));
+    _uiDesigner->setText("Linloir @Linloir");
+    _uiDesigner->setEnabled(false);
+    _mainLayout->addWidget(_uiDesigner);
+    _uiDesigner->show();
+    
+    // add line break
+    _line = new QWidget(_mainWidget);
+    _line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    _line->setFixedHeight(1);
+    _line->setStyleSheet("background-color: #c2c2c2;");
+    _mainLayout->addWidget(_line);
+    _line->show();
+    
+    _license = new LineEditWidget(_mainWidget);
+    _license->mainLayout()->insertWidget(0, new QLabel("License"));
+    _license->mainLayout()->insertSpacing(1, 8);
+    _license->setBackgroundColor(QColor(0, 0, 0, 0));
+    _license->setHoverColor(QColor(0, 0, 0, 10));
+    _license->setPressedColor(QColor(0, 0, 0, 20));
+    _license->setText("GPLv3 (According to Qt6 Documents)");
+    _license->setEnabled(false);
+    _mainLayout->addWidget(_license);
+    _license->show();
+    
+    _qtVersion = new LineEditWidget(_mainWidget);
+    _qtVersion->mainLayout()->insertWidget(0, new QLabel("Qt Version"));
+    _qtVersion->mainLayout()->insertSpacing(1, 8);
+    _qtVersion->setBackgroundColor(QColor(0, 0, 0, 0));
+    _qtVersion->setHoverColor(QColor(0, 0, 0, 10));
+    _qtVersion->setPressedColor(QColor(0, 0, 0, 20));
+    _qtVersion->setText("Qt 6.4.0");
+    _qtVersion->setEnabled(false);
+    _mainLayout->addWidget(_qtVersion);
+    _qtVersion->show();
+    
+    _usedLibraries = new LineEditWidget(_mainWidget);
+    _usedLibraries->mainLayout()->insertWidget(0, new QLabel("Special thanks to"));
+    _usedLibraries->mainLayout()->insertSpacing(1, 8);
+    _usedLibraries->setBackgroundColor(QColor(0, 0, 0, 0));
+    _usedLibraries->setHoverColor(QColor(0, 0, 0, 10));
+    _usedLibraries->setPressedColor(QColor(0, 0, 0, 20));
+    _usedLibraries->setText("Assimp, GLM, stb_image for providing marvelous opensource libraries");
+    _usedLibraries->setEnabled(false);
+    _mainLayout->addWidget(_usedLibraries);
+    _usedLibraries->show();
+    
+    _githubLink = new LineEditWidget(_mainWidget);
+    _githubLink->mainLayout()->insertWidget(0, new QLabel("Opensource Repo"));
+    _githubLink->mainLayout()->insertSpacing(1, 8);
+    _githubLink->setBackgroundColor(QColor(0, 0, 0, 0));
+    _githubLink->setHoverColor(QColor(0, 0, 0, 10));
+    _githubLink->setPressedColor(QColor(0, 0, 0, 20));
+    _githubLink->setText("github.com/Linloir/SceneEditor");
+    _githubLink->setEnabled(false);
+    _mainLayout->addWidget(_githubLink);
+    _githubLink->show();
 }
 
 AboutPage::~AboutPage() {}
