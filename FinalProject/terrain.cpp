@@ -6,6 +6,7 @@
 #include "terrain.h"
 #include "utils.h"
 #include "vertex.h"
+#include "logger.h"
 
 Terrain::Terrain(std::string path){
     // Convert '\ ' to '/' for Windows
@@ -137,14 +138,23 @@ void Terrain::render() {
 }
 
 float Terrain::GetHeight(float px, float pz) {
-    float fx = px + height / 2;
-    float fz = pz + width / 2;
+    float fx = px + double(height) / 2;
+    float fz = pz + double(width) / 2;
 
     int x = ((int)fx) % height;
     int z = ((int)fz) % width;
     int gx = (x + 1) % height;
     int gz = (z + 1) % width;
 
+    // prevent retrieving out of bounds
+    if (x < 0) x = 0;
+    if (z < 0) z = 0;
+    if (gx < 0) gx = 0;
+    if (gz < 0) gz = 0;
+    if (x > height - 1) x = height - 1;
+    if (z > width - 1) z = width - 1;
+    if (gx > height - 1) gx = height - 1;
+    if (gz > width - 1) gz = width - 1;
     float ans = (x - fx) * (Point[gx][gz] - Point[x][z]) + Point[x][z];
 
     //float ans = Point[x][z];
@@ -153,16 +163,34 @@ float Terrain::GetHeight(float px, float pz) {
 }
 
 glm::vec3 Terrain::GetNormal(glm::vec3 pos) {
-    float fx = pos.x;
-    float fz = pos.z;
+    // construct a triangle with its geometry center at pos
+    glm::vec3 p1 = pos + glm::vec3(-1.0f, 0.0f, -0.57735f);
+    glm::vec3 p2 = pos + glm::vec3(1.0f, 0.0f, -0.57735f);
+    glm::vec3 p3 = pos + glm::vec3(0.0f, 0.0f, 1.1547f);
+    
+    // calculate the height
+    p1.y = GetHeight(p1.x, p1.z);
+    p2.y = GetHeight(p2.x, p2.z);
+    p3.y = GetHeight(p3.x, p3.z);
 
-    glm::vec3 point1(fx - 1, GetHeight(fx - 1, fz - 1), fz - 1);
-    glm::vec3 point2(fx + 1, GetHeight(fx + 1, fz + 1), fz + 1);
+    // calculate the normal
+    glm::vec3 v1 = p2 - p1;
+    glm::vec3 v2 = p3 - p1;
+    glm::vec3 normal = glm::normalize(glm::cross(v1, v2));
 
-    glm::vec3 l1 = pos - point1;
-    glm::vec3 l2 = point2 - point1;
-    glm::vec3 ans = glm::normalize(glm::cross(l1, l2));
-    return ans;
+    // make the normal point up
+    if (normal.y < 0.0f) {
+        normal = -normal;
+    }
+
+    //glm::vec3 point1(fx - 1, GetHeight(fx - 1, fz - 1), fz - 1);
+    //glm::vec3 point2(fx + 1, GetHeight(fx + 1, fz + 1), fz + 1);
+
+    //glm::vec3 l1 = pos - point1;
+    //glm::vec3 l2 = point2 - point1;
+    
+    //glm::vec3 ans = glm::normalize(glm::cross(l1, l2));
+    return normal;
 }
 
 HitRecord Terrain::hit(const Ray& ray) {
@@ -193,17 +221,38 @@ HitRecord Terrain::hit(const Ray& ray) {
     glm::vec3 startPosition = lastRayPosition;
     glm::vec3 endPosition = orig;
 
-    // Binary search with 32 steps. Try to find the exact collision point 
-    for (int i = 0; i < 32; i++)
-    {
-        // Binary search pass 
-        glm::vec3 middlePoint = (startPosition + endPosition) * 0.5f;
-        if (middlePoint.y < height)
-            endPosition = middlePoint;
+    // Binary search with 64 steps. Try to find the exact collision point 
+    float threshold = 0.1f;
+    glm::vec3 mid;
+    while(true) {
+        mid = (startPosition + endPosition) * 0.5f;
+        map_height = GetHeight(mid.x, mid.z);
+        if (abs(mid.y - map_height) < threshold) {
+            break;
+        }
+        else if (mid.y - endPosition.y < 0.001f) {
+            // if no more space to search, return
+            break;
+        }
+        Logger::debug("Current height difference: " + std::to_string(abs(mid.y - map_height)));
+        if (mid.y > map_height)
+        {
+            startPosition = mid;
+        }
         else
-            startPosition = middlePoint;
+        {
+            endPosition = mid;
+        }
     }
-    glm::vec3 position = (startPosition + endPosition) * 0.5f;
+    //{
+    //    // Binary search pass 
+    //    glm::vec3 middlePoint = (startPosition + endPosition) * 0.5f;
+    //    if (middlePoint.y < height)
+    //        endPosition = middlePoint;
+    //    else
+    //        startPosition = middlePoint;
+    //}
+    glm::vec3 position = mid;
     glm::vec3 normal = GetNormal(position);
 
     // If t > 200, consider the ray as not hitted

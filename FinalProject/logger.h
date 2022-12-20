@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define LOCALLOGLEVEL INFO
+#define LOCALLOGLEVEL DEBUG
 
 class Logger {
 public:
