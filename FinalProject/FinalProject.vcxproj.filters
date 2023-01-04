@@ -189,6 +189,9 @@
     <ClCompile Include="settingpage.cpp">
       <Filter>Source Files\Qt Widgets\Pages\Setting Page</Filter>
     </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Source Files\OpenGL Abstractions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
